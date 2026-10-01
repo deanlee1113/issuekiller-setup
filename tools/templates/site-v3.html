@@ -56,9 +56,21 @@
              font-size: clamp(2.6rem, 10vw, 4.4rem); line-height: 1.12; margin-top: 1rem; letter-spacing: -.01em; }
   .hero .lead { font-size: clamp(1.25rem, 4.4vw, 1.5rem); line-height: 1.55; margin: 1rem 0 0; font-weight: 500; }
   .hero .lead b { color: var(--yellow); font-weight: 700; }
-  .need { list-style: none; padding: 0; margin: 1.6rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem; }
-  .need li { border: 1.5px solid var(--snow-soft); border-radius: 999px; padding: .35rem .95rem; font-size: 1.02rem; }
-  .need li b { color: var(--yellow); font-weight: 700; margin-right: .3rem; }
+  /* 준비물: 설치 단계(주황 숫자 원)와 헷갈리지 않게 숫자 없이 빈 체크 상자로 */
+  .kit { padding-block: 1.8rem 0; }
+  .kit h2 { font-size: 1.5rem; }
+  .kit-list { list-style: none; margin: .9rem 0 0; padding: 0; background: var(--card); border: 1.5px solid var(--line);
+              border-radius: 18px; overflow: hidden; }
+  .kit-list li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .9rem; padding: 1rem 1.15rem; }
+  .kit-list li + li { border-top: 1.5px solid var(--line); }
+  .kit-list .box { width: 1.45rem; height: 1.45rem; border: 2.5px solid var(--indigo); border-radius: 5px; margin-top: .25rem; }
+  .kit-list b { display: block; font-size: 1.2rem; line-height: 1.45; }
+  .kit-list span { display: block; font-size: 1.02rem; color: var(--ink-soft); }
+  .kit-list em { font-style: normal; font-weight: 700; color: var(--ink); }
+  .applinks { display: flex !important; flex-wrap: wrap; gap: .5rem; margin-top: .55rem; }
+  .applinks a { font-size: .98rem; font-weight: 700; color: var(--indigo); text-decoration: none; border: 1.5px solid var(--indigo);
+                border-radius: 999px; padding: .2rem .8rem; }
+  .applinks a.mine { background: var(--indigo); color: var(--snow); }
 
   .phone { display: none; background: var(--yellow); color: var(--indigo); padding-block: 1rem; font-weight: 500; }
   .phone.show { display: block; }
@@ -79,6 +91,15 @@
   .os button[aria-pressed="true"] .s { color: var(--snow-soft); }
   .os button[aria-pressed="true"] .n::after { content: " ✓"; color: var(--yellow); }
   .hint { font-size: 1rem; color: var(--ink-soft); margin: .7rem 0 0; }
+  .hint:empty { display: none; }
+  .pick-2 { margin-top: 1.8rem !important; }
+  .os.ai { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .os.ai button { min-height: 5rem; }
+  .os.ai button .n { font-size: 1.35rem; }
+  [data-ai-only] { display: none; }
+  body[data-ai="gpt"] [data-ai-only~="gpt"],
+  body[data-ai="claude"] [data-ai-only~="claude"],
+  body[data-ai="gemini"] [data-ai-only~="gemini"] { display: revert; }
 
   /* ---------- 단계 ---------- */
   .steps-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
@@ -171,14 +192,19 @@
   <div class="wrap">
     <span class="tag">쇼츠 제작 강의 · 사전 준비</span>
     <h1>강의 전날,<br>30분이면 끝나요</h1>
-    <p class="lead">아래 <b>5단계</b>를 순서대로 따라 하세요.<br>영상 도구와 실습 파일이 <b>한 번에</b> 설치됩니다.</p>
-    <ul class="need" aria-label="준비물">
-      <li><b>①</b>실습에 가져올 노트북</li>
-      <li><b>②</b>집 와이파이 (약 3GB)</li>
-      <li><b>③</b>Claude 유료 계정 (Pro 이상)</li>
-    </ul>
+    <p class="lead">강의 날에는 <b>만드는 방법</b>만 배우면 되도록<br>필요한 것을 미리 준비해 오세요.</p>
   </div>
 </header>
+
+<section class="kit wrap" aria-labelledby="kit-h">
+  <h2 id="kit-h">강의를 알차게 듣기 위한 준비물</h2>
+  <ul class="kit-list">
+    <li><span class="box" aria-hidden="true"></span><div><b>실습할 노트북</b><span>강의 날 직접 가져오세요.</span></div></li>
+    <li><span class="box" aria-hidden="true"></span><div><b>AI 앱 설치</b><span>ChatGPT · Claude · Gemini 중 쓰시는 것을 <em>인터넷 창이 아닌 앱</em>으로 설치하고 로그인해 두세요.</span>
+      <span class="applinks" id="appLinks"></span></div></li>
+    <li><span class="box" aria-hidden="true"></span><div><b>무료 스킬과 영상 제작 도구 (약 3GB)</b><span>용량이 커서 강의 날에는 받기 어려워요. 집이나 사무실처럼 <em>인터넷이 잘 되는 곳</em>에서 <em>아래 5단계</em>로 미리 받아 오세요.</span></div></li>
+  </ul>
+</section>
 
 <div class="phone" id="phone">
   <div class="wrap">📱 지금 휴대폰으로 보고 계세요. 설치는 <b>노트북</b>에서 해야 해요. 노트북에서 이 주소를 여세요: <code id="pageUrl"></code></div>
@@ -192,6 +218,13 @@
       <button type="button" id="os-win" data-os="win" aria-pressed="false"><span class="n">Windows</span><span class="s">삼성·LG·레노버 등</span></button>
     </div>
     <p class="hint" id="autoHint"></p>
+
+    <h2 id="ai-h" class="pick-2">내가 쓰는 AI는 무엇인가요?</h2>
+    <div class="os ai" role="group" aria-labelledby="ai-h">
+      <button type="button" id="ai-gpt" data-ai="gpt" aria-pressed="false"><span class="n">ChatGPT</span><span class="s">OpenAI</span></button>
+      <button type="button" id="ai-claude" data-ai="claude" aria-pressed="false"><span class="n">Claude</span><span class="s">Anthropic</span></button>
+      <button type="button" id="ai-gemini" data-ai="gemini" aria-pressed="false"><span class="n">Gemini</span><span class="s">Google</span></button>
+    </div>
   </section>
 
   <div class="steps-head">
@@ -308,7 +341,7 @@
     <p style="margin:.5rem 0 0">강의 날에는 만드는 방법만 배우면 돼요. 이것만 챙겨 오세요.</p>
     <ul>
       <li>설치한 노트북과 충전기</li>
-      <li>Claude 계정 이메일과 비밀번호</li>
+      <li><span class="ai-name">AI</span> 계정 이메일과 비밀번호</li>
       <li>쇼츠를 올릴 유튜브 계정</li>
     </ul>
   </section>
