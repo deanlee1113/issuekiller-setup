@@ -32,6 +32,7 @@
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }   /* .steps{display:grid} 가 hidden 속성을 덮지 않게 */
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
@@ -96,10 +97,11 @@
   .os.ai { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .os.ai button { min-height: 5rem; }
   .os.ai button .n { font-size: 1.35rem; }
-  [data-ai-only] { display: none; }
-  body[data-ai="gpt"] [data-ai-only~="gpt"],
-  body[data-ai="claude"] [data-ai-only~="claude"],
-  body[data-ai="gemini"] [data-ai-only~="gemini"] { display: revert; }
+  .os button .n, .os button .s { overflow-wrap: normal; word-break: keep-all; }
+  /* 고른 AI 것만 보이게: 다른 AI 전용 줄은 숨긴다 (원래 display 값은 그대로 유지) */
+  body:not([data-ai="gpt"]) [data-ai-only="gpt"],
+  body:not([data-ai="claude"]) [data-ai-only="claude"],
+  body:not([data-ai="gemini"]) [data-ai-only="gemini"] { display: none !important; }
 
   /* ---------- 단계 ---------- */
   .steps-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
@@ -182,6 +184,10 @@
   @media (max-width: 30rem) {
     .os { grid-template-columns: 1fr; }
     .os button { min-height: 0; }
+    .os.ai { gap: .5rem; }
+    .os.ai button { min-height: 0; padding: .8rem .55rem; text-align: center; }
+    .os.ai button .n { font-size: 1.08rem; }
+    .os.ai button .s { font-size: .85rem; }
     .step { grid-template-columns: minmax(0, 1fr); row-gap: .6rem; padding: 1.1rem 1rem; }
     .copy { max-width: none; }
   }
@@ -276,9 +282,14 @@
     <li class="step" data-step="mac-5">
       <span class="num">5</span>
       <div class="body">
-        <h3>Claude에 로그인합니다</h3>
-        <div class="keys">터미널을 닫고 다시 열기 <span class="arrow">→</span> <span class="typed">claude</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
-        <p class="note">인터넷 창이 열리면 Claude 계정으로 로그인하세요. 끝나면 터미널에 <span class="typed">/exit</span> 입력.</p>
+        <h3>AI 앱에서 <span class="typed">issuekiller</span> 폴더를 엽니다</h3>
+        <div class="keys" data-ai-only="gpt"><b>ChatGPT 앱</b> 열고 로그인 <span class="arrow">→</span> 위쪽에서 <kbd>Codex</kbd> 선택 <span class="arrow">→</span> 폴더 열기</div>
+        <div class="keys" data-ai-only="claude"><b>Claude 앱</b> 열고 로그인 <span class="arrow">→</span> 왼쪽 위 <kbd>Code</kbd> <span class="arrow">→</span> 폴더 선택</div>
+        <div class="keys" data-ai-only="gemini"><b>Antigravity 앱</b> 열고 Google 로그인 <span class="arrow">→</span> <kbd>프로젝트 추가</kbd></div>
+        <p class="note">폴더는 <b>홈 폴더(집 모양) 안의 issuekiller</b>를 고르세요.</p>
+        <p class="note" data-ai-only="gpt">“이 폴더를 신뢰할까요?”가 나오면 <b>신뢰</b>를 누르세요. 무료 계정도 되지만 사용량이 적어요.</p>
+        <p class="note" data-ai-only="claude">Claude는 <b>Pro 이상 유료 계정</b>이 있어야 이 기능을 쓸 수 있어요.</p>
+        <p class="warn" data-ai-only="gemini"><b>Gemini 앱이 아니라 Antigravity 앱</b>이에요. 구글이 만든 작업용 앱이고 무료로 쓸 수 있어요(사용량 제한 있음).</p>
         <button type="button" class="did" aria-pressed="false">했어요</button>
       </div>
     </li>
@@ -328,9 +339,14 @@
     <li class="step" data-step="win-5">
       <span class="num">5</span>
       <div class="body">
-        <h3>Claude에 로그인합니다</h3>
-        <div class="keys">창을 닫고 PowerShell 다시 열기 <span class="arrow">→</span> <span class="typed">claude</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
-        <p class="note">인터넷 창이 열리면 Claude 계정으로 로그인하세요. 끝나면 <span class="typed">/exit</span> 입력.</p>
+        <h3>AI 앱에서 <span class="typed">issuekiller</span> 폴더를 엽니다</h3>
+        <div class="keys" data-ai-only="gpt"><b>ChatGPT 앱</b> 열고 로그인 <span class="arrow">→</span> 위쪽에서 <kbd>Codex</kbd> 선택 <span class="arrow">→</span> 폴더 열기</div>
+        <div class="keys" data-ai-only="claude"><b>Claude 앱</b> 열고 로그인 <span class="arrow">→</span> 왼쪽 위 <kbd>Code</kbd> <span class="arrow">→</span> 폴더 선택</div>
+        <div class="keys" data-ai-only="gemini"><b>Antigravity 앱</b> 열고 Google 로그인 <span class="arrow">→</span> <kbd>프로젝트 추가</kbd></div>
+        <p class="note">폴더는 <b>C:\Users\내이름\issuekiller</b>를 고르세요.</p>
+        <p class="note" data-ai-only="gpt">“이 폴더를 신뢰할까요?”가 나오면 <b>신뢰</b>를 누르세요. 무료 계정도 되지만 사용량이 적어요.</p>
+        <p class="note" data-ai-only="claude">Claude는 <b>Pro 이상 유료 계정</b>이 있어야 이 기능을 쓸 수 있어요.</p>
+        <p class="warn" data-ai-only="gemini"><b>Gemini 앱이 아니라 Antigravity 앱</b>이에요. 구글이 만든 작업용 앱이고 무료로 쓸 수 있어요(사용량 제한 있음).</p>
         <button type="button" class="did" aria-pressed="false">했어요</button>
       </div>
     </li>
@@ -384,7 +400,7 @@
     <details>
       <summary>무엇이 설치되나요? 나중에 지울 수 있나요?</summary>
       <div class="a">
-        <p>영상 만드는 도구(Node.js, ffmpeg, 음성 합성, Remotion), Claude Code, 강의 실습 파일이 설치돼요. 이미 깔려 있는 다른 프로그램은 건드리지 않아요.</p>
+        <p>영상 만드는 도구(Node.js, ffmpeg, 음성 합성, Remotion)와 쇼츠 제작 스킬·실습 파일, 보조 도구 Claude Code가 설치돼요. AI 앱은 준비물 안내대로 따로 설치하세요. 이미 깔려 있는 다른 프로그램은 건드리지 않아요.</p>
         <p class="small">지우려면 홈 폴더의 <code>issuekiller</code>, <code>issuekiller-tools</code> 폴더와 <code>.cache/supertonic3</code>, <code>.cache/huggingface</code> 폴더를 지우면 돼요.</p>
       </div>
     </details>
@@ -404,8 +420,35 @@
     win: { name: "issuekiller-setup-windows.zip", b64: "__WIN_B64__" }
   };
   var KEY = "ik-setup-v3";
-  var state = { os: null, done: {} };
-  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") { state.os = saved.os || null; state.done = saved.done || {}; } } catch (e) {}
+  var state = { os: null, ai: null, done: {} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") { state.os = saved.os || null; state.ai = saved.ai || null; state.done = saved.done || {}; } } catch (e) {}
+
+  // ---- 내가 쓰는 AI (기본: ChatGPT)
+  var AIS = {
+    gpt:    { name: "ChatGPT", app: "ChatGPT 앱 받기", url: "https://chatgpt.com/download" },
+    claude: { name: "Claude",  app: "Claude 앱 받기",  url: "https://claude.com/download" },
+    gemini: { name: "Google",  app: "Gemini용 Antigravity 앱 받기", url: "https://antigravity.google/download" }
+  };
+  var links = document.getElementById("appLinks");
+  Object.keys(AIS).forEach(function (k) {
+    var a = document.createElement("a");
+    a.href = AIS[k].url; a.target = "_blank"; a.rel = "noopener"; a.dataset.ai = k; a.textContent = AIS[k].app;
+    links.appendChild(a);
+  });
+  function setAI(ai, fromUser) {
+    state.ai = ai;
+    document.body.setAttribute("data-ai", ai);
+    Object.keys(AIS).forEach(function (k) {
+      document.getElementById("ai-" + k).setAttribute("aria-pressed", String(k === ai));
+    });
+    links.querySelectorAll("a").forEach(function (a) { a.classList.toggle("mine", a.dataset.ai === ai); });
+    document.querySelectorAll(".ai-name").forEach(function (el) { el.textContent = AIS[ai].name; });
+    if (fromUser) save();
+  }
+  document.querySelectorAll(".os.ai button").forEach(function (b) {
+    b.addEventListener("click", function () { setAI(b.dataset.ai, true); });
+  });
+  setAI(AIS[state.ai] ? state.ai : "gpt", false);
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
   // ---- 휴대폰이면 안내, 이 컴퓨터 종류 자동 선택
@@ -427,7 +470,7 @@
     if (fromUser) save();
     updateProgress();
   }
-  document.querySelectorAll(".os button").forEach(function (b) {
+  document.querySelectorAll(".os:not(.ai) button").forEach(function (b) {
     b.addEventListener("click", function () { hint.textContent = ""; setOS(b.dataset.os, true); });
   });
 
