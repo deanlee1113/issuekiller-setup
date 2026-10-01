@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>쇼츠 강의 준비</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gasoek+One&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  /* 한 장짜리 순서표: 위에서 컴퓨터 종류를 고르면 그 컴퓨터의 5단계만 세로로 보인다. 글씨는 크게, 한 단계에 한 가지 행동.
+     색 조합 12 · 03 강렬한 에너지(인디고/옐로/오렌지) + 넓은 면용 중립 종이색. 단일 밝은 테마(의도적). */
+  :root {
+    --indigo: #1B2B86;
+    --indigo-deep: #142170;
+    --yellow: #E7FC66;
+    --orange: #FC5C2F;
+    --paper: #F1F3FA;
+    --card: #FFFFFF;
+    --ink: #1B2B86;
+    --ink-soft: #4B5590;
+    --line: #C9CEE6;
+    --snow: #F4F5FF;
+    --snow-soft: #C3C9EE;
+    --good: #17734A;
+    --good-bg: #E3F4EA;
+    --bad: #B5321B;
+    --term: #10162F;
+    --term-ink: #E6E9F7;
+    --display: "Gasoek One", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.1875rem;          /* 19px — 40·50대 기준 본문 */
+    line-height: 1.65;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .wrap { max-width: 44rem; margin: 0 auto; padding-inline: 1.125rem; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+
+  /* ---------- 머리 ---------- */
+  .hero { background: var(--indigo); color: var(--snow); padding-block: 2.6rem 2.2rem; }
+  .hero .tag { display: inline-block; font-size: .95rem; font-weight: 700; letter-spacing: .04em; color: var(--indigo);
+               background: var(--yellow); padding: .2rem .7rem; border-radius: 999px; }
+  .hero h1 { font-family: var(--display); font-weight: 400; color: var(--yellow);
+             font-size: clamp(2.6rem, 10vw, 4.4rem); line-height: 1.12; margin-top: 1rem; letter-spacing: -.01em; }
+  .hero .lead { font-size: clamp(1.25rem, 4.4vw, 1.5rem); line-height: 1.55; margin: 1rem 0 0; font-weight: 500; }
+  .hero .lead b { color: var(--yellow); font-weight: 700; }
+  .need { list-style: none; padding: 0; margin: 1.6rem 0 0; display: flex; flex-wrap: wrap; gap: .6rem; }
+  .need li { border: 1.5px solid var(--snow-soft); border-radius: 999px; padding: .35rem .95rem; font-size: 1.02rem; }
+  .need li b { color: var(--yellow); font-weight: 700; margin-right: .3rem; }
+
+  .phone { display: none; background: var(--yellow); color: var(--indigo); padding-block: 1rem; font-weight: 500; }
+  .phone.show { display: block; }
+  .phone code { font-family: var(--mono); font-weight: 600; word-break: break-all; }
+
+  /* ---------- 컴퓨터 고르기 ---------- */
+  .pick { padding-block: 2rem 0; }
+  .pick h2 { font-size: 1.5rem; }
+  .os { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .9rem; }
+  .os button {
+    font: inherit; cursor: pointer; text-align: left; color: var(--ink);
+    background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+    padding: 1rem 1.1rem; display: grid; gap: .15rem; min-height: 6.2rem;
+  }
+  .os button .n { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+  .os button .s { font-size: .98rem; color: var(--ink-soft); }
+  .os button[aria-pressed="true"] { background: var(--indigo); border-color: var(--indigo); color: var(--snow); }
+  .os button[aria-pressed="true"] .s { color: var(--snow-soft); }
+  .os button[aria-pressed="true"] .n::after { content: " ✓"; color: var(--yellow); }
+  .hint { font-size: 1rem; color: var(--ink-soft); margin: .7rem 0 0; }
+
+  /* ---------- 단계 ---------- */
+  .steps-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+                padding-block: 2.2rem .2rem; }
+  .steps-head h2 { font-size: 1.5rem; }
+  .progress { font-size: 1rem; font-weight: 700; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; padding-block: .8rem 0; }
+  .step { background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; padding: 1.3rem 1.25rem 1.2rem;
+          display: grid; grid-template-columns: 3.1rem minmax(0, 1fr); column-gap: 1rem; }
+  .num { width: 3.1rem; height: 3.1rem; border-radius: 50%; background: var(--orange); color: var(--indigo);
+         font-weight: 700; font-size: 1.55rem; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .body { min-width: 0; display: grid; gap: .75rem; }
+  .step h3 { font-size: clamp(1.3rem, 4.6vw, 1.55rem); line-height: 1.35; padding-top: .3rem; }
+  .step p { margin: 0; }
+  .note { font-size: 1.02rem; color: var(--ink-soft); }
+  .warn { font-size: 1.02rem; background: var(--paper); border-radius: 10px; padding: .6rem .8rem; }
+  .warn b { color: var(--bad); }
+
+  .keys { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; font-size: 1.1rem; font-weight: 500; }
+  kbd {
+    font-family: var(--body); font-weight: 700; font-size: 1.05rem; color: var(--ink);
+    background: var(--card); border: 1.5px solid var(--line); border-bottom-width: 4px; border-radius: 9px;
+    padding: .18rem .65rem; min-width: 2.4rem; text-align: center; display: inline-block; line-height: 1.5;
+  }
+  .typed { font-family: var(--mono); font-weight: 600; background: var(--paper); border-radius: 8px; padding: .12rem .55rem; }
+  .arrow { color: var(--ink-soft); font-weight: 400; }
+
+  .copy {
+    font: inherit; font-size: 1.3rem; font-weight: 700; cursor: pointer;
+    background: var(--yellow); color: var(--indigo); border: 2px solid var(--indigo); border-radius: 14px;
+    padding: .85rem 1.2rem; width: 100%; max-width: 22rem; box-shadow: 0 4px 0 var(--indigo);
+  }
+  .copy:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--indigo); }
+  .copy.done { background: var(--good-bg); color: var(--good); border-color: var(--good); box-shadow: 0 4px 0 var(--good); }
+  .cmd { font-family: var(--mono); font-size: .92rem; color: var(--ink-soft); background: var(--paper);
+         border-radius: 10px; padding: .55rem .75rem; overflow-x: auto; white-space: nowrap; }
+  .status { font-size: 1.02rem; font-weight: 700; margin: 0; }
+  .status:empty { display: none; }
+  .status.good { color: var(--good); }
+  .status.bad { color: var(--bad); }
+
+  .term { background: var(--term); color: var(--term-ink); border-radius: 12px; padding: .8rem 1rem;
+          font-family: var(--mono); font-size: .95rem; line-height: 1.7; overflow-x: auto; }
+  .term .ok { color: #8FE3B0; }
+  .term .end { color: var(--yellow); font-weight: 600; }
+  .term .dim { color: #8C93B8; }
+
+  .did { justify-self: start; font: inherit; font-size: 1rem; font-weight: 700; cursor: pointer;
+         background: transparent; color: var(--ink-soft); border: 1.5px dashed var(--line); border-radius: 999px; padding: .35rem 1rem; }
+  .did[aria-pressed="true"] { border-style: solid; border-color: var(--good); color: var(--good); background: var(--good-bg); }
+  .step.is-done { background: var(--paper); }
+  .step.is-done .num { background: var(--good-bg); color: var(--good); font-size: 0; }
+  .step.is-done .num::after { content: "✓"; font-size: 1.6rem; }
+  .step.is-done h3 { color: var(--ink-soft); }
+
+  /* ---------- 끝 ---------- */
+  .finish { margin-top: 1.4rem; background: var(--indigo); color: var(--snow); border-radius: 18px; padding: 1.5rem 1.35rem; }
+  .finish h2 { font-family: var(--display); font-weight: 400; color: var(--yellow); font-size: clamp(1.8rem, 6.5vw, 2.4rem); }
+  .finish ul { margin: .9rem 0 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
+  .finish li::marker { color: var(--orange); }
+
+  /* ---------- 막히면 ---------- */
+  .help { padding-block: 2.6rem 1rem; }
+  .help h2 { font-size: 1.5rem; margin-bottom: .8rem; }
+  details { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; margin-top: .6rem; }
+  summary { cursor: pointer; padding: .9rem 1.1rem; font-weight: 700; font-size: 1.1rem; list-style: none;
+            display: flex; justify-content: space-between; gap: 1rem; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--orange); font-size: 1.5rem; line-height: 1; font-weight: 700; }
+  details[open] summary::after { content: "−"; }
+  .a { padding: 0 1.1rem 1.05rem; display: grid; gap: .6rem; }
+  .a p { margin: 0; }
+  .zipbtn { font: inherit; font-weight: 700; cursor: pointer; background: var(--card); color: var(--indigo);
+            border: 2px solid var(--indigo); border-radius: 12px; padding: .6rem 1rem; justify-self: start; }
+  .small { font-size: .98rem; color: var(--ink-soft); }
+  .small code, .a code { font-family: var(--mono); font-size: .92em; background: var(--paper); border-radius: 6px; padding: .05rem .35rem; word-break: break-all; }
+
+  footer { padding-block: 1.6rem 2.6rem; font-size: .95rem; color: var(--ink-soft); display: grid; gap: .3rem; }
+
+  @media (max-width: 30rem) {
+    .os { grid-template-columns: 1fr; }
+    .os button { min-height: 0; }
+    .step { grid-template-columns: minmax(0, 1fr); row-gap: .6rem; padding: 1.1rem 1rem; }
+    .copy { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">쇼츠 제작 강의 · 사전 준비</span>
+    <h1>강의 전날,<br>30분이면 끝나요</h1>
+    <p class="lead">아래 <b>5단계</b>를 순서대로 따라 하세요.<br>영상 도구와 실습 파일이 <b>한 번에</b> 설치됩니다.</p>
+    <ul class="need" aria-label="준비물">
+      <li><b>①</b>실습에 가져올 노트북</li>
+      <li><b>②</b>집 와이파이 (약 3GB)</li>
+      <li><b>③</b>Claude 유료 계정 (Pro 이상)</li>
+    </ul>
+  </div>
+</header>
+
+<div class="phone" id="phone">
+  <div class="wrap">📱 지금 휴대폰으로 보고 계세요. 설치는 <b>노트북</b>에서 해야 해요. 노트북에서 이 주소를 여세요: <code id="pageUrl"></code></div>
+</div>
+
+<main class="wrap">
+  <section class="pick" aria-labelledby="pick-h">
+    <h2 id="pick-h">내 노트북은 어떤 컴퓨터인가요?</h2>
+    <div class="os" role="group" aria-label="컴퓨터 종류">
+      <button type="button" id="os-mac" data-os="mac" aria-pressed="false"><span class="n">Mac (맥북)</span><span class="s">사과 모양 로고</span></button>
+      <button type="button" id="os-win" data-os="win" aria-pressed="false"><span class="n">Windows</span><span class="s">삼성·LG·레노버 등</span></button>
+    </div>
+    <p class="hint" id="autoHint"></p>
+  </section>
+
+  <div class="steps-head">
+    <h2 id="steps-h">설치 순서</h2>
+    <span class="progress" id="progress" aria-live="polite"></span>
+  </div>
+
+  <!-- ===================== Mac ===================== -->
+  <ol class="steps" id="steps-mac" aria-labelledby="steps-h">
+    <li class="step" data-step="mac-1">
+      <span class="num">1</span>
+      <div class="body">
+        <h3>‘터미널’을 엽니다</h3>
+        <div class="keys"><kbd>⌘ command</kbd> + <kbd>스페이스</kbd> <span class="arrow">→</span> <span class="typed">터미널</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">글자를 쓰는 작은 창이 열려요.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="mac-2">
+      <span class="num">2</span>
+      <div class="body">
+        <h3>노란 버튼을 눌러 명령어를 복사합니다</h3>
+        <button type="button" class="copy" data-os="mac" data-copy="cmd-mac">명령어 복사하기</button>
+        <p class="status" id="st-mac" aria-live="polite"></p>
+        <div class="cmd" id="cmd-mac">curl -fsSL https://raw.githubusercontent.com/__GH_REPO__/main/get.sh | bash</div>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="mac-3">
+      <span class="num">3</span>
+      <div class="body">
+        <h3>터미널에 붙여넣고 Enter</h3>
+        <div class="keys">터미널 창 클릭 <span class="arrow">→</span> <kbd>⌘ command</kbd> + <kbd>V</kbd> <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">비밀번호는 묻지 않아요.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="mac-4">
+      <span class="num">4</span>
+      <div class="body">
+        <h3>창을 그대로 두고 기다립니다 (10~30분)</h3>
+        <p>이 글자가 보이면 성공이에요.</p>
+        <div class="term" aria-label="성공 화면 예시"><span class="ok">✅</span> 시험 렌더 영상<br><span class="end">설치가 모두 끝났습니다.</span></div>
+        <p class="warn"><b>❌</b>가 보이면 화면을 사진 찍어 강사에게 보내 주세요.</p>
+        <p class="note">‘Xcode 설치’ 창이 뜨면 <b>지금 안 함</b>을 누르세요.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="mac-5">
+      <span class="num">5</span>
+      <div class="body">
+        <h3>Claude에 로그인합니다</h3>
+        <div class="keys">터미널을 닫고 다시 열기 <span class="arrow">→</span> <span class="typed">claude</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">인터넷 창이 열리면 Claude 계정으로 로그인하세요. 끝나면 터미널에 <span class="typed">/exit</span> 입력.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+  </ol>
+
+  <!-- ===================== Windows ===================== -->
+  <ol class="steps" id="steps-win" aria-labelledby="steps-h" hidden>
+    <li class="step" data-step="win-1">
+      <span class="num">1</span>
+      <div class="body">
+        <h3>‘PowerShell’을 엽니다</h3>
+        <div class="keys"><kbd>⊞ 윈도우 키</kbd> <span class="arrow">→</span> <span class="typed">PowerShell</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">파란색(또는 검은색) 창이 열려요. 관리자 권한은 필요 없어요.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="win-2">
+      <span class="num">2</span>
+      <div class="body">
+        <h3>노란 버튼을 눌러 명령어를 복사합니다</h3>
+        <button type="button" class="copy" data-os="win" data-copy="cmd-win">명령어 복사하기</button>
+        <p class="status" id="st-win" aria-live="polite"></p>
+        <div class="cmd" id="cmd-win">irm https://raw.githubusercontent.com/__GH_REPO__/main/get.ps1 | iex</div>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="win-3">
+      <span class="num">3</span>
+      <div class="body">
+        <h3>창 안에서 마우스 오른쪽 클릭, 그리고 Enter</h3>
+        <div class="keys">창 안에서 <kbd>오른쪽 클릭</kbd> <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">오른쪽 클릭이 붙여넣기예요. 안 되면 <kbd>Ctrl</kbd> + <kbd>V</kbd>.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="win-4">
+      <span class="num">4</span>
+      <div class="body">
+        <h3>창을 그대로 두고 기다립니다 (10~30분)</h3>
+        <p>이 글자가 보이면 성공이에요.</p>
+        <div class="term" aria-label="성공 화면 예시"><span class="ok">[OK]</span> 시험 렌더 영상<br><span class="end">설치가 모두 끝났습니다.</span></div>
+        <p class="warn"><b>[XX]</b>가 보이면 화면을 사진 찍어 강사에게 보내 주세요.</p>
+        <p class="note">‘PC 보호’ 파란 창이 뜨면 <b>추가 정보 → 실행</b>을 누르세요.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+    <li class="step" data-step="win-5">
+      <span class="num">5</span>
+      <div class="body">
+        <h3>Claude에 로그인합니다</h3>
+        <div class="keys">창을 닫고 PowerShell 다시 열기 <span class="arrow">→</span> <span class="typed">claude</span> 입력 <span class="arrow">→</span> <kbd>Enter</kbd></div>
+        <p class="note">인터넷 창이 열리면 Claude 계정으로 로그인하세요. 끝나면 <span class="typed">/exit</span> 입력.</p>
+        <button type="button" class="did" aria-pressed="false">했어요</button>
+      </div>
+    </li>
+  </ol>
+
+  <section class="finish" aria-labelledby="fin-h">
+    <h2 id="fin-h">준비 끝!</h2>
+    <p style="margin:.5rem 0 0">강의 날에는 만드는 방법만 배우면 돼요. 이것만 챙겨 오세요.</p>
+    <ul>
+      <li>설치한 노트북과 충전기</li>
+      <li>Claude 계정 이메일과 비밀번호</li>
+      <li>쇼츠를 올릴 유튜브 계정</li>
+    </ul>
+  </section>
+
+  <section class="help" aria-labelledby="help-h">
+    <h2 id="help-h">막히면 여기를 보세요</h2>
+
+    <details>
+      <summary>중간에 실패했다고 나와요</summary>
+      <div class="a"><p>2·3단계를 <b>한 번 더</b> 하세요. 끝난 부분은 건너뛰고 이어서 설치해요. 두 번째도 실패하면 화면을 사진 찍어 강사에게 보내 주세요.</p></div>
+    </details>
+    <details>
+      <summary>붙여넣었는데 아무 일도 안 일어나요</summary>
+      <div class="a"><p><kbd>Enter</kbd>를 눌러야 시작돼요. 그래도 안 되면 창을 닫고 1단계부터 다시 하세요.</p></div>
+    </details>
+    <details>
+      <summary>회사 노트북인데 될까요?</summary>
+      <div class="a"><p>회사 보안 프로그램이 다운로드를 막을 수 있어요. 되도록 <b>개인 노트북</b>을 가져오세요.</p></div>
+    </details>
+    <details>
+      <summary>내 컴퓨터가 설치 조건에 맞나요?</summary>
+      <div class="a">
+        <p><b>Mac</b> — macOS 13 이상 (사과 메뉴 → 이 Mac에 관하여에서 확인)</p>
+        <p><b>Windows</b> — Windows 10 또는 11, 64비트 (<kbd>⊞</kbd> + <kbd>R</kbd> → <span class="typed">winver</span>)</p>
+        <p>빈 공간 <b>8GB</b> 이상이 필요해요.</p>
+      </div>
+    </details>
+    <details>
+      <summary>명령어 방식이 계속 안 돼요 (파일로 받기)</summary>
+      <div class="a">
+        <p>설치 도우미를 파일로 받아 직접 실행하는 방법이에요. 강사가 안내할 때만 쓰세요.</p>
+        <button type="button" class="zipbtn" data-zip="mac">Mac용 파일 받기 · __MAC_SIZE__</button>
+        <p class="status" id="dst-mac" aria-live="polite"></p>
+        <p class="small">압축을 풀고 <code>issuekiller</code> 폴더를 홈 폴더로 옮긴 뒤, 터미널에 <code>bash</code> 를 입력하고 <code>setup/mac/install.command</code> 파일을 창에 끌어다 놓고 Enter.</p>
+        <button type="button" class="zipbtn" data-zip="win">Windows용 파일 받기 · __WIN_SIZE__</button>
+        <p class="status" id="dst-win" aria-live="polite"></p>
+        <p class="small">압축을 풀고 <code>issuekiller</code> 폴더를 <code>C:\Users\내이름</code> 아래로 옮긴 뒤, <code>setup\windows\install.bat</code> 더블클릭.</p>
+      </div>
+    </details>
+    <details>
+      <summary>무엇이 설치되나요? 나중에 지울 수 있나요?</summary>
+      <div class="a">
+        <p>영상 만드는 도구(Node.js, ffmpeg, 음성 합성, Remotion), Claude Code, 강의 실습 파일이 설치돼요. 이미 깔려 있는 다른 프로그램은 건드리지 않아요.</p>
+        <p class="small">지우려면 홈 폴더의 <code>issuekiller</code>, <code>issuekiller-tools</code> 폴더와 <code>.cache/supertonic3</code>, <code>.cache/huggingface</code> 폴더를 지우면 돼요.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <span>문제가 생기면 화면을 사진 찍어 강사에게 보내 주세요.</span>
+    <span>설치 도우미 · __BUILD_DATE__ · <a href="https://github.com/__GH_REPO__">소스 보기</a></span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var REPO = "__GH_REPO__";
+  var FILES = {
+    mac: { name: "issuekiller-setup-mac.zip", b64: "__MAC_B64__" },
+    win: { name: "issuekiller-setup-windows.zip", b64: "__WIN_B64__" }
+  };
+  var KEY = "ik-setup-v3";
+  var state = { os: null, done: {} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") { state.os = saved.os || null; state.done = saved.done || {}; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // ---- 휴대폰이면 안내, 이 컴퓨터 종류 자동 선택
+  var ua = navigator.userAgent || "";
+  var plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(ua) || !!(navigator.userAgentData && navigator.userAgentData.mobile);
+  var detected = /Win/i.test(plat) || /Windows/i.test(ua) ? "win" : (/Mac/i.test(plat) || /Macintosh/i.test(ua) ? "mac" : null);
+  var parts = REPO.split("/");
+  document.getElementById("pageUrl").textContent = parts.length === 2 ? parts[0] + ".github.io/" + parts[1] : location.host + location.pathname;
+  if (isMobile) { detected = null; document.getElementById("phone").classList.add("show"); }
+
+  var hint = document.getElementById("autoHint");
+  function setOS(os, fromUser) {
+    state.os = os;
+    ["mac", "win"].forEach(function (k) {
+      document.getElementById("os-" + k).setAttribute("aria-pressed", String(k === os));
+      document.getElementById("steps-" + k).hidden = k !== os;
+    });
+    if (fromUser) save();
+    updateProgress();
+  }
+  document.querySelectorAll(".os button").forEach(function (b) {
+    b.addEventListener("click", function () { hint.textContent = ""; setOS(b.dataset.os, true); });
+  });
+
+  // ---- 했어요 표시
+  function updateProgress() {
+    var list = document.getElementById("steps-" + (state.os || "mac"));
+    var items = list.querySelectorAll(".step"), n = 0;
+    items.forEach(function (li) { if (state.done[li.dataset.step]) n++; });
+    document.getElementById("progress").textContent = n === items.length ? "5단계 모두 했어요 🎉" : n + " / " + items.length + " 단계 했어요";
+  }
+  document.querySelectorAll(".step").forEach(function (li) {
+    var btn = li.querySelector(".did"), id = li.dataset.step;
+    function paint() {
+      var on = !!state.done[id];
+      li.classList.toggle("is-done", on);
+      btn.setAttribute("aria-pressed", String(on));
+      btn.textContent = on ? "했어요 ✓" : "했어요";
+    }
+    btn.addEventListener("click", function () {
+      state.done[id] = !state.done[id];
+      if (!state.done[id]) delete state.done[id];
+      paint(); save(); updateProgress();
+      if (state.done[id]) {
+        var next = li.nextElementSibling || document.querySelector(".finish");
+        if (next && next.scrollIntoView) next.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    paint();
+  });
+
+  var start = state.os || detected || "mac";
+  if (!state.os && detected) hint.textContent = "이 컴퓨터는 " + (detected === "mac" ? "Mac" : "Windows") + "으로 보여요. 다르면 바꿔 누르세요.";
+  setOS(start, false);
+
+  // ---- 명령어 복사
+  function copyText(text) {
+    return new Promise(function (resolve) {
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", "");
+        ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta); resolve(ok);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { resolve(true); }, fallback);
+      } else { fallback(); }
+    });
+  }
+  function selectNode(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    var os = btn.dataset.os, code = document.getElementById(btn.dataset.copy), st = document.getElementById("st-" + os);
+    btn.addEventListener("click", function () {
+      copyText(code.textContent.trim()).then(function (ok) {
+        if (ok) {
+          btn.textContent = "복사했어요 ✓"; btn.classList.add("done");
+          st.className = "status good"; st.textContent = "이제 3단계로 가세요.";
+          setTimeout(function () { btn.textContent = "명령어 복사하기"; btn.classList.remove("done"); }, 3000);
+        } else {
+          selectNode(code);
+          st.className = "status bad"; st.textContent = "자동 복사가 안 돼요. 아래 글자가 선택됐으니 " + (os === "mac" ? "⌘ command + C" : "Ctrl + C") + "를 누르세요.";
+        }
+      });
+    });
+  });
+
+  // ---- 파일로 받기 (일반 웹: 같은 폴더의 zip / Claude 화면: 저장 창)
+  function toBlob(b64) {
+    var bin = atob(b64), n = bin.length, bytes = new Uint8Array(n);
+    for (var i = 0; i < n; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: "application/zip" });
+  }
+  var inViewer = !!(window.claude && typeof window.claude.use === "function");
+  var downloadsReady = inViewer ? window.claude.use("downloads") : Promise.resolve(undefined);
+  document.querySelectorAll(".zipbtn").forEach(function (btn) {
+    var os = btn.dataset.zip, st = document.getElementById("dst-" + os), f = FILES[os];
+    btn.addEventListener("click", function () {
+      if (!inViewer) { window.location.href = f.name; return; }
+      st.className = "status"; st.textContent = "저장 창을 띄우는 중…"; btn.disabled = true;
+      downloadsReady.then(function (downloads) {
+        if (!downloads) { st.className = "status bad"; st.textContent = "이 화면에서는 파일을 받을 수 없어요. 강사에게 직접 받아 주세요."; return; }
+        return downloads.save({ filename: f.name, data: toBlob(f.b64) }).then(function () {
+          st.className = "status good"; st.textContent = "저장했어요.";
+        });
+      }).catch(function (e) {
+        var code = e && e.code;
+        st.className = "status" + (code === "declined" ? "" : " bad");
+        st.textContent = code === "declined" ? "저장을 취소했어요. 다시 누르면 돼요." :
+          code === "rate_limited" ? "잠시 뒤 다시 눌러 주세요." :
+          "저장하지 못했어요. 새로고침한 뒤 다시 눌러 주세요.";
+      }).then(function () { btn.disabled = false; });
+    });
+  });
+})();
+</script>
+</html>

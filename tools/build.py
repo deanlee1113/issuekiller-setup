@@ -17,8 +17,11 @@ STAMP = (2026, 9, 30, 12, 0, 0)  # zip 안 파일 날짜 (빌드마다 바뀌지
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 TPL, DOCS = ROOT / "tools" / "templates", ROOT / "docs"
-PROJECT_FILES = ["package.json", "package-lock.json", "remotion.config.ts", "tsconfig.json"]
-PROJECT_DIRS = ["src", "public"]
+PROJECT_FILES = ["package.json", "package-lock.json", "remotion.config.ts", "tsconfig.json",
+                 "CLAUDE.md", "channel.json", ".gitignore"]
+PROJECT_DIRS = ["src", "public", "scripts", ".claude"]   # .claude = 쇼츠 제작 스킬 (점으로 시작하는 폴더도 포함)
+SKIP_NAMES = {".DS_Store", "settings.local.json"}   # settings.local.json = 강사 개인 Claude 설정
+SKIP_DIRS = {"__pycache__", "node_modules"}
 
 
 def add(zf, src: pathlib.Path, arc: str, data: bytes | None = None):
@@ -31,8 +34,9 @@ def add(zf, src: pathlib.Path, arc: str, data: bytes | None = None):
 
 def add_tree(zf, folder: pathlib.Path, arc_prefix: str):
     for p in sorted(folder.rglob("*")):
-        if p.is_file() and p.name != ".DS_Store":
-            add(zf, p, f"{arc_prefix}/{p.relative_to(folder).as_posix()}")
+        rel = p.relative_to(folder)
+        if p.is_file() and p.name not in SKIP_NAMES and not SKIP_DIRS.intersection(rel.parts):
+            add(zf, p, f"{arc_prefix}/{rel.as_posix()}")
 
 
 def build_zip(os_name: str) -> pathlib.Path:
@@ -84,7 +88,7 @@ def main():
     mac, win = build_zip("mac"), build_zip("windows")
 
     # 3) 안내 페이지
-    html = fill((TPL / "site.html").read_text(encoding="utf-8"), {
+    html = fill((TPL / "site-v3.html").read_text(encoding="utf-8"), {
         "__GH_REPO__": GH_REPO,
         "__MAC_B64__": base64.b64encode(mac.read_bytes()).decode(),
         "__WIN_B64__": base64.b64encode(win.read_bytes()).decode(),

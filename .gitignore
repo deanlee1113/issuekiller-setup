@@ -5,4 +5,7 @@ output
 .DS_Store
 .env
 tools/__pycache__
+__pycache__
+qc
 # docs/ 는 GitHub Pages 산출물이므로 커밋한다 (무시하지 않음)
+.claude/settings.local.json

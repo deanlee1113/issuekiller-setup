@@ -9,12 +9,42 @@
 #    2) setup/mac/install.command 를 실행한다 (10~30분)
 #  관리자 비밀번호 · Xcode · Homebrew 없이, ~/issuekiller-tools 한 폴더에만 설치합니다.
 #  여러 번 실행해도 안전합니다. 이미 있는 폴더는 지우지 않습니다.
+#  이미 설치한 폴더에 다시 실행하면 설치 도우미와 강의 키트 파일(스킬·CLAUDE.md·화면 템플릿 등,
+#  setup/common/kit-files.txt 목록)만 최신으로 바꾸고, 수강생이 만든 영상·채널 설정은 건드리지 않습니다.
 # =====================================================================
 set -u
 
 GET_TMP=""
 cleanup() { [ -n "$GET_TMP" ] && rm -rf "$GET_TMP"; }
 trap cleanup EXIT
+
+# 강의 키트 파일 갱신: sync_kit <받은 폴더> <프로젝트 폴더> <보관 폴더>
+#   kit  : 최신으로 교체 (내용이 다르면 원래 파일을 보관 폴더에 먼저 복사)
+#   seed : 없을 때만 넣음 (수강생이 고친 채널 설정·영상 등록부는 그대로)
+sync_kit() {
+  local src="$1" dest="$2" bak="$3" list="$1/setup/common/kit-files.txt"
+  local kind rel extra f r updated=0 added=0 saved=0
+  [ -f "$list" ] || return 0
+  while read -r kind rel extra || [ -n "$kind" ]; do
+    case "$kind" in kit|seed) ;; *) continue ;; esac
+    [ -n "$rel" ] && [ -e "$src/$rel" ] || continue
+    while IFS= read -r f; do
+      r="${f#"$src"/}"
+      if [ -e "$dest/$r" ]; then
+        [ "$kind" = seed ] && continue
+        cmp -s "$f" "$dest/$r" && continue
+        mkdir -p "$(dirname "$bak/$r")" && cp -p "$dest/$r" "$bak/$r" || return 1
+        saved=$((saved + 1)); updated=$((updated + 1))
+      else
+        added=$((added + 1))
+      fi
+      mkdir -p "$(dirname "$dest/$r")" && cp "$f" "$dest/$r" || return 1
+    done < <(find "$src/$rel" -type f ! -name .DS_Store ! -path '*/__pycache__/*')
+  done < "$list"
+  echo "   강의 키트 파일: 새로 추가 $added개, 최신으로 교체 $updated개"
+  [ "$saved" -gt 0 ] && echo "   (바뀐 파일의 이전 내용은 $bak 에 보관했습니다)"
+  return 0
+}
 
 main() {
   local REPO="${ISSUEKILLER_REPO:-__GH_REPO__}"
@@ -50,9 +80,11 @@ main() {
   fi
 
   if [ -f "$DEST/package.json" ]; then
-    # 이미 프로젝트 폴더가 있으면 그대로 두고 설치 스크립트만 최신으로 덮어쓴다.
-    echo "2) 기존 폴더 유지: $DEST (설치 도우미만 최신으로 교체)"
+    # 이미 프로젝트 폴더가 있으면 그대로 두고 설치 도우미와 강의 키트 파일만 최신으로 바꾼다.
+    # 수강생이 만든 영상(src/*Composition.tsx, public/, output/)과 channel.json 은 건드리지 않는다.
+    echo "2) 기존 폴더 유지: $DEST (설치 도우미·강의 키트 파일만 최신으로 교체)"
     mkdir -p "$DEST/setup" && cp -R "$TOP/setup/." "$DEST/setup/" || { echo "❌ 설치 도우미를 복사하지 못했습니다."; return 1; }
+    sync_kit "$TOP" "$DEST" "$DEST-backup-$(date +%Y%m%d-%H%M%S)" || { echo "❌ 강의 키트 파일을 복사하지 못했습니다."; return 1; }
   elif [ -d "$DEST" ] && [ -n "$(ls -A "$DEST" 2>/dev/null)" ]; then
     # 다른 내용이 든 폴더는 지우지 않고 이름을 바꿔 둔다.
     local OLD="$DEST-old-$(date +%Y%m%d-%H%M%S)"

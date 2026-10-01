@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(bash scripts/py.sh:*)",
+      "Bash(npx remotion:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "WebSearch",
+      "WebFetch"
+    ]
+  }
+}

@@ -1,8 +1,10 @@
 import "./index.css";
 import { Composition } from "remotion";
 import { TestShort, TEST_SHORT } from "./TestShort";
+import { ClaudeGeneratedCompositions } from "./ClaudeGeneratedCompositions";
 
-// 강의 당일 받는 영상 Composition 들은 이 아래에 추가됩니다.
+// 새 영상은 이 파일이 아니라 src/ClaudeGeneratedCompositions.tsx 에 등록된다
+// (.claude/skills/issuekiller-shorts/scripts/scaffold_short.py 가 자동으로 추가).
 export const RemotionRoot = () => {
   return (
     <>
@@ -14,6 +16,7 @@ export const RemotionRoot = () => {
         width={TEST_SHORT.width}
         height={TEST_SHORT.height}
       />
+      <ClaudeGeneratedCompositions />
     </>
   );
 };

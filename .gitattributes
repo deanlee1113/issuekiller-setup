@@ -9,3 +9,6 @@ setup/windows/** -text
 get.ps1          -text
 get.sh           text eol=lf
 *.command        text eol=lf
+*.sh             text eol=lf
+*.py             text eol=lf
+setup/common/kit-files.txt text eol=lf

@@ -15,6 +15,11 @@
   6. 검은 창을 닫고, 시작 메뉴에서 "PowerShell" 을 검색해 새로 연 뒤  claude  를 입력해
      Claude 계정으로 로그인합니다.
 
+■ 설치 후 쇼츠 만들기
+  PowerShell 에서  cd $env:USERPROFILE\issuekiller  를 입력한 뒤  claude  를 입력하고, "쇼츠 만들어줘" 라고 말합니다.
+  처음 한 번은 Claude 가 유튜브 채널 이름을 묻습니다 (영상 왼쪽 위에 들어갑니다).
+  만든 영상은 issuekiller\output 폴더에 저장되고, 요청하기 전에는 유튜브에 올리지 않습니다.
+
 ■ 나중에 상태만 다시 보려면
   setup\windows\check.bat 을 더블클릭합니다.
 

@@ -21,7 +21,8 @@
 ## 동작 요약
 
 - `get.sh`: Mac 전용 검사 → branch zip 다운로드(`curl`) → `ditto` 로 풀기 → `~/issuekiller` 에 배치
-  (이미 `package.json` 이 있으면 `setup/` 만 교체, 다른 내용이 있으면 `issuekiller-old-<시각>` 으로 옮김)
+  (이미 `package.json` 이 있으면 `setup/` 교체 + `setup/common/kit-files.txt` 의 강의 키트 파일 갱신,
+  다른 내용이 있으면 `issuekiller-old-<시각>` 으로 옮김)
   → `setup/mac/install.command` 를 `/dev/tty` 를 물려 실행. `curl | bash` 안전을 위해 `main()` 으로 감싸 전체 파싱 후 실행.
 - `get.ps1`: 64비트 검사 → `Invoke-WebRequest` → `Expand-Archive` → 같은 배치 규칙 →
   `powershell.exe -NoProfile -ExecutionPolicy Bypass -File setup\windows\install.ps1`. `irm | iex` 는 실행 정책의 영향을 받지 않는다.
@@ -31,7 +32,10 @@
 
 ```bash
 python3 tools/build.py
-git archive --format=zip --prefix=issuekiller-setup-main/ -o /tmp/ik/main.zip HEAD   # 커밋 전이면 $(git write-tree)
+git archive --format=zip --prefix=issuekiller-setup-main/ -o /tmp/ik/main.zip HEAD
+# 커밋 전 변경(새 파일 포함)까지 넣으려면 실제 index 를 건드리지 않는 임시 index 로 tree 를 만든다:
+#   GIT_INDEX_FILE=/tmp/ik/idx git read-tree HEAD && GIT_INDEX_FILE=/tmp/ik/idx git add -A \
+#   && git archive --format=zip --prefix=issuekiller-setup-main/ -o /tmp/ik/main.zip $(GIT_INDEX_FILE=/tmp/ik/idx git write-tree)
 cp get.sh /tmp/ik/ && (cd /tmp/ik && python3 -m http.server 8765 --bind 127.0.0.1 &)
 curl -fsSL http://127.0.0.1:8765/get.sh | env -i HOME=/tmp/ik/home PATH=/usr/bin:/bin:/usr/sbin:/sbin \
   ISSUEKILLER_ZIP_URL=http://127.0.0.1:8765/main.zip SKIP_CLAUDE=1 bash
@@ -42,7 +46,19 @@ curl -fsSL http://127.0.0.1:8765/get.sh | env -i HOME=/tmp/ik/home PATH=/usr/bin
 - Mac: `get.sh` → `install.command` → 시험 렌더까지 격리된 HOME 에서 통과 (2026-09-30, macOS 15 / Apple Silicon).
 - Windows: `install.ps1`/`get.ps1` 은 문법·인코딩만 확인. **실제 Windows PC 에서 한 번 돌려 본 뒤 배포**할 것.
 
+## 제작 키트 (설치하면 함께 들어감)
+
+- `CLAUDE.md`, `.claude/skills/issuekiller-shorts/` (원본 스킬을 수강생 경로로 고친 것), `src/NewsTemplate.tsx`
+  (원본 TripleNews0721Composition 에서 실존 인물 예시를 뺀 화면 템플릿), `src/ClaudeGeneratedCompositions.tsx`(빈 등록부),
+  `scripts/generate-supertonic-voiceover.py`, `scripts/py.sh`(venv Python 실행기), `channel.json`(채널 이름, 기본 "내 채널").
+- 채널 이름은 `channel.json` 한 곳. 스킬이 처음 사용할 때 수강생에게 묻고 저장한다. 템플릿 배지와 업로드 문서 해시태그가 여기서 나온다.
+- 수강생 흐름: `cd ~/issuekiller` → `claude` → "쇼츠 만들어줘" (사진 없이 시험: "연습으로 아무 주제나 쇼츠 만들어줘").
+- 키트 파일을 고치면 `setup/common/kit-files.txt` 에 올라 있는지 확인한다. `kit` 은 재설치 때 교체(바뀐 파일은
+  `~/issuekiller-backup-<시각>/` 에 보관), `seed` 는 없을 때만 넣는다. 수강생이 고치는 파일은 반드시 `seed` 로 둔다.
+- 실존 인물 사진·뉴스 자산·완성 컴포지션은 저장소에 넣지 않는다 (공개 저장소).
+
 ## 강의 당일
 
-- 수강생 폴더는 `~/issuekiller` 뼈대(TestShort 만 있음). 실습용 컴포지션·스크립트·에셋은 당일 별도 zip 으로 나눠 주고
-  `~/issuekiller` 에 덮어 넣게 한다 (Python 경로는 `~/issuekiller-tools/venv` 기준으로 맞출 것).
+- 이미 설치한 수강생은 같은 한 줄 명령을 다시 실행하면 키트가 최신으로 바뀐다 (만든 영상·채널 이름은 유지).
+- 로컬 시험 기록: 2026-10-01 격리 HOME 에서 갱신 경로·새 폴더 경로 모두 설치 → 연습 쇼츠(4장면) 스캐폴드 → 음성 →
+  타이밍 → 렌더 → validate_short.py 통과 (Mac). Windows 는 실기 미검증.

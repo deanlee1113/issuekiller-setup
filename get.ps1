@@ -8,7 +8,49 @@
 #    2) setup\windows\install.ps1 을 실행한다 (10~30분)
 #  관리자 권한 · winget 없이, %USERPROFILE%\issuekiller-tools 한 폴더에만 설치합니다.
 #  여러 번 실행해도 안전합니다. 이미 있는 폴더는 지우지 않습니다.
+#  이미 설치한 폴더에 다시 실행하면 설치 도우미와 강의 키트 파일(스킬·CLAUDE.md·화면 템플릿 등,
+#  setup\common\kit-files.txt 목록)만 최신으로 바꾸고, 수강생이 만든 영상·채널 설정은 건드리지 않습니다.
 # =====================================================================
+
+# 강의 키트 파일 갱신 (get.sh 의 sync_kit 과 같은 규칙)
+#   kit  : 최신으로 교체 (내용이 다르면 원래 파일을 $Bak 에 먼저 복사)
+#   seed : 없을 때만 넣음 (수강생이 고친 채널 설정·영상 등록부는 그대로)
+function Sync-IssueKillerKit([string]$Src, [string]$Dest, [string]$Bak) {
+  $list = Join-Path $Src "setup\common\kit-files.txt"
+  if (-not (Test-Path -LiteralPath $list)) { return }
+  $added = 0; $updated = 0
+  foreach ($line in (Get-Content -LiteralPath $list -Encoding UTF8)) {
+    $parts = @($line.Trim() -split "\s+")
+    if ($parts.Count -lt 2 -or ($parts[0] -ne "kit" -and $parts[0] -ne "seed")) { continue }
+    $kind = $parts[0]
+    $item = Join-Path $Src ($parts[1] -replace "/", "\")
+    if (-not (Test-Path -LiteralPath $item)) { continue }
+    if (Test-Path -LiteralPath $item -PathType Container) {
+      $files = @(Get-ChildItem -LiteralPath $item -Recurse -File -Force | Where-Object { $_.Name -ne ".DS_Store" -and $_.FullName -notmatch "\\__pycache__\\" })
+    } else {
+      $files = @(Get-Item -LiteralPath $item -Force)
+    }
+    foreach ($f in $files) {
+      $rel = $f.FullName.Substring($Src.Length).TrimStart("\", "/")
+      $target = Join-Path $Dest $rel
+      if (Test-Path -LiteralPath $target) {
+        if ($kind -eq "seed") { continue }
+        if ((Get-FileHash -LiteralPath $target).Hash -eq (Get-FileHash -LiteralPath $f.FullName).Hash) { continue }
+        $saved = Join-Path $Bak $rel
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $saved) | Out-Null
+        Copy-Item -LiteralPath $target -Destination $saved -Force
+        $updated++
+      } else {
+        $added++
+      }
+      New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
+      Copy-Item -LiteralPath $f.FullName -Destination $target -Force
+    }
+  }
+  Write-Host "   강의 키트 파일: 새로 추가 $($added)개, 최신으로 교체 $($updated)개"
+  if ($updated -gt 0) { Write-Host "   (바뀐 파일의 이전 내용은 $Bak 에 보관했습니다)" }
+}
+
 function Install-IssueKiller {
   $ErrorActionPreference = "Stop"
   $ProgressPreference = "SilentlyContinue"   # Invoke-WebRequest 진행 표시줄 끄기 (켜 두면 매우 느림)
@@ -49,11 +91,13 @@ function Install-IssueKiller {
     }
 
     if (Test-Path (Join-Path $Dest "package.json")) {
-      # 이미 프로젝트 폴더가 있으면 그대로 두고 설치 스크립트만 최신으로 덮어쓴다.
-      Write-Host "2) 기존 폴더 유지: $Dest (설치 도우미만 최신으로 교체)"
+      # 이미 프로젝트 폴더가 있으면 그대로 두고 설치 도우미와 강의 키트 파일만 최신으로 바꾼다.
+      # 수강생이 만든 영상(src\*Composition.tsx, public\, output\)과 channel.json 은 건드리지 않는다.
+      Write-Host "2) 기존 폴더 유지: $Dest (설치 도우미·강의 키트 파일만 최신으로 교체)"
       $setupDir = Join-Path $Dest "setup"
       New-Item -ItemType Directory -Force -Path $setupDir | Out-Null
       Copy-Item -Path (Join-Path $top.FullName "setup\*") -Destination $setupDir -Recurse -Force
+      Sync-IssueKillerKit $top.FullName $Dest ("$Dest-backup-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
     } elseif ((Test-Path $Dest) -and (Get-ChildItem -LiteralPath $Dest -Force | Select-Object -First 1)) {
       # 다른 내용이 든 폴더는 지우지 않고 이름을 바꿔 둔다.
       $old = "$Dest-old-" + (Get-Date -Format "yyyyMMdd-HHmmss")
