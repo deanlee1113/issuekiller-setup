@@ -3,6 +3,8 @@
     "defaultMode": "acceptEdits",
     "allow": [
       "Bash(bash scripts/py.sh:*)",
+      "PowerShell(scripts\\py.cmd *)",
+      "PowerShell(.\\scripts\\py.cmd *)",
       "Bash(npx remotion:*)",
       "Bash(npx tsc:*)",
       "Bash(ffmpeg:*)",

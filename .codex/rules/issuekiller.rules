@@ -1,0 +1,58 @@
+# IssueKiller shorts kit - Codex command rules (loaded only when this project folder is trusted).
+# Commands that go through the kit runners (scripts/py.sh, scripts\py.cmd) and the render
+# tools run without asking. Everything else follows approval_policy in .codex/config.toml.
+# Validate with: codex execpolicy check --pretty --rules .codex/rules/issuekiller.rules -- bash scripts/py.sh x.py
+
+prefix_rule(
+    pattern = ["bash", "scripts/py.sh"],
+    decision = "allow",
+    justification = "IssueKiller runner: venv python + kit tools (Mac, Windows Git Bash)",
+)
+
+prefix_rule(
+    pattern = ["scripts\\py.cmd"],
+    decision = "allow",
+    justification = "IssueKiller runner for Windows PowerShell / cmd",
+)
+
+prefix_rule(
+    pattern = [".\\scripts\\py.cmd"],
+    decision = "allow",
+    justification = "IssueKiller runner for Windows PowerShell / cmd",
+)
+
+prefix_rule(
+    pattern = ["scripts/py.cmd"],
+    decision = "allow",
+    justification = "IssueKiller runner for Windows PowerShell / cmd",
+)
+
+prefix_rule(
+    pattern = ["./scripts/py.cmd"],
+    decision = "allow",
+    justification = "IssueKiller runner for Windows PowerShell / cmd",
+)
+
+prefix_rule(
+    pattern = ["npx", "remotion"],
+    decision = "allow",
+    justification = "Remotion render / studio",
+)
+
+prefix_rule(
+    pattern = ["npx", "tsc"],
+    decision = "allow",
+    justification = "TypeScript check before render",
+)
+
+prefix_rule(
+    pattern = ["ffmpeg"],
+    decision = "allow",
+    justification = "Video/audio conversion",
+)
+
+prefix_rule(
+    pattern = ["ffprobe"],
+    decision = "allow",
+    justification = "Video/audio inspection",
+)

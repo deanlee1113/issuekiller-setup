@@ -1,0 +1,9 @@
+# 이슈킬러 쇼츠 제작 키트 · Codex(ChatGPT 앱 Codex 모드) 프로젝트 설정
+# Codex 는 이 폴더를 "신뢰(trust)"했을 때만 이 파일과 .codex/rules/ 를 읽는다.
+# 명령은 쓰기 가능한 작업 폴더 샌드박스에서 실행하고, 필요할 때만 승인을 묻는다.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# 소재 조사·이미지 내려받기·Remotion 렌더(로컬 브라우저)에 네트워크가 필요하다.
+[sandbox_workspace_write]
+network_access = true

@@ -12,19 +12,21 @@
   4. 검은 창이 끝날 때까지 기다립니다. 중간에 창을 닫지 마세요.
   5. "설치가 모두 끝났습니다." 와 확인표의 [OK] 가 보이면 완료.
      [XX] 가 있으면 그 화면을 캡처해서 강사에게 보내주세요.
-  6. 검은 창을 닫고, 시작 메뉴에서 "PowerShell" 을 검색해 새로 연 뒤  claude  를 입력해
-     Claude 계정으로 로그인합니다.
+  6. 설치 끝. 강의 날: 쓰시는 AI 앱(ChatGPT·Claude·Gemini용 Antigravity)을 열고 C:\Users\내이름\issuekiller 폴더를 여세요.
 
 ■ 설치 후 쇼츠 만들기
-  PowerShell 에서  cd $env:USERPROFILE\issuekiller  를 입력한 뒤  claude  를 입력하고, "쇼츠 만들어줘" 라고 말합니다.
-  처음 한 번은 Claude 가 유튜브 채널 이름을 묻습니다 (영상 왼쪽 위에 들어갑니다).
+  쓰시는 AI 앱 하나를 열고, C:\Users\내이름\issuekiller 폴더를 열어 "쇼츠 만들어줘" 라고 말합니다.
+    - ChatGPT 앱: Codex 를 열고 폴더 선택에서 issuekiller 를 고릅니다 (폴더를 신뢰한다고 답합니다)
+    - Claude 앱: Code 탭에서 폴더로 issuekiller 를 고릅니다
+    - Gemini: Antigravity 앱에서 issuekiller 폴더를 엽니다
+  처음 한 번은 AI 가 유튜브 채널 이름을 묻습니다 (영상 왼쪽 위에 들어갑니다).
   만든 영상은 issuekiller\output 폴더에 저장되고, 요청하기 전에는 유튜브에 올리지 않습니다.
 
 ■ 나중에 상태만 다시 보려면
   setup\windows\check.bat 을 더블클릭합니다.
 
 ■ 설치되는 것 (모두 C:\Users\내이름\issuekiller-tools 한 폴더와 이 프로젝트 폴더 안에만 들어갑니다)
-  Node.js, ffmpeg, 휴대용 Git Bash, Python 3.12 + 음성 합성/검증 패키지, 음성 모델, Claude Code,
+  Node.js, ffmpeg, 휴대용 Git Bash, Python 3.12 + 음성 합성/검증 패키지, 음성 모델, Claude Code(터미널용, 선택),
   영상 프로젝트(Remotion) 패키지와 렌더용 브라우저, 확인용 2초 영상(test-render.mp4)
 
 ■ 다 지우려면

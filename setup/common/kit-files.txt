@@ -8,10 +8,16 @@
 # 경로가 폴더이면 그 안의 파일 하나하나에 같은 규칙을 적용한다. (폴더 안의 다른 파일은 그대로 둔다)
 # 여기에 없는 것(수강생이 만든 src/*Composition.tsx, public/, output/, qc/ 등)은 절대 건드리지 않는다.
 
+kit  AGENTS.md
 kit  CLAUDE.md
+kit  .agents/skills/issuekiller-shorts
 kit  .claude/skills/issuekiller-shorts
 kit  .claude/settings.json
+kit  .codex/config.toml
+kit  .codex/rules/issuekiller.rules
 kit  scripts/py.sh
+kit  scripts/py.cmd
+kit  scripts/tool.py
 kit  scripts/generate-supertonic-voiceover.py
 kit  src/NewsTemplate.tsx
 kit  src/Root.tsx

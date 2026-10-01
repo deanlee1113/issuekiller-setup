@@ -38,7 +38,9 @@ echo
 "$BIN_DIR/ffmpeg" -hide_banner -filters 2>/dev/null | grep -qE '^ *[A-Z.]+ +tile '; row $? "ffmpeg" "$("$BIN_DIR/ffmpeg" -version 2>/dev/null | head -1 | cut -d' ' -f1-3) (tile 필터 포함)"
 "$BIN_DIR/ffprobe" -version >/dev/null 2>&1; row $? "ffprobe"    "$("$BIN_DIR/ffprobe" -version 2>/dev/null | head -1 | cut -d' ' -f1-3)"
 [ -x "$BIN_DIR/uv" ];                      row $? "uv (파이썬 설치 도구)" "$(ver "$BIN_DIR/uv" --version)"
-command -v claude >/dev/null 2>&1;         row $? "Claude Code"  "$(ver claude --version)"
+# Claude Code(터미널용)는 선택 항목: 없어도 ❌ 로 세지 않는다 (AI 앱으로 실습)
+if command -v claude >/dev/null 2>&1; then row 0 "Claude Code (선택)" "$(ver claude --version)"
+else printf '  ℹ️  %s  —  %s\n' "Claude Code (선택)" "없음 · AI 앱(ChatGPT·Claude·Antigravity)으로 실습하면 필요 없습니다"; fi
 
 [ -x "$VENV_PY" ];                    row $? "Python 가상환경"   "$TOOLS_DIR/venv ($("$VENV_PY" --version 2>/dev/null))"
 "$VENV_PY" -c "import supertonic, onnxruntime, numpy, soundfile" 2>/dev/null;  row $? "  supertonic 패키지" "$("$VENV_PY" -c 'import onnxruntime;print("supertonic 1.3.1, onnxruntime", onnxruntime.__version__)' 2>/dev/null)"

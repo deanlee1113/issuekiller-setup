@@ -46,8 +46,7 @@ finish() {
     echo "이 창을 캡처해서 보내주세요. 로그: $LOG_FILE"
   fi
   echo
-  echo "남은 수동 단계 (하나뿐입니다)"
-  echo "  터미널 창을 완전히 닫고 새로 연 뒤  claude  를 입력 → 브라우저에서 Claude 계정으로 로그인"
+  echo "설치 끝. 강의 날: 쓰시는 AI 앱(ChatGPT·Claude·Gemini용 Antigravity)을 열고 홈 폴더의 issuekiller 폴더를 여세요."
   if [ -t 0 ]; then read -r -p "Enter 키를 누르면 창을 닫아도 됩니다... "; fi
 }
 download() { # download <url> <저장경로>
@@ -163,7 +162,7 @@ if [ -x "$BIN_DIR/uv" ]; then
 fi
 
 # ---------------------------------------------------------------------
-step 5 "Claude Code"
+step 5 "Claude Code (터미널용, 선택 — AI 앱을 쓰면 없어도 됩니다)"
 CLAUDE_BIN="$(command -v claude 2>/dev/null || true)"
 if [ "${SKIP_CLAUDE:-0}" = "1" ]; then
   warn "건너뜀 (SKIP_CLAUDE=1)"
@@ -173,7 +172,7 @@ else
   if curl -fsSL https://claude.ai/install.sh | bash; then
     ok "설치 완료 (로그인은 강의 안내에 따라 진행)"
   else
-    fail "Claude Code 설치 실패 (curl -fsSL https://claude.ai/install.sh | bash)"
+    warn "Claude Code(선택) 설치 실패 — AI 앱으로 실습하면 필요 없습니다 (curl -fsSL https://claude.ai/install.sh | bash)"
   fi
 fi
 # git 이 없는 맥에서 'git' 을 부르면 Xcode 도구 설치 창이 뜨는 것을 막는 대체 파일

@@ -56,7 +56,9 @@ $uv = Join-Path $BinDir "uv.exe"
 Row (Test-Path $uv)  "uv (파이썬 설치 도구)" (Ver $uv "--version")
 $bash = Join-Path $GitDir "bin\bash.exe"
 Row (Test-Path $bash) "Git Bash (휴대용)" ((Ver (Join-Path $GitDir "cmd\git.exe") "--version") + " ($GitDir)")
-Row (Has claude)     "Claude Code" (Ver claude "--version")
+# Claude Code(터미널용)는 선택 항목: 없어도 [XX] 로 세지 않는다 (AI 앱으로 실습)
+if (Has claude) { Row $true "Claude Code (선택)" (Ver claude "--version") }
+else { Write-Host "  [--] Claude Code (선택)  -  없음 · AI 앱(ChatGPT·Claude·Antigravity)으로 실습하면 필요 없습니다" -ForegroundColor DarkGray }
 
 Row (Test-Path $VenvPy) "Python 가상환경" ("$ToolsDir\venv (" + (PyOut "import sys;print(sys.version.split()[0])") + ")")
 Row (PyOk "import supertonic, onnxruntime, numpy, soundfile") "  supertonic 패키지" (PyOut "import onnxruntime;print('supertonic 1.3.1, onnxruntime', onnxruntime.__version__)")

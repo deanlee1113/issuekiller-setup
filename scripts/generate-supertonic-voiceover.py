@@ -6,7 +6,7 @@
 
 실행 (프로젝트 폴더에서):
   Mac / Windows(Git Bash):  bash scripts/py.sh scripts/generate-supertonic-voiceover.py public/<asset-root> --voice F1 --speed 1.22
-  Windows(PowerShell):      & "$env:USERPROFILE\\issuekiller-tools\\venv\\Scripts\\python.exe" scripts\\generate-supertonic-voiceover.py public\\<asset-root> --voice F1 --speed 1.22
+  Windows(PowerShell/cmd):  scripts\\py.cmd scripts/generate-supertonic-voiceover.py public/<asset-root> --voice F1 --speed 1.22
 """
 
 import argparse

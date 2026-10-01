@@ -45,14 +45,24 @@ curl -fsSL http://127.0.0.1:8765/get.sh | env -i HOME=/tmp/ik/home PATH=/usr/bin
 
 - Mac: `get.sh` → `install.command` → 시험 렌더까지 격리된 HOME 에서 통과 (2026-09-30, macOS 15 / Apple Silicon).
 - Windows: `install.ps1`/`get.ps1` 은 문법·인코딩만 확인. **실제 Windows PC 에서 한 번 돌려 본 뒤 배포**할 것.
+- AI 앱 대응(2026-10-01, Mac): 격리 HOME 갱신 경로 설치 후 PATH 를 `/usr/bin:/bin:/usr/sbin:/sbin` 로 줄인 상태
+  (앱이 터미널 설정을 안 읽는 상황)에서 문서의 `bash scripts/py.sh ...` 명령만으로 연습 쇼츠 4장면 → 렌더 → 검수 통과,
+  `scripts/tool.py` 로 ffmpeg 프레임 추출·ffprobe·npx 확인. `scripts/py.cmd`, `.codex/` 규칙, Antigravity 는 실기 미검증.
 
 ## 제작 키트 (설치하면 함께 들어감)
 
-- `CLAUDE.md`, `.claude/skills/issuekiller-shorts/` (원본 스킬을 수강생 경로로 고친 것), `src/NewsTemplate.tsx`
+- `AGENTS.md`(모든 AI 공통 안내 · 원본), `CLAUDE.md`(`@AGENTS.md` 로 불러오고 Claude 전용 몇 줄만),
+  `.agents/skills/issuekiller-shorts/`(스킬 **원본**, Codex·Antigravity 가 읽음), `.claude/skills/issuekiller-shorts/`(Claude 용
+  **사본** — `tools/build.py` 가 원본에서 복사하고 같은지 확인. 손으로 고치지 않는다), `.claude/settings.json`(Claude 권한),
+  `.codex/config.toml`·`.codex/rules/issuekiller.rules`(Codex 설정·명령 허용, 폴더를 신뢰해야 적용), `src/NewsTemplate.tsx`
   (원본 TripleNews0721Composition 에서 실존 인물 예시를 뺀 화면 템플릿), `src/ClaudeGeneratedCompositions.tsx`(빈 등록부),
-  `scripts/generate-supertonic-voiceover.py`, `scripts/py.sh`(venv Python 실행기), `channel.json`(채널 이름, 기본 "내 채널").
+  `scripts/generate-supertonic-voiceover.py`, 실행기 `scripts/py.sh`(Mac·Git Bash) / `scripts/py.cmd`(Windows PowerShell·cmd,
+  ASCII + CRLF) / `scripts/tool.py`(ffmpeg·ffprobe·npx 실행), `channel.json`(채널 이름, 기본 "내 채널").
+- AI 앱은 터미널 PATH 를 읽지 않을 수 있으므로 안내 문서의 모든 명령은 실행기를 거친다 (`bash scripts/py.sh ...` /
+  `scripts\py.cmd ...`). 새 명령을 문서에 넣을 때도 이 형식을 지킨다.
 - 채널 이름은 `channel.json` 한 곳. 스킬이 처음 사용할 때 수강생에게 묻고 저장한다. 템플릿 배지와 업로드 문서 해시태그가 여기서 나온다.
-- 수강생 흐름: `cd ~/issuekiller` → `claude` → "쇼츠 만들어줘" (사진 없이 시험: "연습으로 아무 주제나 쇼츠 만들어줘").
+- 수강생 흐름: AI 앱(ChatGPT Codex · Claude 앱 Code 탭 · Antigravity)에서 홈 폴더의 `issuekiller` 폴더를 연다 →
+  "쇼츠 만들어줘" (사진 없이 시험: "연습으로 아무 주제나 쇼츠 만들어줘"). 터미널 `claude` 도 그대로 동작한다.
 - 키트 파일을 고치면 `setup/common/kit-files.txt` 에 올라 있는지 확인한다. `kit` 은 재설치 때 교체(바뀐 파일은
   `~/issuekiller-backup-<시각>/` 에 보관), `seed` 는 없을 때만 넣는다. 수강생이 고치는 파일은 반드시 `seed` 로 둔다.
 - 실존 인물 사진·뉴스 자산·완성 컴포지션은 저장소에 넣지 않는다 (공개 저장소).

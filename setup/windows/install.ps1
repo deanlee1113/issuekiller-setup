@@ -230,7 +230,7 @@ if (Test-Path $Uv) {
 }
 
 # ---------------------------------------------------------------------
-Step 6 "Claude Code"
+Step 6 "Claude Code (터미널용, 선택 - AI 앱을 쓰면 없어도 됩니다)"
 if ($env:SKIP_CLAUDE -eq "1") {
   Warn "건너뜀 (SKIP_CLAUDE=1)"
 } elseif (Has claude) {
@@ -241,7 +241,7 @@ if ($env:SKIP_CLAUDE -eq "1") {
     $env:Path = "$env:USERPROFILE\.local\bin;" + $env:Path
     if (Has claude) { Ok "설치 완료 (로그인은 강의 안내에 따라 진행)" }
     else { Warn "설치는 끝났지만 claude 명령을 아직 찾지 못했습니다. 새 터미널에서 다시 확인하세요." }
-  } catch { Fail "Claude Code 설치 실패: $_" }
+  } catch { Warn "Claude Code(선택) 설치 실패 - AI 앱으로 실습하면 필요 없습니다: $_" }
 }
 
 # ---------------------------------------------------------------------
@@ -317,6 +317,5 @@ if ($script:Failed.Count -eq 0) {
   Write-Host "이 창을 캡처해서 보내주세요. 로그: $ToolsDir\install-windows.log"
 }
 Write-Host ""
-Write-Host "남은 수동 단계 (하나뿐입니다)"
-Write-Host "  이 창을 닫고, 시작 메뉴에서 PowerShell 을 새로 연 뒤  claude  를 입력 -> 브라우저에서 Claude 계정으로 로그인"
+Write-Host "설치 끝. 강의 날: 쓰시는 AI 앱(ChatGPT·Claude·Gemini용 Antigravity)을 열고 홈 폴더의 issuekiller 폴더를 여세요."
 Stop-Transcript | Out-Null

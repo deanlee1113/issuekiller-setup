@@ -8,6 +8,7 @@
 setup/windows/** -text
 get.ps1          -text
 get.sh           text eol=lf
+scripts/*.cmd    -text
 *.command        text eol=lf
 *.sh             text eol=lf
 *.py             text eol=lf
