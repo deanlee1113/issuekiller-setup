@@ -1,0 +1,11 @@
+# GitHub 의 "Download ZIP"/archive 에서 빼는 것 (수강생 폴더에 들어가지 않음)
+/docs            export-ignore
+/tools           export-ignore
+/.github         export-ignore
+/.gitattributes  export-ignore
+
+# Windows 스크립트는 바이트 그대로 (UTF-8 BOM + CRLF 유지). 자동 줄바꿈 변환 금지
+setup/windows/** -text
+get.ps1          -text
+get.sh           text eol=lf
+*.command        text eol=lf

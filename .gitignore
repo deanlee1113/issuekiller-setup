@@ -1,0 +1,8 @@
+node_modules
+dist
+out
+output
+.DS_Store
+.env
+tools/__pycache__
+# docs/ 는 GitHub Pages 산출물이므로 커밋한다 (무시하지 않음)

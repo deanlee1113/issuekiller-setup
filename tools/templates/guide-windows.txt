@@ -1,0 +1,32 @@
+﻿이슈킬러 쇼츠 제작 환경 — Windows 설치 안내 (영상 제작 전용)
+
+■ 조건
+  - Windows 10 (버전 1809 이상) 또는 Windows 11, 64비트  (ARM 노트북은 지원하지 않습니다)
+  - 여유 디스크 8GB 이상, 인터넷 (약 3GB 다운로드, 10~30분)
+  - 관리자 권한은 필요 없습니다 (파란 "관리자 권한" 창이 뜨지 않습니다)
+
+■ 설치 순서
+  1. 이 폴더(issuekiller)를 C:\Users\내이름 바로 아래에 둡니다.  (권장, 다른 위치도 됨)
+  2. setup\windows\install.bat 을 더블클릭합니다.
+  3. "Windows 의 PC 보호" 파란 창이 뜨면  추가 정보 → 실행  을 누릅니다.
+  4. 검은 창이 끝날 때까지 기다립니다. 중간에 창을 닫지 마세요.
+  5. "설치가 모두 끝났습니다." 와 확인표의 [OK] 가 보이면 완료.
+     [XX] 가 있으면 그 화면을 캡처해서 강사에게 보내주세요.
+  6. 검은 창을 닫고, 시작 메뉴에서 "PowerShell" 을 검색해 새로 연 뒤  claude  를 입력해
+     Claude 계정으로 로그인합니다.
+
+■ 나중에 상태만 다시 보려면
+  setup\windows\check.bat 을 더블클릭합니다.
+
+■ 설치되는 것 (모두 C:\Users\내이름\issuekiller-tools 한 폴더와 이 프로젝트 폴더 안에만 들어갑니다)
+  Node.js, ffmpeg, 휴대용 Git Bash, Python 3.12 + 음성 합성/검증 패키지, 음성 모델, Claude Code,
+  영상 프로젝트(Remotion) 패키지와 렌더용 브라우저, 확인용 2초 영상(test-render.mp4)
+
+■ 다 지우려면
+  issuekiller-tools 폴더, 이 프로젝트 폴더, C:\Users\내이름\.cache\supertonic3 와 .cache\huggingface 를 지우고
+  "환경 변수 편집" 에서 사용자 Path 의 issuekiller-tools 항목 4개와 CLAUDE_CODE_GIT_BASH_PATH 를 지웁니다.
+
+■ 명령어 한 줄로 설치하기 (이 zip 없이도 됩니다)
+  시작 메뉴에서 PowerShell 을 열고 아래 한 줄을 붙여넣고 Enter. 프로젝트 폴더를 C:\Users\내이름\issuekiller 에 만들고 설치까지 이어서 합니다.
+  irm https://raw.githubusercontent.com/__GH_REPO__/main/get.ps1 | iex
+  최신 안내: https://github.com/__GH_REPO__

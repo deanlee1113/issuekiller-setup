@@ -1,0 +1,68 @@
+# 이슈킬러 쇼츠 제작 환경 설치
+
+강의 실습에 쓸 영상 제작 환경(Node.js · ffmpeg · Python 음성 도구 · Claude Code · Remotion 프로젝트)을
+**명령어 한 줄**로 설치합니다. 관리자 비밀번호, Xcode, Homebrew 는 필요 없고,
+설치되는 것은 모두 `issuekiller-tools` 폴더와 이 프로젝트 폴더 안에만 들어갑니다.
+
+안내 페이지: **https://__GH_PAGES__/**
+
+## Mac
+
+macOS 13 (Ventura) 이상 · Apple Silicon / Intel · 여유 공간 8GB
+
+터미널(⌘ + Space → "터미널")을 열고 아래 한 줄을 붙여넣은 뒤 Enter:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/__GH_REPO__/main/get.sh | bash
+```
+
+## Windows
+
+Windows 10 (1809 이상) · Windows 11 · 64비트 (ARM 노트북 지원 안 함) · 여유 공간 8GB
+
+시작 메뉴에서 **PowerShell** 을 열고 (관리자 권한 불필요) 아래 한 줄을 붙여넣은 뒤 Enter:
+
+```powershell
+irm https://raw.githubusercontent.com/__GH_REPO__/main/get.ps1 | iex
+```
+
+## 무슨 일이 일어나나요
+
+1. 이 저장소를 내려받아 `~/issuekiller` (Windows: `C:\Users\내이름\issuekiller`) 폴더를 만듭니다.
+   이미 있으면 그대로 두고 `setup/` 폴더만 최신으로 바꿉니다.
+2. `setup/` 안의 설치 도우미가 아래 프로그램(약 3GB)을 받아 `~/issuekiller-tools` 에 설치합니다. 10~30분 걸립니다.
+
+| 항목 | 용도 | 크기 |
+|---|---|---|
+| Node.js | 영상 프로젝트 실행 | 50MB |
+| ffmpeg | 영상·음성 변환 | 160MB |
+| Python 3.12 + 음성 패키지 | 나레이션 합성·검증 | 300MB |
+| 음성 모델 2종 | 한국어 음성 합성(Supertonic), 음성 검증(Whisper) | 850MB |
+| Claude Code | AI 작업 도구 | 100MB |
+| Git Bash (Windows 만) | Claude Code 실행에 필요 | 300MB |
+| 영상 프로젝트 패키지 + 렌더용 브라우저 | Remotion, Chrome Headless Shell | 1.5GB |
+
+3. 마지막에 2초짜리 `test-render.mp4` 를 실제로 렌더해 전체 과정이 동작하는지 확인하고 결과표를 보여줍니다.
+   `✅`(Windows: `[OK]`) 만 보이면 완료입니다.
+4. 터미널을 완전히 닫고 새로 연 뒤 `claude` 를 입력해 Claude 계정(Pro 이상)으로 로그인하세요.
+
+## 자주 묻는 것
+
+- **중간에 실패했어요** — 같은 명령어를 다시 붙여넣어 실행하세요. 끝난 항목은 건너뜁니다.
+- **상태만 확인하고 싶어요** — Mac: `bash ~/issuekiller/setup/mac/check.command` · Windows: `issuekiller\setup\windows\check.bat` 더블클릭
+- **명령어 방식이 안 돼요** — 안내 페이지에서 zip 을 받아 압축을 풀고 `설치안내.txt` 대로 하세요.
+- **이미 Node·Python 이 있어요** — 건드리지 않습니다. 이 환경은 별도 폴더에서 자기 것만 씁니다.
+- **다 지우려면** — `issuekiller-tools` 폴더, 이 프로젝트 폴더, `~/.cache/supertonic3`, `~/.cache/huggingface` 를 지우고
+  Mac 은 `~/.zprofile` 의 "# 이슈킬러 쇼츠 제작 도구" 아래 한 줄, Windows 는 사용자 Path 의 `issuekiller-tools` 항목 4개와 `CLAUDE_CODE_GIT_BASH_PATH` 를 지웁니다.
+
+## 저장소 구성
+
+```
+get.sh, get.ps1        한 줄 설치 스크립트 (저장소를 내려받아 setup/ 의 설치 도우미를 실행)
+setup/mac, setup/windows, setup/common   설치 도우미 본체
+package.json, src/, …  Remotion 영상 프로젝트 뼈대 (설치 확인용 TestShort 포함)
+docs/                  안내 페이지(GitHub Pages)와 zip 대안  ← 수강생 폴더에는 들어가지 않음
+tools/                 빌드 스크립트와 템플릿              ← 수강생 폴더에는 들어가지 않음
+```
+
+문제가 생기면 설치 창을 캡처해 강사에게 보내주세요.

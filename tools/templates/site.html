@@ -1,0 +1,464 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이슈킬러 설치 센터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --paper: #F5F6FA;
+    --surface: #FFFFFF;
+    --ink: #141C2E;
+    --muted: #5B6478;
+    --line: #D9DDE7;
+    --accent: #FFD23F;
+    --accent-ink: #1A1600;
+    --accent-soft: #FFF4C2;
+    --ok: #1E8E5A;
+    --ok-soft: #E3F5EC;
+    --code-bg: #EEF0F6;
+    --shadow: 0 1px 2px rgba(20, 28, 46, .06), 0 8px 24px -12px rgba(20, 28, 46, .18);
+    --display: "Black Han Sans", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0F1523;
+      --surface: #171F33;
+      --ink: #EEF1F8;
+      --muted: #9AA6C4;
+      --line: #2A3550;
+      --accent: #FFD23F;
+      --accent-ink: #1A1600;
+      --accent-soft: #3A3312;
+      --ok: #5FD39A;
+      --ok-soft: #173627;
+      --code-bg: #0F1523;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0F1523;
+    --surface: #171F33;
+    --ink: #EEF1F8;
+    --muted: #9AA6C4;
+    --line: #2A3550;
+    --accent: #FFD23F;
+    --accent-ink: #1A1600;
+    --accent-soft: #3A3312;
+    --ok: #5FD39A;
+    --ok-soft: #173627;
+    --code-bg: #0F1523;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  a { color: inherit; }
+  code {
+    font-family: var(--mono);
+    font-size: .92em;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1px 7px;
+  }
+  strong { font-weight: 700; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  /* 머리 */
+  .eyebrow {
+    font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 8px; background: var(--accent); border-radius: 2px; }
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(38px, 7vw, 56px);
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    margin-top: 14px;
+  }
+  h1 mark { background: var(--accent); color: var(--accent-ink); padding: 0 .12em; border-radius: 4px; }
+  .lede { margin-top: 18px; max-width: 62ch; color: var(--muted); font-size: 18px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 15px; color: var(--muted); }
+  .facts span::before { content: "✓ "; color: var(--ok); font-weight: 700; }
+
+  /* OS 카드 */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 22px 20px;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .card.mine { border-color: var(--accent); }
+  .chip {
+    position: absolute; top: -13px; left: 18px;
+    background: var(--accent); color: var(--accent-ink);
+    font-size: 13px; font-weight: 700; letter-spacing: .04em;
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .card h2 { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1.1; }
+  .card .req { color: var(--muted); font-size: 15px; line-height: 1.55; }
+  .card .req b { color: var(--ink); font-weight: 500; }
+  .btn {
+    margin-top: 8px;
+    appearance: none; border: 0; cursor: pointer;
+    font: inherit; font-weight: 700; font-size: 18px;
+    background: var(--accent); color: var(--accent-ink);
+    border-radius: 12px; padding: 15px 18px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: transform .08s ease, filter .12s ease;
+    text-decoration: none;
+  }
+  .btn:hover { filter: brightness(.96); }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { cursor: progress; filter: saturate(.4) brightness(1.05); }
+  .btn svg { width: 22px; height: 22px; flex: none; }
+  .file { font-family: var(--mono); font-size: 13px; color: var(--muted); text-align: center; }
+  .status { min-height: 1.5em; font-size: 14px; text-align: center; color: var(--muted); }
+  .status.good { color: var(--ok); font-weight: 500; }
+  .status.bad { color: #C0392B; font-weight: 500; }
+  :root[data-theme="dark"] .status.bad { color: #FF8A7A; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .status.bad { color: #FF8A7A; } }
+  .note { margin-top: 14px; font-size: 15px; color: var(--muted); }
+
+  /* 한 줄 명령어 */
+  .how { margin-top: 4px; font-size: 15px; }
+  .cmd { display: flex; align-items: stretch; gap: 8px; margin-top: 2px; }
+  .cmd code {
+    flex: 1; min-width: 0; display: block;
+    font-size: 14px; line-height: 1.5; padding: 12px 14px;
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+    white-space: pre-wrap; word-break: break-all; cursor: text;
+    -webkit-user-select: all; user-select: all;
+  }
+  .copy {
+    appearance: none; border: 0; cursor: pointer; flex: none;
+    font: inherit; font-weight: 700; font-size: 16px;
+    background: var(--accent); color: var(--accent-ink);
+    border-radius: 10px; padding: 0 18px; min-width: 78px;
+    transition: transform .08s ease, filter .12s ease;
+  }
+  .copy:hover { filter: brightness(.96); }
+  .copy:active { transform: translateY(1px); }
+  .copy.done { background: var(--ok); color: #FFFFFF; }
+  @media (max-width: 480px) { .cmd { flex-direction: column; } .copy { padding: 12px 18px; } }
+  @media (prefers-reduced-motion: reduce) { .copy { transition: none; } }
+
+  /* zip 대안 */
+  .alt { margin-top: 18px; border: 1px dashed var(--line); border-radius: 12px; padding: 2px 18px; background: var(--surface); }
+  .alt summary { padding: 12px 0; font-size: 15px; }
+  .alt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 4px 0 16px; }
+  @media (max-width: 640px) { .alt-grid { grid-template-columns: 1fr; } }
+  .alt-grid > div { display: flex; flex-direction: column; gap: 8px; }
+  .alt-grid h3 { font-size: 16px; font-weight: 700; }
+  .alt-grid .file { text-align: left; font-family: var(--body); font-size: 14px; line-height: 1.6; }
+  .alt-grid .status { text-align: left; }
+  .btn.small { margin-top: 0; font-size: 15px; padding: 11px 14px; }
+  .btn.small svg { width: 18px; height: 18px; }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  /* 단락 */
+  section { margin-top: 56px; }
+  section > h2 {
+    font-size: 24px; font-weight: 700; letter-spacing: -.01em;
+    padding-bottom: 10px; border-bottom: 2px solid var(--ink);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
+  .seg button {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font: inherit; font-size: 14px; font-weight: 700; color: var(--muted);
+    padding: 5px 14px; border-radius: 999px;
+  }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 22px 0 0; display: flex; flex-direction: column; gap: 16px; }
+  ol.steps li { counter-increment: s; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
+  ol.steps li::before {
+    content: counter(s);
+    font-family: var(--display); font-size: 24px; line-height: 40px; text-align: center;
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink);
+  }
+  ol.steps li .t { font-weight: 700; }
+  ol.steps li .d { color: var(--muted); font-size: 16px; margin-top: 2px; }
+  .callout {
+    margin-top: 22px; padding: 14px 18px; border-radius: 12px;
+    background: var(--accent-soft); border-left: 5px solid var(--accent);
+    font-size: 16px;
+  }
+  .callout.ok { background: var(--ok-soft); border-left-color: var(--ok); }
+
+  .tablewrap { overflow-x: auto; margin-top: 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+  td .os { display: inline-block; font-size: 12px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 0 6px; margin-left: 6px; vertical-align: middle; }
+  .total { color: var(--muted); font-size: 15px; margin-top: 10px; }
+
+  details { border-bottom: 1px solid var(--line); }
+  details summary { cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details .a { padding: 0 0 16px; color: var(--muted); font-size: 16px; }
+
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+  .mobile-note { display: none; margin-top: 22px; padding: 14px 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 15px; }
+  .mobile-note.show { display: block; }
+</style>
+
+<main>
+  <p class="eyebrow">이슈킬러 쇼츠 제작 강의 · 사전 설치</p>
+  <h1>강의 전에<br>이것만 <mark>설치</mark>하세요</h1>
+  <p class="lede">실습 시간에는 여러분의 컴퓨터로 직접 쇼츠를 만듭니다. 설치 파일이 약 3GB라 강의장 와이파이로는 시간이 모자라니, <strong>강의 전날까지</strong> 집이나 사무실에서 마쳐 주세요. 터미널에 명령어 한 줄만 붙여넣으면 나머지는 자동입니다.</p>
+  <div class="facts">
+    <span>관리자 비밀번호 없음</span>
+    <span>Xcode · Homebrew 없음</span>
+    <span>폴더 하나에만 설치, 지우면 원상복구</span>
+    <span>10~30분</span>
+  </div>
+  <div class="mobile-note" id="mobileNote">지금 휴대폰으로 보고 계신 것 같아요. 설치는 <strong>실습에 가져올 컴퓨터</strong>에서 이 페이지를 열어 진행해 주세요.</div>
+
+  <div class="cards">
+    <article class="card" id="card-mac">
+      <h2>Mac</h2>
+      <p class="req"><b>macOS 13 (Ventura) 이상</b><br>Apple Silicon (M1~M4) · Intel 모두 가능<br>여유 공간 8GB</p>
+      <p class="how"><strong>터미널</strong>을 열고 이 한 줄을 붙여넣은 뒤 Enter</p>
+      <div class="cmd">
+        <code id="cmd-mac">curl -fsSL https://raw.githubusercontent.com/__GH_REPO__/main/get.sh | bash</code>
+        <button class="copy" type="button" data-copy="cmd-mac" data-os="mac">복사</button>
+      </div>
+      <p class="status" id="st-mac" aria-live="polite"></p>
+    </article>
+    <article class="card" id="card-win">
+      <h2>Windows</h2>
+      <p class="req"><b>Windows 10 (1809 이상) · Windows 11</b><br>64비트 (ARM 노트북은 지원 안 함)<br>여유 공간 8GB</p>
+      <p class="how"><strong>PowerShell</strong>을 열고 이 한 줄을 붙여넣은 뒤 Enter</p>
+      <div class="cmd">
+        <code id="cmd-win">irm https://raw.githubusercontent.com/__GH_REPO__/main/get.ps1 | iex</code>
+        <button class="copy" type="button" data-copy="cmd-win" data-os="win">복사</button>
+      </div>
+      <p class="status" id="st-win" aria-live="polite"></p>
+    </article>
+  </div>
+  <p class="note">이 한 줄은 작은 설치 도우미를 내려받아 실행합니다. 도우미가 필요한 프로그램(약 3GB)을 인터넷에서 직접 받아 <code>issuekiller-tools</code> 폴더에 설치합니다. 회사 노트북은 보안 프로그램이 다운로드를 막을 수 있으니 개인 컴퓨터를 권장합니다.</p>
+
+  <details class="alt">
+    <summary>명령어 방식이 안 되면 → 설치 파일을 zip으로 받기</summary>
+    <div class="alt-grid">
+      <div>
+        <h3>Mac</h3>
+        <button class="btn small" id="dl-mac" type="button" data-os="mac">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg>
+          issuekiller-setup-mac.zip · __MAC_SIZE__
+        </button>
+        <p class="status" id="dst-mac" aria-live="polite"></p>
+        <p class="file">압축을 풀어 <code>issuekiller</code> 폴더를 홈 폴더로 옮긴 뒤, 터미널에 <code>bash&nbsp;</code>를 입력하고 <code>setup/mac/install.command</code> 파일을 창 안으로 끌어다 놓고 Enter.</p>
+      </div>
+      <div>
+        <h3>Windows</h3>
+        <button class="btn small" id="dl-win" type="button" data-os="win">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v13"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg>
+          issuekiller-setup-windows.zip · __WIN_SIZE__
+        </button>
+        <p class="status" id="dst-win" aria-live="polite"></p>
+        <p class="file">압축을 풀어 <code>issuekiller</code> 폴더를 <code>C:\Users\내이름</code> 아래로 옮긴 뒤, <code>setup\windows\install.bat</code> 더블클릭. 파란 “PC 보호” 창이 뜨면 추가 정보 → 실행.</p>
+      </div>
+    </div>
+  </details>
+
+  <section id="steps">
+    <h2>
+      <span>설치 순서</span>
+      <span class="seg" role="group" aria-label="운영체제 선택">
+        <button type="button" data-tab="mac" aria-pressed="true">Mac</button>
+        <button type="button" data-tab="win" aria-pressed="false">Windows</button>
+      </span>
+    </h2>
+
+    <div id="tab-mac">
+      <ol class="steps">
+        <li><div><div class="t">터미널을 엽니다</div><div class="d"><code>⌘ + Space</code>를 누르고 <strong>터미널</strong>이라고 입력한 뒤 Enter. 흰색 또는 검은색 글자 창이 열립니다.</div></div></li>
+        <li><div><div class="t">위의 Mac 명령어를 복사해 터미널에 붙여넣고 Enter</div><div class="d">노란 <strong>복사</strong> 버튼을 누른 뒤 터미널 창을 클릭하고 <code>⌘ + V</code>, 그리고 Enter. 비밀번호는 묻지 않습니다. 중간에 “Xcode 명령어 라인 도구” 창이 뜨면 <strong>지금 안 함</strong>을 누르세요.</div></div></li>
+        <li><div><div class="t">10~30분 기다립니다</div><div class="d">마지막에 <strong>“설치가 모두 끝났습니다.”</strong>와 확인표의 ✅가 보이면 완료. ❌가 있으면 그 화면을 캡처해 강사에게 보내주세요.</div></div></li>
+        <li><div><div class="t">터미널을 완전히 닫고 새로 연 뒤 <code>claude</code> 입력</div><div class="d">브라우저가 열리면 Claude 계정으로 로그인합니다. 로그인이 끝나면 터미널에 <code>/exit</code>를 입력해 나옵니다.</div></div></li>
+      </ol>
+      <div class="callout">중간에 끊겼거나 상태를 다시 확인하고 싶으면 <strong>같은 명령어를 다시 붙여넣으면</strong> 됩니다. 끝난 항목은 건너뜁니다. 확인만 하려면 <code>bash ~/issuekiller/setup/mac/check.command</code></div>
+    </div>
+
+    <div id="tab-win" hidden>
+      <ol class="steps">
+        <li><div><div class="t">PowerShell을 엽니다</div><div class="d"><strong>Windows 키</strong>를 누르고 <strong>PowerShell</strong>이라고 입력한 뒤 Enter. 파란 글자 창이 열립니다. “관리자 권한으로 실행”은 필요 없습니다.</div></div></li>
+        <li><div><div class="t">위의 Windows 명령어를 복사해 붙여넣고 Enter</div><div class="d">노란 <strong>복사</strong> 버튼을 누른 뒤 파란 창 안에서 <strong>오른쪽 클릭</strong>(또는 <code>Ctrl + V</code>)하면 붙여넣어집니다. 그리고 Enter.</div></div></li>
+        <li><div><div class="t">10~30분 기다립니다</div><div class="d">중간에 창을 닫지 마세요. 마지막에 <strong>“설치가 모두 끝났습니다.”</strong>와 확인표의 [OK]가 보이면 완료. [XX]가 있으면 그 화면을 캡처해 강사에게 보내주세요.</div></div></li>
+        <li><div><div class="t">창을 닫고 PowerShell을 새로 연 뒤 <code>claude</code> 입력</div><div class="d">브라우저가 열리면 Claude 계정으로 로그인합니다. 로그인이 끝나면 <code>/exit</code>를 입력해 나옵니다.</div></div></li>
+      </ol>
+      <div class="callout">중간에 끊겼거나 상태를 다시 확인하고 싶으면 <strong>같은 명령어를 다시 붙여넣으면</strong> 됩니다. 끝난 항목은 건너뜁니다. 확인만 하려면 탐색기에서 <code>C:\Users\내이름\issuekiller\setup\windows\check.bat</code> 더블클릭.</div>
+    </div>
+
+    <div class="callout ok"><strong>Claude 계정은 미리 준비해 주세요.</strong> 실습에서 영상을 만들어 주는 Claude Code는 유료 구독 계정(Pro 이상)으로 로그인해야 동작합니다.</div>
+  </section>
+
+  <section id="what">
+    <h2><span>설치되는 것</span></h2>
+    <p class="note" style="margin-top:14px">영상을 만드는 데 필요한 것만 담았습니다. 모두 <code>issuekiller-tools</code> 폴더와 <code>issuekiller</code> 프로젝트 폴더 안에만 들어가고, 이미 설치된 다른 프로그램은 건드리지 않습니다.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>프로그램</th><th>하는 일</th><th>용량</th></tr></thead>
+        <tbody>
+          <tr><td>Node.js</td><td>영상 렌더링 엔진(Remotion)을 돌립니다</td><td>50MB</td></tr>
+          <tr><td>ffmpeg</td><td>영상·음성 파일을 자르고 붙이고 검사합니다</td><td>160MB</td></tr>
+          <tr><td>Python 3.12 + 음성 패키지</td><td>한국어 나레이션 합성(Supertonic)과 음성 검증(Whisper)</td><td>300MB</td></tr>
+          <tr><td>음성 모델 2종</td><td>위 패키지가 쓰는 학습 모델</td><td>850MB</td></tr>
+          <tr><td>Claude Code</td><td>대본·장면·자막을 만들어 주는 AI 도우미</td><td>100MB</td></tr>
+          <tr><td>Git Bash<span class="os">Windows만</span></td><td>Claude Code가 명령을 실행할 때 씁니다</td><td>300MB</td></tr>
+          <tr><td>영상 프로젝트 패키지 + 렌더용 브라우저</td><td>실습 프로젝트가 쓰는 부품과 화면을 그리는 브라우저</td><td>1.5GB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="total">합계 약 3GB. 설치가 끝나면 2초짜리 확인용 영상 <code>test-render.mp4</code>가 실제로 만들어져야 성공입니다.</p>
+  </section>
+
+  <section id="faq">
+    <h2><span>자주 묻는 질문</span></h2>
+    <details><summary>중간에 실패했다고 나와요</summary><div class="a">같은 명령어를 다시 붙여넣어 실행하세요. 끝난 항목은 건너뛰고 실패한 곳부터 이어서 합니다. 두 번째도 실패하면 창을 캡처해 강사에게 보내주세요. 로그 파일은 <code>issuekiller-tools/install-mac.log</code>(Mac) 또는 <code>issuekiller-tools\install-windows.log</code>(Windows)에 있습니다.</div></details>
+    <details><summary>“Xcode 명령어 라인 도구를 설치하시겠습니까?” 창이 떠요 (Mac)</summary><div class="a">필요 없습니다. <strong>나중에</strong> 또는 <strong>지금 안 함</strong>을 누르세요. 설치 도우미는 Xcode 없이 동작합니다.</div></details>
+    <details><summary>이미 Node.js나 Python이 깔려 있어요</summary><div class="a">상관없습니다. 기존 것에 손대지 않고 <code>issuekiller-tools</code> 폴더 안에 따로 설치합니다.</div></details>
+    <details><summary>회사 노트북인데 될까요?</summary><div class="a">관리자 권한은 필요 없지만, 회사 보안 프로그램이 nodejs.org · github.com · huggingface.co · pypi.org 같은 곳의 다운로드를 막으면 실패합니다. 되도록 개인 컴퓨터를 준비해 주세요.</div></details>
+    <details><summary>인텔 맥인데요</summary><div class="a">됩니다. macOS 13 이상이면 자동으로 인텔용 파일을 받습니다. 2017년 이전 모델은 macOS 13이 안 올라가니 확인해 주세요. (Apple 메뉴 → 이 Mac에 관하여)</div></details>
+    <details><summary>Windows 버전을 어떻게 확인하나요?</summary><div class="a"><code>Windows 키 + R</code>을 누르고 <code>winver</code>를 입력하면 나옵니다. Windows 10은 버전 1809 이상이어야 합니다. Windows 11은 모두 됩니다.</div></details>
+    <details><summary>강의가 끝나고 다 지우고 싶어요</summary><div class="a"><code>issuekiller-tools</code> 폴더, <code>issuekiller</code> 프로젝트 폴더, 그리고 <code>.cache/supertonic3</code>·<code>.cache/huggingface</code> 폴더를 지우면 됩니다. 프로젝트 폴더 안 <code>README.md</code>에 자세히 적어 두었습니다.</div></details>
+    <details><summary>파란 “Windows의 PC 보호” 창이 떠요</summary><div class="a">서명되지 않은 설치 파일이라 나오는 안내입니다. <strong>추가 정보 → 실행</strong>을 누르면 계속됩니다. 명령어 한 줄 방식에서는 보통 뜨지 않습니다.</div></details>
+    <details><summary>명령어를 붙여넣었는데 아무 일도 안 일어나요</summary><div class="a">Enter를 눌러야 시작됩니다. Windows에서 붙여넣기가 안 되면 창 안에서 오른쪽 클릭을 해 보세요. 그래도 안 되면 위의 <strong>zip으로 받기</strong>를 이용하세요.</div></details>
+  </section>
+
+  <footer>
+    <span>설치 도우미 v3 · 영상 제작 전용 · __BUILD_DATE__ · <a href="https://github.com/__GH_REPO__">소스</a></span>
+    <span>문제가 생기면 설치 창을 캡처해 강사에게 보내주세요.</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var FILES = {
+    mac: { name: "issuekiller-setup-mac.zip", b64: "__MAC_B64__" },
+    win: { name: "issuekiller-setup-windows.zip", b64: "__WIN_B64__" }
+  };
+
+  // ---- 이 컴퓨터가 Mac 인지 Windows 인지
+  var ua = navigator.userAgent || "";
+  var plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(ua) || (navigator.userAgentData && navigator.userAgentData.mobile);
+  var mine = /Win/i.test(plat) || /Windows/i.test(ua) ? "win" : (/Mac/i.test(plat) || /Macintosh/i.test(ua) ? "mac" : null);
+  if (isMobile) { mine = null; document.getElementById("mobileNote").classList.add("show"); }
+  if (mine) {
+    var card = document.getElementById(mine === "mac" ? "card-mac" : "card-win");
+    card.classList.add("mine");
+    var chip = document.createElement("span"); chip.className = "chip"; chip.textContent = "이 컴퓨터용"; card.prepend(chip);
+    if (mine === "win") { card.parentNode.prepend(card); }
+  }
+
+  // ---- 설치 순서 탭
+  var tabs = document.querySelectorAll(".seg button");
+  function showTab(os) {
+    document.getElementById("tab-mac").hidden = os !== "mac";
+    document.getElementById("tab-win").hidden = os !== "win";
+    tabs.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.tab === os)); });
+  }
+  tabs.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
+  showTab(mine || "mac");
+
+  // ---- 명령어 복사
+  function copyText(text) {
+    return new Promise(function (resolve) {
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", "");
+        ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta); resolve(ok);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { resolve(true); }, fallback);
+      } else { fallback(); }
+    });
+  }
+  function selectNode(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    var os = btn.dataset.os, code = document.getElementById(btn.dataset.copy), st = document.getElementById("st-" + os);
+    var where = os === "mac" ? "터미널" : "PowerShell";
+    btn.addEventListener("click", function () {
+      showTab(os);
+      copyText(code.textContent.trim()).then(function (ok) {
+        if (ok) {
+          btn.textContent = "복사됨 ✓"; btn.classList.add("done");
+          st.className = "status good"; st.textContent = "복사했습니다 · " + where + "에 붙여넣고 Enter ↓";
+          setTimeout(function () { btn.textContent = "복사"; btn.classList.remove("done"); }, 2500);
+        } else {
+          selectNode(code);
+          st.className = "status bad"; st.textContent = "자동 복사가 막혀 있습니다. 선택된 명령어를 " + (os === "mac" ? "⌘ + C" : "Ctrl + C") + "로 복사하세요.";
+        }
+      });
+    });
+  });
+
+  // ---- zip 대안 다운로드
+  function toBlob(b64) {
+    var bin = atob(b64), n = bin.length, bytes = new Uint8Array(n);
+    for (var i = 0; i < n; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: "application/zip" });
+  }
+  // window.claude 가 아예 없으면(일반 웹서버에 올린 경우) 같은 폴더의 zip 파일로 바로 연결한다.
+  var inViewer = !!(window.claude && typeof window.claude.use === "function");
+  var downloadsReady = inViewer ? window.claude.use("downloads") : Promise.resolve(undefined);
+
+  document.querySelectorAll(".btn[data-os]").forEach(function (btn) {
+    var os = btn.dataset.os, st = document.getElementById("dst-" + os), f = FILES[os];
+    btn.addEventListener("click", function () {
+      showTab(os);
+      if (!inViewer) { window.location.href = f.name; return; }
+      st.className = "status"; st.textContent = "저장 창을 띄우는 중…"; btn.disabled = true;
+      downloadsReady.then(function (downloads) {
+        if (!downloads) { st.className = "status bad"; st.textContent = "이 화면에서는 다운로드가 열리지 않습니다. 강사에게 파일을 직접 받아주세요."; return; }
+        return downloads.save({ filename: f.name, data: toBlob(f.b64) }).then(function () {
+          st.className = "status good"; st.textContent = "저장했습니다.";
+        });
+      }).catch(function (e) {
+        var code = e && e.code;
+        st.className = "status" + (code === "declined" ? "" : " bad");
+        st.textContent =
+          code === "declined" ? "저장을 취소했습니다. 다시 누르면 됩니다." :
+          code === "rate_limited" ? "잠시 후 다시 눌러 주세요." :
+          (code === "rejected_extension" || code === "extension_not_enabled") ? "이 화면에서는 zip 저장이 막혀 있습니다. 강사에게 파일을 직접 받아주세요." :
+          "저장하지 못했습니다. 페이지를 새로고침한 뒤 다시 눌러 주세요.";
+      }).then(function () { btn.disabled = false; });
+    });
+  });
+})();
+</script>
