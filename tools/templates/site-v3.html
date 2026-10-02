@@ -103,6 +103,13 @@
   body:not([data-ai="claude"]) [data-ai-only="claude"],
   body:not([data-ai="gemini"]) [data-ai-only="gemini"] { display: none !important; }
 
+  /* ---------- Windows 미리 알림 ---------- */
+  .win-notice { margin-top: 1.6rem; background: var(--card); border: 2px solid var(--orange); border-radius: 16px;
+                padding: 1rem 1.15rem; display: grid; gap: .35rem; }
+  .win-notice b:first-child { font-size: 1.15rem; }
+  .win-notice p { margin: 0; font-size: 1.05rem; }
+  .win-notice a { justify-self: start; font-weight: 700; color: var(--indigo); }
+
   /* ---------- 단계 ---------- */
   .steps-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
                 padding-block: 2.2rem .2rem; }
@@ -232,6 +239,12 @@
       <button type="button" id="ai-gemini" data-ai="gemini" aria-pressed="false"><span class="n">Gemini</span><span class="s">Google</span></button>
     </div>
   </section>
+
+  <div class="win-notice" id="win-notice" hidden>
+    <b>Windows를 쓰시는 분, 미리 알아 두세요</b>
+    <p>설치 중에 <b>‘AhnLab 위협 행위 차단’</b> 창이 뜰 수 있어요. 은행 사이트용 보안 프로그램이 설치 명령의 <b>실행 방식</b>을 막은 것이고, <b>설치 파일에는 문제가 없어요.</b> 놀라지 마시고 아래 해결 방법대로 하시면 돼요.</p>
+    <a href="#ahnlab">해결 방법 보기 ↓</a>
+  </div>
 
   <div class="steps-head">
     <h2 id="steps-h">설치 순서</h2>
@@ -482,6 +495,7 @@
       document.getElementById("os-" + k).setAttribute("aria-pressed", String(k === os));
       document.getElementById("steps-" + k).hidden = k !== os;
     });
+    document.getElementById("win-notice").hidden = os !== "win";
     if (fromUser) save();
     updateProgress();
   }
