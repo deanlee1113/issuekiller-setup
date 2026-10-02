@@ -333,6 +333,7 @@
         <div class="term" aria-label="성공 화면 예시"><span class="ok">[OK]</span> 시험 렌더 영상<br><span class="end">설치가 모두 끝났습니다.</span></div>
         <p class="warn"><b>[XX]</b>가 보이면 화면을 사진 찍어 강사에게 보내 주세요.</p>
         <p class="note">‘PC 보호’ 파란 창이 뜨면 <b>추가 정보 → 실행</b>을 누르세요.</p>
+        <p class="warn"><b>‘AhnLab 위협 행위 차단’</b> 창이 뜨면 맨 아래 <a href="#ahnlab">막히면 여기를 보세요</a>를 보세요.</p>
         <button type="button" class="did" aria-pressed="false">했어요</button>
       </div>
     </li>
@@ -368,6 +369,20 @@
     <details>
       <summary>중간에 실패했다고 나와요</summary>
       <div class="a"><p>2·3단계를 <b>한 번 더</b> 하세요. 끝난 부분은 건너뛰고 이어서 설치해요. 두 번째도 실패하면 화면을 사진 찍어 강사에게 보내 주세요.</p></div>
+    </details>
+    <details id="ahnlab">
+      <summary>Windows에서 ‘AhnLab 위협 행위 차단’ 창이 떠요</summary>
+      <div class="a">
+        <p>은행 사이트용 보안 프로그램(AhnLab Safe Transaction)이 <b>설치 명령의 실행 방식</b>을 위험하다고 보고 막은 거예요. 설치 파일에 문제가 있는 건 아니에요.</p>
+        <ol style="margin:0;padding-left:1.4rem;display:grid;gap:.35rem">
+          <li>창의 <b>확인</b>을 누르고, 파란 PowerShell 창을 닫아요.</li>
+          <li>화면 오른쪽 아래 작업 표시줄의 <kbd>^</kbd>를 눌러 <b>AhnLab Safe Transaction</b> 아이콘을 찾아요.</li>
+          <li>아이콘을 <b>마우스 오른쪽</b>으로 눌러 <b>종료</b>(또는 <b>보호 중지</b>)를 눌러요.</li>
+          <li>PowerShell을 새로 열고 <b>2·3단계</b>(명령어 복사 → 붙여넣기)를 다시 해요. 이미 된 부분은 건너뛰고 이어서 설치돼요.</li>
+          <li>설치가 끝나면 <b>컴퓨터를 다시 켜면</b> 보안 프로그램도 다시 켜져요.</li>
+        </ol>
+        <p class="small">메뉴 이름은 버전마다 조금 다를 수 있어요. 못 찾겠으면 화면을 찍어 단톡방에 올려 주세요.</p>
+      </div>
     </details>
     <details>
       <summary>붙여넣었는데 아무 일도 안 일어나요</summary>
@@ -504,6 +519,13 @@
   var start = state.os || detected || "mac";
   if (!state.os && detected) hint.textContent = "이 컴퓨터는 " + (detected === "mac" ? "Mac" : "Windows") + "으로 보여요. 다르면 바꿔 누르세요.";
   setOS(start, false);
+
+  // ---- '막히면 여기를' 링크로 오면 해당 질문을 펼쳐서 보여 준다
+  function openFromHash() {
+    var d = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    if (d && d.tagName === "DETAILS") { d.open = true; d.scrollIntoView({ block: "start" }); }
+  }
+  window.addEventListener("hashchange", openFromHash); openFromHash();
 
   // ---- 명령어 복사
   function copyText(text) {
