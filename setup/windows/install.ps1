@@ -1,7 +1,8 @@
 ﻿# =====================================================================
 #  이슈킬러 쇼츠 제작 환경 설치 도우미 v3 · 영상 제작 전용 (Windows 10 / 11, 64비트)
 #
-#  관리자 권한 · winget 없이 설치합니다.
+#  관리자 권한 · winget 없이 설치합니다. (음성 엔진에 필요한 Microsoft Visual C++ 구성 요소가 없을 때만
+#  마이크로소프트 공식 설치 파일을 받아 설치하며, 이때 '예'를 누르는 확인 창이 한 번 뜹니다)
 #  모든 도구는  %USERPROFILE%\issuekiller-tools  한 폴더에만 들어갑니다. (지우면 원상복구)
 #
 #  실행 방법: 같은 폴더의 install.bat 을 더블클릭
@@ -50,6 +51,23 @@ function Download($url, $dest) {
 }
 function Sha256($path) { return (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLower() }
 function Run($exe, [string[]]$argv) { & $exe @argv; return ($LASTEXITCODE -eq 0) }
+function Q($a) { if ("$a" -match '[\s"]') { return '"' + ("$a" -replace '"', '\"') + '"' } return "$a" }   # Start-Process 인자 따옴표
+function Test-VoiceEngine { if (-not (Test-Path $VenvPy)) { return $false }; & $VenvPy -c "import onnxruntime" 2>$null; return ($LASTEXITCODE -eq 0) }
+function Install-VCRedist {
+  # 음성 엔진(onnxruntime)은 Microsoft Visual C++ 재배포 패키지가 있어야 실행된다. 없거나 오래됐으면 공식 파일로 설치/갱신한다.
+  Write-Host ""
+  Write-Host "  음성 엔진에 필요한 윈도우 구성 요소(Microsoft Visual C++)를 설치합니다." -ForegroundColor Yellow
+  Write-Host "  '이 앱이 디바이스를 변경하도록 허용하시겠어요?' 창이 뜨면 [예]를 눌러 주세요." -ForegroundColor Yellow
+  $exe = Join-Path $DlDir "vc_redist.x64.exe"
+  if (-not (Download "https://aka.ms/vs/17/release/vc_redist.x64.exe" $exe)) { Fail "Visual C++ 구성 요소 다운로드 실패 (https://aka.ms/vs/17/release/vc_redist.x64.exe)"; return $false }
+  $sig = Get-AuthenticodeSignature -FilePath $exe
+  if ($sig.Status -ne "Valid" -or "$($sig.SignerCertificate.Subject)" -notmatch "Microsoft Corporation") { Fail "받은 Visual C++ 설치 파일의 서명을 확인하지 못했습니다"; return $false }
+  try { $p = Start-Process -FilePath $exe -ArgumentList "/install", "/quiet", "/norestart" -Verb RunAs -Wait -PassThru }
+  catch { Fail "Visual C++ 구성 요소 설치가 취소됐습니다. 다시 실행하고 확인 창에서 [예]를 눌러 주세요."; return $false }
+  # 0 = 설치됨, 1638 = 이미 같은/새 버전, 3010 = 설치됨(재시작 권장)
+  if (@(0, 1638, 3010) -contains $p.ExitCode) { Ok "Visual C++ 구성 요소 준비 완료"; return $true }
+  Fail ("Visual C++ 구성 요소 설치 실패 (종료 코드 " + $p.ExitCode + ")"); return $false
+}
 function Find-Project {
   $cands = @($env:ISSUEKILLER_PROJECT, (Split-Path -Parent $SetupDir),
              (Join-Path $env:USERPROFILE "issuekiller"),
@@ -225,6 +243,9 @@ if (Test-Path $Uv) {
   if (Test-Path $VenvPy) {
     if (Run $Uv @("pip", "install", "--python", $VenvPy, "-r", (Join-Path $CommonDir "requirements.txt"))) {
       Ok ("패키지 설치 완료 -> $VenvDir (" + (& $VenvPy --version) + ")")
+      if (Test-VoiceEngine) { Ok "음성 엔진 실행 확인" }
+      elseif ((Install-VCRedist) -and (Test-VoiceEngine)) { Ok "음성 엔진 실행 확인 (Visual C++ 구성 요소 설치 후)" }
+      else { Fail "음성 엔진(onnxruntime)을 실행할 수 없습니다. 이 창을 캡처해서 보내주세요." }
     } else { Fail "Python 패키지 설치 실패 (uv pip install -r common\requirements.txt)" }
   } else { Fail "Python 가상환경을 만들지 못했습니다 (uv venv)" }
 }
@@ -271,10 +292,28 @@ if (-not (Test-Path $NodeExe)) {
   if ($LASTEXITCODE -eq 0) { Ok "렌더용 브라우저 준비 완료" } else { Fail "Remotion 브라우저 다운로드 실패 (npx remotion browser ensure)" }
   # 2초짜리 확인용 영상을 실제로 렌더해 본다 (설치가 끝까지 동작하는지 가장 확실한 검사)
   $testMp4 = Join-Path $ToolsDir "test-render.mp4"
-  if (Test-Path $testMp4) { Remove-Item $testMp4 -Force }
-  & $npx remotion render src/index.ts TestShort $testMp4 --log=warn
-  $codec = if (Test-Path $testMp4) { & (Join-Path $BinDir "ffprobe.exe") -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 $testMp4 2>$null } else { "" }
-  if ($LASTEXITCODE -eq 0 -and "$codec" -match "h264") { Ok "시험 렌더 완료: $testMp4" } else { Fail "시험 렌더 실패 (npx remotion render src/index.ts TestShort)" }
+  # 느린 PC 에서는 오래 걸려 멈춘 것처럼 보인다 -> 30초마다 진행 안내, 20분 넘으면 끊고 안전 모드로 한 번 더.
+  function Render-Test([string[]]$extra) {
+    if (Test-Path $testMp4) { Remove-Item $testMp4 -Force }
+    $argv = @("remotion", "render", "src/index.ts", "TestShort", (Q $testMp4), "--log=warn") + $extra
+    $p = Start-Process -FilePath $npx -ArgumentList $argv -NoNewWindow -PassThru -WorkingDirectory $ProjectDir
+    $null = $p.Handle   # 끝난 뒤 ExitCode 를 읽기 위해 핸들을 잡아 둔다
+    $t0 = Get-Date
+    while (-not $p.WaitForExit(30000)) {
+      $min = [int][math]::Floor(((Get-Date) - $t0).TotalMinutes)
+      Write-Host ("  ... 시험 영상을 만드는 중이에요 (" + $min + "분째). 컴퓨터에 따라 오래 걸릴 수 있어요. 창을 닫지 마세요.") -ForegroundColor Yellow
+      if ($min -ge 20) { & taskkill.exe /PID $p.Id /T /F 2>$null | Out-Null; return $false }
+    }
+    $codec = if (Test-Path $testMp4) { & (Join-Path $BinDir "ffprobe.exe") -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 $testMp4 2>$null } else { "" }
+    return ($p.ExitCode -eq 0 -and "$codec" -match "h264")
+  }
+  Write-Host "  시험 영상(2초)을 만들어 봅니다. 보통 1~5분, 느린 컴퓨터는 10분 넘게 걸릴 수 있어요."
+  if (Render-Test @()) { Ok "시험 렌더 완료: $testMp4" }
+  else {
+    Warn "시험 렌더가 끝나지 않아 안전 모드(그래픽 카드 사용 안 함)로 한 번 더 만듭니다."
+    if (Render-Test @("--gl=swangle", "--concurrency=1")) { Ok "시험 렌더 완료 (안전 모드): $testMp4" }
+    else { Fail "시험 렌더 실패 (npx remotion render src/index.ts TestShort)" }
+  }
   Pop-Location
 } else {
   Warn "프로젝트 폴더(package.json)를 찾지 못해 건너뜁니다."
