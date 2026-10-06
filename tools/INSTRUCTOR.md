@@ -61,6 +61,11 @@ curl -fsSL http://127.0.0.1:8765/get.sh | env -i HOME=/tmp/ik/home PATH=/usr/bin
 - AI 앱은 터미널 PATH 를 읽지 않을 수 있으므로 안내 문서의 모든 명령은 실행기를 거친다 (`bash scripts/py.sh ...` /
   `scripts\py.cmd ...`). 새 명령을 문서에 넣을 때도 이 형식을 지킨다.
 - 채널 이름은 `channel.json` 한 곳. 스킬이 처음 사용할 때 수강생에게 묻고 저장한다. 템플릿 배지와 업로드 문서 해시태그가 여기서 나온다.
+- 화면 모양(색·글씨 크기·글꼴)은 `theme.json` 한 곳 (`seed`: 없을 때만 넣고 재설치 때 덮어쓰지 않음). 템플릿이 import 해서
+  읽고, 없는 키·틀린 값은 기본값으로 그린다. 기본값은 `theme.json` · `src/NewsTemplate.tsx` 의 `DEFAULT_THEME` ·
+  스킬 `scripts/_ik_env.py` 의 `DEFAULT_THEME` 세 곳에 있고 `tools/build.py` 가 같은지 확인한다 (키를 바꾸면 세 곳 + AGENTS.md·SKILL.md 표).
+  크기는 절대값이 아니라 조절값(`titleSizeAdjust`, `captionSizeAdjust`)이다 — 스캐폴드가 영상마다 `titleSize: 82` 를 쓰기 때문.
+  미리보기: 스킬 `scripts/preview_still.py` (최근 영상 2초 화면 → `qc/<asset-root>/theme-preview-NN.jpg`).
 - 수강생 흐름: AI 앱(ChatGPT Codex · Claude 앱 Code 탭 · Antigravity)에서 홈 폴더의 `issuekiller` 폴더를 연다 →
   "쇼츠 만들어줘" (사진 없이 시험: "연습으로 아무 주제나 쇼츠 만들어줘"). 터미널 `claude` 도 그대로 동작한다.
 - 키트 파일을 고치면 `setup/common/kit-files.txt` 에 올라 있는지 확인한다. `kit` 은 재설치 때 교체(바뀐 파일은

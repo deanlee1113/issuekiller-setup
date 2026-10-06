@@ -3,6 +3,9 @@
 //  새 영상은 이 파일을 고치지 않고, scaffold_short.py 가 만드는
 //  src/<ID>Composition.tsx 에서 createNewsComposition(config) 로 만든다.
 //  채널 이름 배지는 프로젝트 폴더의 channel.json 에서 읽는다.
+//  색·글씨 크기·글꼴은 프로젝트 폴더의 theme.json 에서 읽는다.
+//  (화면 모양을 바꿀 때는 이 파일이 아니라 theme.json 만 고친다.
+//   값이 없거나 잘못되면 아래 DEFAULT_THEME 의 기본값을 쓴다.)
 // =====================================================================
 import type { Caption } from "@remotion/captions";
 import { Audio } from "@remotion/media";
@@ -19,6 +22,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import channel from "../channel.json";
+import themeFile from "../theme.json";
 
 export type Scene = {
   startMs: number;
@@ -61,13 +65,151 @@ export type NewsConfig = {
 };
 
 // Mac 은 Apple SD Gothic Neo, Windows 는 맑은 고딕(Malgun Gothic)으로 그려진다.
-const fontFamily =
+const BASE_FONT_STACK =
   '"Apple SD Gothic Neo", "Malgun Gothic", "Pretendard", "Noto Sans KR", Arial, sans-serif';
 
 // 채널 이름·문구는 프로젝트 폴더의 channel.json 한 곳에서만 바꾼다.
 const channelConfig = channel as {name?: string; tagline?: string};
 const CHANNEL_NAME = (channelConfig.name ?? "").trim() || "내 채널";
 const CHANNEL_TAGLINE = (channelConfig.tagline ?? "").trim();
+
+// ---------------------------------------------------------------------
+//  화면 모양(theme.json). 기본값 = 강의 키트의 원래 모양.
+//  theme.json 에 키가 없거나, 값이 비었거나, 형식이 틀리면 기본값을 쓴다.
+// ---------------------------------------------------------------------
+const DEFAULT_THEME = {
+  backgroundColor: "#0d0f13",
+  titleColor: "#ffffff",
+  titleSizeAdjust: 0,
+  badgeColor: "#ffcc4d",
+  badgeTextColor: "#111318",
+  taglineColor: "rgba(255,255,255,0.94)",
+  taglineSize: 25,
+  sceneLabelColor: "",
+  sceneLabelTextColor: "#111318",
+  captionBoxColor: "rgba(7,9,12,0.94)",
+  captionTextColor: "#fffdf6",
+  captionSizeAdjust: 0,
+  highlightColor: "#ffdf63",
+  highlightTextColor: "#111318",
+  fontFamily: "",
+};
+// 훅 카드의 강조 색은 원래 조금 다른 노랑이다. highlightColor 를 바꾸면 훅 강조도 같이 바뀐다.
+const DEFAULT_HOOK_HIGHLIGHT = "#ffe066";
+
+const HEX_COLOR = /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+const RGB_COLOR =
+  /^rgba?\(\s*\d{1,3}(\.\d+)?\s*,\s*\d{1,3}(\.\d+)?\s*,\s*\d{1,3}(\.\d+)?\s*(,\s*(0|1|0?\.\d+|1\.0+|\d{1,3}%)\s*)?\)$/i;
+
+const rawTheme: Record<string, unknown> =
+  themeFile != null && typeof themeFile === "object" && !Array.isArray(themeFile)
+    ? (themeFile as unknown as Record<string, unknown>)
+    : {};
+
+const themeColor = (key: keyof typeof DEFAULT_THEME, allowEmpty = false): string => {
+  const value = rawTheme[key];
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (HEX_COLOR.test(trimmed) || RGB_COLOR.test(trimmed)) {
+      return trimmed;
+    }
+    if (allowEmpty && trimmed === "") {
+      return "";
+    }
+  }
+  return DEFAULT_THEME[key] as string;
+};
+
+const themeNumber = (
+  key: keyof typeof DEFAULT_THEME,
+  min: number,
+  max: number,
+): number => {
+  const value = rawTheme[key];
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && value.trim() !== ""
+        ? Number(value.trim())
+        : NaN;
+  if (!Number.isFinite(parsed)) {
+    return DEFAULT_THEME[key] as number;
+  }
+  return Math.min(max, Math.max(min, Math.round(parsed)));
+};
+
+// "#0d0f13" / "rgba(13,15,19,0.9)" → [13, 15, 19]
+const toRgb = (color: string): [number, number, number] => {
+  if (color.startsWith("#")) {
+    let hex = color.slice(1);
+    if (hex.length <= 4) {
+      hex = hex
+        .split("")
+        .map((c) => c + c)
+        .join("");
+    }
+    return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)) as [
+      number,
+      number,
+      number,
+    ];
+  }
+  const nums = color.match(/[\d.]+/g) ?? ["0", "0", "0"];
+  return [0, 1, 2].map((i) => Math.min(255, Math.round(Number(nums[i])))) as [
+    number,
+    number,
+    number,
+  ];
+};
+
+const isDarkColor = (color: string): boolean => {
+  const [r, g, b] = toRgb(color);
+  return 0.299 * r + 0.587 * g + 0.114 * b < 128;
+};
+
+const cleanFontName = (value: unknown): string =>
+  typeof value === "string"
+    ? value.replace(/["'`;{}<>\\]/g, "").trim().slice(0, 60)
+    : "";
+
+const highlightColor = themeColor("highlightColor");
+const THEME = {
+  backgroundColor: themeColor("backgroundColor"),
+  titleColor: themeColor("titleColor"),
+  titleSizeAdjust: themeNumber("titleSizeAdjust", -40, 60),
+  badgeColor: themeColor("badgeColor"),
+  badgeTextColor: themeColor("badgeTextColor"),
+  taglineColor: themeColor("taglineColor"),
+  taglineSize: themeNumber("taglineSize", 14, 60),
+  sceneLabelColor: themeColor("sceneLabelColor", true),
+  sceneLabelTextColor: themeColor("sceneLabelTextColor"),
+  captionBoxColor: themeColor("captionBoxColor"),
+  captionTextColor: themeColor("captionTextColor"),
+  captionSizeAdjust: themeNumber("captionSizeAdjust", -40, 60),
+  highlightColor,
+  highlightTextColor: themeColor("highlightTextColor"),
+  hookHighlightColor:
+    highlightColor.toLowerCase() === DEFAULT_THEME.highlightColor
+      ? DEFAULT_HOOK_HIGHLIGHT
+      : highlightColor,
+};
+
+const customFont = cleanFontName(rawTheme.fontFamily);
+const fontFamily = customFont
+  ? `"${customFont}", ${BASE_FONT_STACK}`
+  : BASE_FONT_STACK;
+
+// 화면 위·아래 그림자(그라데이션)는 backgroundColor 와 같은 색으로 칠한다.
+const BG_RGB = toRgb(THEME.backgroundColor).join(",");
+const shade = (alpha: number): string => `rgba(${BG_RGB},${alpha})`;
+
+// 자막 글씨가 어두운 색이면 글씨 그림자를 빼서 번져 보이지 않게 한다.
+const CAPTION_TEXT_SHADOW = isDarkColor(THEME.captionTextColor)
+  ? "none"
+  : "0 4px 14px rgba(0,0,0,0.86)";
+
+const fontSizeWithAdjust = (base: number, adjust: number): number =>
+  Math.max(24, base + adjust);
 
 export const createNewsComposition = (config: NewsConfig): React.FC => {
   const Component: React.FC = () => {
@@ -120,7 +262,7 @@ const NewsShort: React.FC<{config: NewsConfig; captions: Caption[]}> = ({
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#0d0f13",
+        backgroundColor: THEME.backgroundColor,
         color: "#fff",
         fontFamily,
         overflow: "hidden",
@@ -172,6 +314,8 @@ const ImageScene: React.FC<{
   const imagePath = `${config.assetRoot}/${scene.image}`;
   const maskSourceCorners =
     scene.maskSourceCorners ?? config.maskBroadcastCorners ?? false;
+  // theme.json 의 sceneLabelColor 가 비어 있으면 장면마다 정해 둔 색(scene.accent)을 쓴다.
+  const sceneColor = THEME.sceneLabelColor || scene.accent;
 
   return (
     <AbsoluteFill>
@@ -193,7 +337,7 @@ const ImageScene: React.FC<{
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(180deg, rgba(13,15,19,0.22) 0%, rgba(13,15,19,0.03) 38%, rgba(13,15,19,0.94) 82%, #0d0f13 100%)",
+            `linear-gradient(180deg, ${shade(0.22)} 0%, ${shade(0.03)} 38%, ${shade(0.94)} 82%, ${THEME.backgroundColor} 100%)`,
         }}
       />
       <div
@@ -261,10 +405,10 @@ const ImageScene: React.FC<{
               : 886,
           borderRadius: isShortsSafeV2 ? 0 : "0 0 8px 8px",
           background: isShortsSafeV2
-            ? "linear-gradient(180deg, rgba(13,15,19,0.02) 0%, rgba(13,15,19,0.48) 32%, rgba(13,15,19,0.78) 67%, rgba(13,15,19,0.9) 100%)"
+            ? `linear-gradient(180deg, ${shade(0.02)} 0%, ${shade(0.48)} 32%, ${shade(0.78)} 67%, ${shade(0.9)} 100%)`
             : maskSourceCorners
-              ? "linear-gradient(180deg, rgba(13,15,19,0.34) 0%, rgba(13,15,19,0.95) 28%, rgba(13,15,19,0.995) 100%)"
-              : "linear-gradient(180deg, rgba(13,15,19,0) 0%, rgba(13,15,19,0.5) 38%, rgba(13,15,19,0.99) 100%)",
+              ? `linear-gradient(180deg, ${shade(0.34)} 0%, ${shade(0.95)} 28%, ${shade(0.995)} 100%)`
+              : `linear-gradient(180deg, ${shade(0)} 0%, ${shade(0.5)} 38%, ${shade(0.99)} 100%)`,
         }}
       />
       {maskSourceCorners ? (
@@ -276,7 +420,7 @@ const ImageScene: React.FC<{
             right: isShortsSafeV2 ? 0 : 42,
             height: 82,
             borderRadius: isShortsSafeV2 ? 0 : 6,
-            backgroundColor: "rgba(13,15,19,0.96)",
+            backgroundColor: shade(0.96),
           }}
         />
       ) : null}
@@ -287,7 +431,7 @@ const ImageScene: React.FC<{
           left: imageSide,
           width: 14,
           height: imageHeight,
-          backgroundColor: scene.accent,
+          backgroundColor: sceneColor,
         }}
       />
       <div
@@ -298,8 +442,8 @@ const ImageScene: React.FC<{
           maxWidth: 735,
           padding: "12px 20px 13px",
           borderRadius: 6,
-          backgroundColor: scene.accent,
-          color: "#111318",
+          backgroundColor: sceneColor,
+          color: THEME.sceneLabelTextColor,
           fontSize: 34,
           fontWeight: 900,
           letterSpacing: 0,
@@ -341,7 +485,7 @@ const HookCard: React.FC<{config: NewsConfig}> = ({config}) => {
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(180deg, rgba(13,15,19,0.62) 0%, rgba(13,15,19,0.12) 26%, rgba(13,15,19,0.2) 52%, rgba(13,15,19,0.92) 84%, #0d0f13 100%)",
+            `linear-gradient(180deg, ${shade(0.62)} 0%, ${shade(0.12)} 26%, ${shade(0.2)} 52%, ${shade(0.92)} 84%, ${THEME.backgroundColor} 100%)`,
         }}
       />
       <div
@@ -351,8 +495,8 @@ const HookCard: React.FC<{config: NewsConfig}> = ({config}) => {
           left: 54,
           padding: "9px 18px 10px",
           borderRadius: 6,
-          backgroundColor: "#ffcc4d",
-          color: "#111318",
+          backgroundColor: THEME.badgeColor,
+          color: THEME.badgeTextColor,
           fontSize: 34,
           fontWeight: 900,
         }}
@@ -380,8 +524,8 @@ const HookCard: React.FC<{config: NewsConfig}> = ({config}) => {
             {hook.highlight && index < parts.length - 1 ? (
               <span
                 style={{
-                  backgroundColor: "#ffe066",
-                  color: "#111318",
+                  backgroundColor: THEME.hookHighlightColor,
+                  color: THEME.highlightTextColor,
                   padding: "0 12px",
                   borderRadius: 8,
                   boxDecorationBreak: "clone",
@@ -428,8 +572,8 @@ const TopHeader: React.FC<{config: NewsConfig}> = ({config}) => {
         style={{
           padding: "7px 14px 8px",
           borderRadius: 5,
-          backgroundColor: "#ffcc4d",
-          color: "#111318",
+          backgroundColor: THEME.badgeColor,
+          color: THEME.badgeTextColor,
           fontSize: 30,
           fontWeight: 900,
           letterSpacing: 0,
@@ -439,8 +583,8 @@ const TopHeader: React.FC<{config: NewsConfig}> = ({config}) => {
       </div>
       <div
         style={{
-          color: "rgba(255,255,255,0.94)",
-          fontSize: 25,
+          color: THEME.taglineColor,
+          fontSize: THEME.taglineSize,
           fontWeight: 800,
           letterSpacing: 0,
         }}
@@ -450,7 +594,9 @@ const TopHeader: React.FC<{config: NewsConfig}> = ({config}) => {
     </div>
     <div
       style={{
-        fontSize: config.titleSize ?? 78,
+        // 영상별 titleSize(없으면 78)에 theme.json 의 titleSizeAdjust 를 더한다.
+        fontSize: fontSizeWithAdjust(config.titleSize ?? 78, THEME.titleSizeAdjust),
+        color: THEME.titleColor,
         fontWeight: 900,
         lineHeight: isShortsSafeV2 ? 1.02 : 0.95,
         letterSpacing: 0,
@@ -488,7 +634,11 @@ const CaptionOverlay: React.FC<{
     extrapolateRight: "clamp",
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
-  const baseFontSize = config.captionSize ?? 76;
+  // 영상별 captionSize(없으면 76)에 theme.json 의 captionSizeAdjust 를 더한다.
+  const baseFontSize = fontSizeWithAdjust(
+    config.captionSize ?? 76,
+    THEME.captionSizeAdjust,
+  );
   const fontSize =
     active.text.length > 58
       ? baseFontSize - 10
@@ -516,10 +666,10 @@ const CaptionOverlay: React.FC<{
           width: "100%",
           padding: isShortsSafeV2 ? "28px 24px 32px" : "40px 28px 44px",
           borderRadius: 8,
-          backgroundColor: "rgba(7,9,12,0.94)",
+          backgroundColor: THEME.captionBoxColor,
           outline: "2px solid rgba(255,255,255,0.32)",
           boxShadow: "0 28px 86px rgba(0,0,0,0.72)",
-          color: "#fffdf6",
+          color: THEME.captionTextColor,
           fontSize,
           fontWeight: 900,
           lineHeight: isShortsSafeV2 ? 1.1 : 1.16,
@@ -528,7 +678,7 @@ const CaptionOverlay: React.FC<{
           whiteSpace: "pre-wrap",
           wordBreak: "keep-all",
           overflowWrap: "break-word",
-          textShadow: "0 4px 14px rgba(0,0,0,0.86)",
+          textShadow: CAPTION_TEXT_SHADOW,
         }}
       >
         {splitWithHighlights(active.text, config.highlightTerms)}
@@ -556,8 +706,8 @@ const splitWithHighlights = (
       <span
         key={`${part}-${index}`}
         style={{
-          color: "#111318",
-          backgroundColor: "#ffdf63",
+          color: THEME.highlightTextColor,
+          backgroundColor: THEME.highlightColor,
           borderRadius: 5,
           padding: "0 9px 2px",
           boxDecorationBreak: "clone",
@@ -592,7 +742,7 @@ const ProgressBar: React.FC<{config: NewsConfig}> = ({config}) => {
         style={{
           width: `${Math.min(100, progress * 100)}%`,
           height: "100%",
-          backgroundColor: "#ffcc4d",
+          backgroundColor: THEME.badgeColor,
         }}
       />
     </div>

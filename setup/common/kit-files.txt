@@ -30,5 +30,7 @@ kit  tsconfig.json
 kit  remotion.config.ts
 
 seed channel.json
+seed theme.json
+seed my-rules.md
 seed src/ClaudeGeneratedCompositions.tsx
 seed public/.gitkeep

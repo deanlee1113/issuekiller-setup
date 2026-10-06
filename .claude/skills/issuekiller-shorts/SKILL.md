@@ -1,6 +1,6 @@
 ---
 name: issuekiller-shorts
-description: 수강생 본인 YouTube 채널용 한국어 연예·공감 Shorts를 조사, 교차 검증, 대본 작성, 이미지 준비, Supertonic TTS, Remotion 렌더, 품질 검수, 업로드 정보 작성까지 수행한다. 사용자가 "쇼츠 만들어줘", "영상 만들어줘", 연예 뉴스 쇼츠, 공감형 영상, 네이버 엔터 랭킹, 이슈킬러, 영상 제작·업로드를 요청할 때 사용한다.
+description: 수강생 본인 YouTube 채널용 한국어 연예·공감 Shorts를 조사, 교차 검증, 대본 작성, 이미지 준비, Supertonic TTS, Remotion 렌더, 품질 검수, 업로드 정보 작성까지 수행한다. 사용자가 "쇼츠 만들어줘", "영상 만들어줘", 연예 뉴스 쇼츠, 공감형 영상, 네이버 엔터 랭킹, 이슈킬러, 영상 제작·업로드, 영상 화면의 색·글씨 크기·배지·자막 상자 바꾸기를 요청할 때 사용한다.
 argument-hint: "[수량] [소재] [연습]"
 ---
 
@@ -11,6 +11,8 @@ argument-hint: "[수량] [소재] [연습]"
 
 ## 시작 전에 읽을 파일
 
+- **내 규칙**: 프로젝트 폴더의 `my-rules.md`. 이 스킬의 기본값보다 우선한다(절대 규칙보다는 아래). 매번 먼저 읽는다.
+- **내 스킬**: 프로젝트에 `.agents/skills/my-shorts/` 가 있으면 이 스킬 대신 그것을 따른다(지금 읽는 것이 `my-shorts` 면 그대로 진행). 자세한 규칙은 `AGENTS.md` 의 "내 것으로 바꾸기".
 - 채널과 편집 판단: `references/channel-playbook.md`
 - 실제 경로와 명령: `references/production-pipeline.md`
 - 조사·검증·저작권: `references/research-and-rights.md`
@@ -33,6 +35,44 @@ argument-hint: "[수량] [소재] [연습]"
 - 수강생이 "그냥 두세요"라고 하면 `내 채널` 그대로 진행한다.
 - 채널 이름을 화면 템플릿(`src/NewsTemplate.tsx`)이나 다른 파일에 직접 쓰지 않는다.
 
+## 화면 모양 바꾸기 (색 · 글씨 크기 · 배지 · 자막 상자)
+
+"배지 색 바꿔 줘", "제목 글씨 더 크게", "자막 상자를 흰 바탕에 검은 글씨로" 같은 요청은 **`theme.json` 한 파일**로 처리한다.
+`src/NewsTemplate.tsx` 는 고치지 않는다 (템플릿이 `theme.json` 을 읽는다). 오른쪽 위 문구의 글자는 `channel.json` 의 `tagline`.
+
+1. `theme.json` 에서 요청에 해당하는 키만 고친다. 큰따옴표·쉼표를 지키고 주석을 넣지 않는다. 색은 `"#RRGGBB"` 또는 `"rgba(r,g,b,a)"`.
+2. 미리보기 한 장을 뽑아 직접 열어 확인한 뒤 수강생에게 보여 준다 (가장 최근 영상의 2초 화면, 덮어쓰지 않고 번호가 붙는다):
+   `bash scripts/py.sh .agents/skills/issuekiller-shorts/scripts/preview_still.py`
+   → `qc/<asset-root>/theme-preview-NN.jpg`. 훅 카드는 `--seconds 0.4`, 다른 영상은 `--composition-id <ID>`.
+3. 제목·자막이 안전 영역 밖으로 밀리거나 사진의 얼굴을 너무 가리면 크기 조절값을 줄여 다시 확인한다.
+   글씨와 바탕 색이 비슷해 읽기 어려우면 대비가 큰 색을 제안한다.
+4. 영상 파일에도 반영하려면 새 이름으로 다시 렌더한다 (`render_short.py ... --output output/<asset-root>-v2.mp4`).
+   새로 만드는 영상에는 자동으로 적용된다.
+
+| 키 | 바뀌는 곳 | 기본값 |
+|---|---|---|
+| `backgroundColor` | 화면 바탕·사진 위아래 어두운 그림자 | `"#0d0f13"` |
+| `titleColor` / `titleSizeAdjust` | 위쪽 제목 글씨 색 / 크기 조절(영상 크기에 더함, -40~60) | `"#ffffff"` / `0` |
+| `badgeColor` / `badgeTextColor` | 왼쪽 위 채널 배지 바탕 / 글씨 | `"#ffcc4d"` / `"#111318"` |
+| `taglineColor` / `taglineSize` | 오른쪽 위 문구 색 / 크기(14~60) | `"rgba(255,255,255,0.94)"` / `25` |
+| `sceneLabelColor` / `sceneLabelTextColor` | 장면 이름표 바탕+왼쪽 세로 줄(`""` = 장면마다 다른 색) / 글씨 | `""` / `"#111318"` |
+| `captionBoxColor` / `captionTextColor` | 자막 상자 바탕 / 글씨 | `"rgba(7,9,12,0.94)"` / `"#fffdf6"` |
+| `captionSizeAdjust` | 자막 글씨 크기 조절(영상 크기에 더함, -40~60) | `0` |
+| `highlightColor` / `highlightTextColor` | 강조 단어 형광펜 바탕 / 글씨 | `"#ffdf63"` / `"#111318"` |
+| `fontFamily` | 글꼴 이름(설치된 글꼴만, `""` = 기본) | `""` |
+
+| 요청 | 고칠 키 |
+|---|---|
+| 배지를 초록색으로 | `badgeColor` `"#2E7D32"` + `badgeTextColor` `"#ffffff"` |
+| 제목 글씨 더 크게 | `titleSizeAdjust` `8` (더 크게면 `16`) |
+| 자막 상자 흰 바탕에 검은 글씨 | `captionBoxColor` `"#ffffff"` + `captionTextColor` `"#111111"` |
+| 오른쪽 위 문구를 "매주 금요일 새 영상"으로 | `channel.json` 의 `tagline` |
+| 강조 단어를 분홍색으로 | `highlightColor` `"#ff8fb1"` |
+
+원래 모양으로 되돌리려면 그 키를 지우거나 표의 기본값으로 되돌린다. `theme.json` 파일 자체는 지우지 않는다
+(지워졌으면 렌더·미리보기 스크립트가 기본값으로 다시 만든다). 값이 틀리면 그 키만 기본값으로 그려지고, JSON 형식이 깨지면
+스크립트가 몇째 줄이 틀렸는지 알려 주고 멈춘다.
+
 ## 명령 실행 규칙
 
 - 모든 명령은 프로젝트 폴더(Mac `~/issuekiller`, Windows `%USERPROFILE%\issuekiller`)에서 실행한다.
@@ -51,7 +91,7 @@ argument-hint: "[수량] [소재] [연습]"
   - 시스템의 `python3`/`python` 은 쓰지 않는다 (numpy·pillow·supertonic 이 없다).
 - 이미 있는 영상·자산 폴더를 덮어쓰지 않는다. 같은 소재를 다시 만들면 새 `--asset-root`/`--composition-id` 를 쓴다.
 - `src/NewsTemplate.tsx`, `src/Root.tsx` 는 고치지 않는다. 새 영상은 `scaffold_short.py` 가 만드는
-  `src/<ID>Composition.tsx` 와 `public/<asset-root>/` 에서만 다룬다.
+  `src/<ID>Composition.tsx` 와 `public/<asset-root>/` 에서만 다룬다. 화면 색·글씨 크기는 `theme.json` 에서 바꾼다.
 
 ## 작업 목표
 
@@ -101,7 +141,12 @@ argument-hint: "[수량] [소재] [연습]"
 - 동일 사진의 확대, 크롭, 좌우 반전은 중복이다.
 - 얼굴과 핵심 행동을 자막이 과하게 가리면 이미지 위치나 자막 길이를 바꾼다.
 - 원본 자막·기사 UI가 본문 자막 뒤에 겹치지 않게 합리적으로 크롭한다.
-- 소재 이미지는 뉴스 통신사·언론사·공영방송 자료를 우선한다. 연예인 개인 유튜브 캡처는 최소화한다.
+- **수강생 기본(실습·일반 주제)**: 사진은 저작권 걱정 없는 무료 사진 사이트에서 찾는다.
+  Pexels, Unsplash, Pixabay 를 우선하고, Wikimedia Commons 는 라이선스(CC0·CC BY 등)를 확인해 출처 표기 조건을 지킨다.
+  뉴스·블로그·쇼핑몰·SNS 사진은 쓰지 않는다. 장면마다 다른 사진을 쓰고, 사진마다 원본 페이지 주소와 라이선스를
+  `public/<asset-root>/source-info.md` 에 적는다. 주제에 맞는 사진을 찾지 못한 장면만 `scripts/make_placeholders.py` 로 채운다.
+- 수강생이 직접 찍은 사진을 주면 그것을 가장 먼저 쓴다.
+- (강사 채널처럼 연예 이슈를 다루는 경우에만) 뉴스 통신사·언론사·공영방송 자료를 쓰되, 연예인 개인 유튜브 캡처는 최소화한다.
 - 개인 유튜브 캡처를 불가피하게 쓸 때는 채널 워터마크·로고가 프레임에 남은 것을 그대로 쓰지 않는다. 워터마크가 보이는 프레임은 다른 자료로 교체한다.
 - 한 출처(특히 개인 채널 하나)의 캡처만으로 영상 전체를 구성하지 않는다. (실제 사례: 개인 채널 캡처만으로 만든 영상이 원저작자의 삭제 요청과 경고를 받았다.)
 

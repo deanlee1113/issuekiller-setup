@@ -1,0 +1,17 @@
+{
+  "backgroundColor": "#0d0f13",
+  "titleColor": "#ffffff",
+  "titleSizeAdjust": 0,
+  "badgeColor": "#ffcc4d",
+  "badgeTextColor": "#111318",
+  "taglineColor": "rgba(255,255,255,0.94)",
+  "taglineSize": 25,
+  "sceneLabelColor": "",
+  "sceneLabelTextColor": "#111318",
+  "captionBoxColor": "rgba(7,9,12,0.94)",
+  "captionTextColor": "#fffdf6",
+  "captionSizeAdjust": 0,
+  "highlightColor": "#ffdf63",
+  "highlightTextColor": "#111318",
+  "fontFamily": ""
+}

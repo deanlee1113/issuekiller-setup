@@ -45,6 +45,7 @@ def main() -> None:
         output.unlink()
 
     npx = _ik_env.tool("npx")
+    _ik_env.check_theme(project)
 
     print("[1/3] TypeScript check", flush=True)
     subprocess.run([npx, "tsc", "--noEmit"], cwd=project, check=True)

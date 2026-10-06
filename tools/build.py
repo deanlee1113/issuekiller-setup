@@ -4,14 +4,16 @@
   1) get.sh / get.ps1 / README.md : tools/templates/ 의 템플릿에 GH_REPO 를 채워 저장소 루트에 쓴다.
   2) docs/*.zip              : 명령어 방식이 안 되는 사람을 위한 Mac/Windows zip (프로젝트 + setup + 설치안내.txt)
   3) docs/index.html         : GitHub Pages 안내 페이지 (zip 은 base64 로 안에 넣고, 같은 폴더의 zip 으로도 연결)
+  4) docs/practice/, docs/guide/ index.html: tools/templates/practice.html, guide.html 이 있으면 GH_REPO 를 채워 쓴다 (없으면 건너뜀)
   0) (먼저) 쇼츠 제작 스킬 원본 .agents/skills/issuekiller-shorts 를 .claude/skills/issuekiller-shorts 로 복사하고
-     두 사본이 같은지, scripts/py.cmd 가 ASCII + CRLF 인지, kit-files.txt 의 경로가 모두 있는지 확인한다.
+     두 사본이 같은지, scripts/py.cmd 가 ASCII + CRLF 인지, kit-files.txt 의 경로가 모두 있는지,
+     화면 모양 기본값(theme.json · NewsTemplate.tsx · _ik_env.py)이 서로 같은지 확인한다.
      스킬은 .agents/ 쪽만 고친다 (.claude/ 쪽은 빌드가 덮어씀. Windows 때문에 심볼릭 링크는 쓰지 않는다).
 
   실행: python3 tools/build.py      (저장소 어디서 실행해도 됨)
   GH_REPO 는 아래 상수 하나만 바꾸면 스크립트·페이지·README 링크에 모두 반영된다.
 """
-import base64, datetime, pathlib, shutil, stat, zipfile
+import ast, base64, datetime, json, pathlib, re, shutil, stat, zipfile
 
 GH_REPO = "deanlee1113/issuekiller-setup"          # 예: "deanlee/issuekiller-setup"  ← 계정이 정해지면 여기만 바꾼다
 ZIP_TOP = "issuekiller"          # zip 안 최상위 폴더 이름
@@ -21,7 +23,7 @@ STAMP = (2026, 9, 30, 12, 0, 0)  # zip 안 파일 날짜 (빌드마다 바뀌지
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 TPL, DOCS = ROOT / "tools" / "templates", ROOT / "docs"
 PROJECT_FILES = ["package.json", "package-lock.json", "remotion.config.ts", "tsconfig.json",
-                 "AGENTS.md", "CLAUDE.md", "channel.json", ".gitignore"]
+                 "AGENTS.md", "CLAUDE.md", "channel.json", "theme.json", "my-rules.md", ".gitignore"]
 # .agents = 공통 스킬(Codex·Antigravity), .claude = Claude 용 사본·설정, .codex = Codex 설정 (점으로 시작하는 폴더도 포함)
 PROJECT_DIRS = ["src", "public", "scripts", ".agents", ".claude", ".codex"]
 SKIP_NAMES = {".DS_Store", "settings.local.json"}   # settings.local.json = 강사 개인 Claude 설정
@@ -83,6 +85,20 @@ def check_kit():
         parts = line.split()
         if len(parts) >= 2 and parts[0] in ("kit", "seed"):
             assert (ROOT / parts[1]).exists(), f"kit-files.txt 의 경로가 없습니다: {parts[1]}"
+    check_theme_defaults()
+
+
+def check_theme_defaults():
+    """theme.json(키트 기본값) = NewsTemplate.tsx 의 DEFAULT_THEME = _ik_env.py 의 DEFAULT_THEME 인지 확인."""
+    seed = json.loads((ROOT / "theme.json").read_text(encoding="utf-8"))
+    env_src = (SKILL_SRC / "scripts" / "_ik_env.py").read_text(encoding="utf-8")
+    env = next(ast.literal_eval(node.value) for node in ast.parse(env_src).body
+               if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", "") == "DEFAULT_THEME")
+    tsx = (ROOT / "src" / "NewsTemplate.tsx").read_text(encoding="utf-8")
+    block = re.search(r"const DEFAULT_THEME = \{(.*?)\n\};", tsx, re.S)
+    assert block, "NewsTemplate.tsx 에 DEFAULT_THEME 이 없습니다"
+    tpl = {k: json.loads(v) for k, v in re.findall(r"^\s*(\w+): (.+?),\s*$", block.group(1), re.M)}
+    assert seed == env == tpl, f"화면 모양 기본값이 서로 다릅니다:\n theme.json={seed}\n _ik_env={env}\n tsx={tpl}"
 
 
 def build_zip(os_name: str) -> pathlib.Path:
@@ -147,8 +163,29 @@ def main():
     })
     (DOCS / "index.html").write_text(html, encoding="utf-8")
     (DOCS / ".nojekyll").write_bytes(b"")               # Pages 가 파일을 그대로 서빙하게
+    outputs = [ROOT / "get.sh", ROOT / "get.ps1", ROOT / "README.md", mac, win, DOCS / "index.html"]
 
-    for p in (ROOT / "get.sh", ROOT / "get.ps1", ROOT / "README.md", mac, win, DOCS / "index.html"):
+    # 4) 실습 페이지 · 내 것으로 바꾸기 안내 (템플릿이 있을 때만)
+    for name in ("practice", "guide"):
+        page_tpl = TPL / f"{name}.html"
+        if not page_tpl.exists():
+            continue
+        page = DOCS / name / "index.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        text = page_tpl.read_text(encoding="utf-8")
+        if "__GH_REPO__" in text:                       # 자리표시자가 없는 페이지도 그대로 싣는다
+            text = fill(text, {"__GH_REPO__": GH_REPO})
+        page.write_text(text, encoding="utf-8")
+        outputs.append(page)
+
+    # 4-b) 실습 페이지에서 내려받는 '혼자 시작하기' 가이드 (AI 에게 첨부해 단계별 안내를 받는 파일)
+    guide_md = TPL / "practice-guide.md"
+    if guide_md.exists() and (DOCS / "practice").exists():
+        out = DOCS / "practice" / "shorts-start-guide.md"
+        out.write_text(fill(guide_md.read_text(encoding="utf-8"), {"__GH_REPO__": GH_REPO}), encoding="utf-8")
+        outputs.append(out)
+
+    for p in outputs:
         print(f"{p.relative_to(ROOT)}  {p.stat().st_size:,} bytes")
 
 

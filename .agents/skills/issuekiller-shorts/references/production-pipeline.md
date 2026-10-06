@@ -6,6 +6,7 @@
 |---|---|
 | 프로젝트 폴더 | Mac `~/issuekiller` · Windows `%USERPROFILE%\issuekiller` |
 | 채널 설정 | `channel.json` (`name`, `tagline`) |
+| 화면 모양 (색·글씨 크기·글꼴) | `theme.json` (키 표: SKILL.md "화면 모양 바꾸기") |
 | 화면 템플릿 (고치지 않음) | `src/NewsTemplate.tsx` (`createNewsComposition`, `NewsConfig`, `Scene`) |
 | 영상 등록부 (스크립트가 자동 수정) | `src/ClaudeGeneratedCompositions.tsx` (이름만 Claude, 모든 AI 공용) |
 | 영상별 Composition | `src/<ID>Composition.tsx` |
@@ -163,6 +164,16 @@ bash scripts/py.sh .agents/skills/issuekiller-shorts/scripts/validate_short.py -
 ```bash
 bash scripts/py.sh scripts/tool.py ffmpeg -v error -ss 2 -i output/20261001-topic-final.mp4 -frames:v 1 -q:v 2 qc/20261001-topic/frame-2s.jpg
 ```
+
+## 8. 화면 모양 미리보기 (theme.json 을 고친 뒤)
+
+영상 전체를 다시 렌더하지 않고 한 장면만 jpg 로 뽑는다. `--composition-id` 를 빼면 가장 최근 영상, `--seconds` 기본 2.
+
+```bash
+bash scripts/py.sh .agents/skills/issuekiller-shorts/scripts/preview_still.py --composition-id Auto20261001Topic --seconds 2
+```
+
+결과: `qc/<asset-root>/theme-preview-01.jpg` (이미 있으면 `-02`, `-03` …). 이 파일을 직접 열어 확인하고 수강생에게 보여 준다.
 
 ## 훅 카드와 썸네일
 

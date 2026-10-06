@@ -61,3 +61,50 @@ def load_channel(project: Path) -> dict:
         "hashtag": "#" + "".join(name.split()),
         "is_default": name == DEFAULT_CHANNEL_NAME,
     }
+
+
+# 화면 모양 설정(theme.json)의 기본값. 강의 키트의 theme.json · src/NewsTemplate.tsx 의 DEFAULT_THEME 과 같다.
+# (tools/build.py 가 세 곳이 같은지 확인한다)
+DEFAULT_THEME = {
+    "backgroundColor": "#0d0f13",
+    "titleColor": "#ffffff",
+    "titleSizeAdjust": 0,
+    "badgeColor": "#ffcc4d",
+    "badgeTextColor": "#111318",
+    "taglineColor": "rgba(255,255,255,0.94)",
+    "taglineSize": 25,
+    "sceneLabelColor": "",
+    "sceneLabelTextColor": "#111318",
+    "captionBoxColor": "rgba(7,9,12,0.94)",
+    "captionTextColor": "#fffdf6",
+    "captionSizeAdjust": 0,
+    "highlightColor": "#ffdf63",
+    "highlightTextColor": "#111318",
+    "fontFamily": "",
+}
+
+
+def check_theme(project: Path) -> None:
+    """렌더 전에 theme.json 을 확인한다.
+
+    - 파일이 없으면 기본값으로 새로 만든다 (화면 템플릿이 이 파일을 읽으므로 없으면 렌더가 멈춘다).
+    - JSON 형식이 깨졌으면 어디가 틀렸는지 알려주고 멈춘다. (값이 틀린 것은 템플릿이 기본값으로 대신한다)
+    """
+    path = project / "theme.json"
+    if not path.exists():
+        path.write_text(json.dumps(DEFAULT_THEME, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"theme.json 이 없어 기본 화면 모양으로 새로 만들었습니다: {path}", flush=True)
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError as error:
+        raise SystemExit(
+            f"theme.json 형식이 깨졌습니다 ({error.lineno}번째 줄 {error.colno}번째 글자: {error.msg}). "
+            "쉼표·큰따옴표·중괄호를 고친 뒤 다시 실행하세요. "
+            "모르겠으면 키 이름과 기본값은 AGENTS.md 의 '화면 모양 바꾸기' 표를 보세요."
+        )
+    if not isinstance(data, dict):
+        raise SystemExit("theme.json 은 { 로 시작하고 } 로 끝나는 설정 묶음이어야 합니다. AGENTS.md 의 '화면 모양 바꾸기' 표를 보세요.")
+    unknown = sorted(set(data) - set(DEFAULT_THEME))
+    if unknown:
+        print(f"참고: theme.json 에 쓰이지 않는 키가 있습니다 (무시됨): {', '.join(unknown)}", flush=True)
