@@ -40,14 +40,18 @@ function Ok($m)   { Write-Host "  [OK] $m" -ForegroundColor Green }
 function Warn($m) { Write-Host "  [!!] $m" -ForegroundColor Yellow }
 function Fail($m) { Write-Host "  [XX] $m" -ForegroundColor Red; $script:Failed += $m }
 function Has($cmd) { return [bool](Get-Command $cmd -ErrorAction SilentlyContinue) }
-function Download($url, $dest) {
+function Download($url, $dest, [int]$minBps = 50000, [int]$maxSec = 1800) {
   # curl.exe(Windows 10 1803+ 기본 포함)가 빠르고 안정적. 없으면 Invoke-WebRequest.
+  # 서버가 느리거나 연결이 멈추면 끝없이 기다리지 않도록: 45초 동안 $minBps(바이트/초)보다 느리면 끊고 재시도,
+  # 그래도 안 되면 실패로 돌려 예비 서버로 넘어가게 한다. 진행 막대를 보여 멈춘 것처럼 보이지 않게 한다.
   if (Test-Path $dest) { Remove-Item $dest -Force }
   if (Get-Command curl.exe -ErrorAction SilentlyContinue) {
-    & curl.exe -fL --retry 3 --retry-delay 3 --connect-timeout 20 -sS -o $dest $url
+    & curl.exe -fL --retry 2 --retry-delay 3 --connect-timeout 20 --speed-limit $minBps --speed-time 45 --max-time $maxSec --progress-bar -S -o $dest $url
     if ($LASTEXITCODE -eq 0 -and (Test-Path $dest)) { return $true }
+    if (Test-Path $dest) { Remove-Item $dest -Force -ErrorAction SilentlyContinue }
+    return $false   # curl 이 있는데 실패했다면 같은 서버를 다시 오래 기다리지 않는다 (예비 서버로)
   }
-  try { Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing; return (Test-Path $dest) } catch { return $false }
+  try { Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -TimeoutSec $maxSec; return (Test-Path $dest) } catch { return $false }
 }
 function Sha256($path) { return (Get-FileHash -Path $path -Algorithm SHA256).Hash.ToLower() }
 function Run($exe, [string[]]$argv) { & $exe @argv; return ($LASTEXITCODE -eq 0) }
@@ -156,15 +160,15 @@ if (FfmpegOk) {
   $ffZip = Join-Path $DlDir "ffmpeg.zip"
   $ffTmp = Join-Path $DlDir "ffmpeg-tmp"
   $got = $false
-  Write-Host "  다운로드: ffmpeg-release-essentials.zip"
-  if (Download "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" $ffZip) {
+  Write-Host "  다운로드: ffmpeg-release-essentials.zip (해외 서버라 느릴 수 있어요. 너무 느리면 자동으로 예비 서버로 넘어가요)"
+  if (Download "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" $ffZip 200000 900) {
     try {
       $want = ((Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip.sha256" -UseBasicParsing).Content.Trim() -split "\s+")[0].ToLower()
       if ($want -and ((Sha256 $ffZip) -ne $want)) { Warn "gyan.dev 파일 검증(SHA256) 불일치" } else { $got = $true }
     } catch { $got = $true }
   }
   if (-not $got) {
-    Warn "기본 다운로드 실패 -> 예비 서버(BtbN, 약 200MB)로 재시도"
+    Warn "기본 서버가 느리거나 멈춰서 예비 서버(GitHub, 약 200MB)로 다시 받습니다"
     $got = Download "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip" $ffZip
   }
   if ($got) {
