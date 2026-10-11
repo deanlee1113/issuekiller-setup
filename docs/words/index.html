@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>쉬운 AI 용어</title>
+<meta name="description" content="단톡방에 하루 3개씩 올린 AI 용어를 한곳에 모았어요.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  /* 40~60대가 휴대폰으로 읽는 페이지: 큰 글씨, 넓은 줄 간격, 차분한 미색 바탕 + 먹색 글씨 + 녹색 포인트 하나.
+     단일 밝은 테마(의도적: 종이처럼 읽히게). */
+  :root {
+    --bg: #F7F5F0; --card: #FFFFFF; --ink: #23272E; --soft: #5E6670; --faint: #8A9098;
+    --line: #E5E1D8; --accent: #3D6B5C; --accent-ink: #2E5446; --tint: #EEF3EF; --tint-line: #D3E0D8;
+    --font: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 20px; line-height: 1.75; letter-spacing: -0.01em; word-break: keep-all; overflow-wrap: anywhere; }
+  .wrap { max-width: 40rem; margin: 0 auto; padding-inline: 18px; }
+
+  .hero { padding: 2.6rem 0 1.6rem; }
+  .hero .tag { font-size: .85rem; color: var(--faint); font-weight: 600; }
+  .hero h1 { font-size: 2.3rem; line-height: 1.3; font-weight: 800; letter-spacing: -0.03em; margin: .5rem 0 .7rem; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { margin: 0; color: var(--soft); font-size: 1.05rem; }
+  .stats { margin-top: 1.1rem; color: var(--soft); font-size: .95rem; }
+  .stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .tools { position: sticky; top: 0; z-index: 5; background: rgba(247,245,240,.96); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); padding: .75rem 0; }
+  .search { width: 100%; font: inherit; font-size: 1.05rem; padding: .75rem 1rem; border: 1.5px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); }
+  .search::placeholder { color: var(--faint); }
+  .search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--tint); }
+  .chips { display: flex; gap: .5rem; overflow-x: auto; margin-top: .65rem; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chips a { flex: none; text-decoration: none; color: var(--soft); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: .2rem .9rem; font-size: .95rem; font-weight: 600; }
+  .chips a.new { color: #fff; background: var(--accent); border-color: var(--accent); }
+
+  main { padding: 1.6rem 0 2.4rem; display: grid; gap: 2.6rem; }
+  .day h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 .8rem; display: flex; align-items: baseline; gap: .6rem; }
+  .day h2 small { font-size: .8rem; font-weight: 700; color: var(--accent); }
+  .day .line { margin: 0 0 1.1rem; background: var(--tint); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; padding: .8rem 1rem; color: var(--accent-ink); font-weight: 600; }
+  .terms { display: grid; gap: 1.1rem; }
+
+  .term { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 1.4rem 1.3rem 1.2rem; box-shadow: 0 1px 2px rgba(35,39,46,.04); }
+  .term .no { font-size: .85rem; color: var(--faint); font-weight: 600; }
+  .term h3 { margin: .15rem 0 1rem; font-size: 1.75rem; line-height: 1.35; font-weight: 800; letter-spacing: -0.02em; }
+  .term h3 span { display: block; font-size: .95rem; font-weight: 500; color: var(--faint); letter-spacing: 0; }
+  .row { padding: .75rem 0; border-top: 1px solid var(--line); }
+  .row:first-of-type { border-top: 0; padding-top: 0; }
+  .row dt { font-size: .85rem; font-weight: 700; color: var(--accent); margin-bottom: .15rem; }
+  .row dd { margin: 0; }
+  .row.mean dd { font-size: 1.15rem; font-weight: 700; line-height: 1.6; }
+  .tip { margin-top: .9rem; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 14px; padding: 1.1rem 1.1rem 1rem; }
+  .tip b { display: block; color: var(--accent-ink); margin-bottom: .35rem; }
+  .tip p { margin: 0 0 .8rem; }
+  .tip pre { margin: 0; white-space: pre-wrap; font: inherit; background: var(--card); border: 1px solid var(--tint-line); border-radius: 12px; padding: .85rem 1rem; }
+  .copy { width: 100%; margin-top: .75rem; font: inherit; font-weight: 700; font-size: 1.02rem; cursor: pointer; border-radius: 12px; padding: .8rem 1rem; border: 0; background: var(--accent); color: #fff; }
+  .copy:active { background: var(--accent-ink); }
+
+  .empty { background: var(--card); border: 1px dashed var(--line); border-radius: 18px; padding: 1.4rem; text-align: center; color: var(--soft); }
+  .soon h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 .7rem; }
+  .soon ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .soon li { display: flex; gap: 1rem; padding: .7rem .2rem; border-bottom: 1px solid var(--line); color: var(--soft); }
+  .soon li b { color: var(--ink); white-space: nowrap; font-weight: 700; }
+  footer { border-top: 1px solid var(--line); padding: 1.4rem 0 2.8rem; font-size: .95rem; color: var(--soft); }
+  footer a { color: var(--accent-ink); font-weight: 700; }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="tag">관광벤처연구회 · 쇼츠 AI 강의 후속</div>
+    <h1>하루 3개,<br><em>쉬운 AI 용어</em></h1>
+    <p>단톡방에 올린 용어를 한곳에 모았어요. 모르는 말이 나오면 여기서 찾아보세요.</p>
+    <div class="stats">지금까지 <b id="n-terms">0</b>개 · <b id="n-days">0</b>일차까지 올라왔어요</div>
+  </div>
+</header>
+
+<div class="tools">
+  <div class="wrap">
+    <label class="sr" for="q" style="position:absolute;left:-9999px">용어 찾기</label>
+    <input id="q" class="search" type="search" placeholder="용어 찾기 (예: 환각, 프롬프트)" autocomplete="off">
+    <nav class="chips" id="chips" aria-label="날짜별로 보기"></nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="days"></div>
+  <p class="empty" id="none" hidden>찾는 용어가 아직 없어요. 곧 올라올 수도 있어요!</p>
+  <section class="soon" id="soon" hidden>
+    <h2>앞으로 올라올 용어</h2>
+    <ul id="soon-list"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    다시 해 보기: <a href="../practice/">쇼츠 실습 페이지</a> · <a href="../">설치 안내</a><br>
+    궁금한 용어가 있으면 단톡방에 남겨 주세요.
+  </div>
+</footer>
+
+<script type="application/json" id="data">{"days": [{"day": 1, "oneLine": "부탁은 자세하게(프롬프트), 만드는 건 AI에게(생성형 AI), 사실과 추측은 나눠서(환각 주의)!", "terms": [{"name": "프롬프트", "en": "Prompt", "meaning": "AI에게 보내는 부탁의 말이에요.", "analogy": "식당에서 하는 주문. \"밥 줘\"보다 \"된장찌개에 밥 하나, 덜 맵게\"라고 해야 원하는 음식이 나와요.", "example": "\"50대 초보를 위한 부산 낚시터 3곳을 쉬운 말로 알려 줘\""}, {"name": "생성형 AI", "en": "Generative AI", "meaning": "글, 그림, 목소리, 영상처럼 세상에 없던 것을 새로 만들어 내는 AI예요.", "analogy": "재료를 주면 요리를 새로 만들어 내는 요리사", "example": "대본 써 주기, 그림 그려 주기, 내 글을 목소리로 읽어 주기"}, {"name": "환각", "en": "할루시네이션 · Hallucination", "meaning": "AI가 모르는 것을 아는 척하며 그럴듯한 거짓말을 하는 거예요.", "analogy": "길을 모르면서 \"저쪽이에요\" 하고 자신 있게 알려 주는 사람", "example": "없는 책 제목이나 틀린 날짜를 진짜처럼 말하는 것", "tip": {"title": "환각 줄이는 팁", "text": "AI에게 \"확인된 사실\"과 \"AI의 생각(추론)\"을 나눠서 알려 달라고 하세요. 섞여 있으면 어디까지 믿어도 되는지 알 수 없거든요.", "copy": "답할 때 확인된 사실과 네 추측을 나눠서 알려 줘.\n사실에는 출처를 붙이고, 모르는 건 모른다고 말해 줘."}}]}, {"day": 2, "oneLine": "LLM은 말 잘하는 두뇌, 학습은 그 두뇌가 공부하는 과정, 모델은 공부를 마친 버전 이름!", "terms": [{"name": "LLM", "en": "대형 언어 모델 · Large Language Model", "meaning": "엄청나게 많은 글을 읽고 말하는 법을 익힌 AI의 두뇌예요. ChatGPT, Claude, Gemini 안에 들어 있어요.", "analogy": "도서관 책을 거의 다 읽은 '말 잇기 달인'. 앞말을 보고 다음에 올 가장 자연스러운 말을 이어 붙여요.", "example": "\"오늘 날씨가 좋아서\" 다음에 \"산책 가고 싶다\"가 자연스럽다는 걸 알아요."}, {"name": "학습", "en": "Training", "meaning": "AI가 아주 많은 예시를 보면서 규칙을 스스로 익히는 과정이에요.", "analogy": "아이가 그림책을 수천 번 보면서 '이게 강아지구나' 하고 알게 되는 것", "example": "수많은 문장을 읽으며 맞춤법, 말투, 상식을 익혀요.", "tip": {"title": "알아 두면 좋은 점", "text": "AI는 공부를 마친 날 이후의 일은 모를 수 있어요. 최신 소식이 필요하면 검색해서 알려 달라고 하세요.", "copy": "이 질문은 최신 정보가 필요해.\n인터넷에서 검색해서 확인한 내용으로 답하고, 언제 기준인지도 알려 줘."}}, {"name": "모델", "en": "Model", "meaning": "공부(학습)를 마친 AI 하나하나의 이름이에요. 같은 회사에도 여러 모델이 있어요.", "analogy": "같은 회사 자동차도 경차, SUV처럼 모델마다 성격이 다른 것", "example": "ChatGPT 안에서도 빨리 답하는 모델, 깊게 생각하고 답하는 모델을 골라 쓸 수 있어요.", "tip": {"title": "고르는 요령", "text": "간단한 질문은 빠른 모델로, 중요한 글이나 계산은 깊게 생각하는 모델로 물어보세요."}}]}], "upcoming": [{"day": 2, "terms": ["LLM", "학습", "모델"]}, {"day": 3, "terms": ["토큰", "맥락", "멀티모달"]}, {"day": 4, "terms": ["에이전트", "스킬", "자동화"]}, {"day": 5, "terms": ["클라우드", "API", "로그인 연결(OAuth)"]}, {"day": 6, "terms": ["템플릿", "렌더링", "TTS"]}, {"day": 7, "terms": ["딥페이크", "AI 표시", "저작권"]}]}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var days = D.days.slice().sort(function (a, b) { return b.day - a.day; });   // 최신이 위
+  var latest = days.length ? days[0].day : 0;
+  var total = days.reduce(function (n, d) { return n + d.terms.length; }, 0);
+  document.getElementById("n-terms").textContent = total;
+  document.getElementById("n-days").textContent = latest;
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function row(cls, label, text) {
+    var r = el("div", "row " + cls); r.appendChild(el("dt", "", label)); r.appendChild(el("dd", "", text)); return r;
+  }
+
+  var chips = document.getElementById("chips"), box = document.getElementById("days");
+  var cards = [];
+  days.forEach(function (d) {
+    var a = el("a", d.day === latest ? "new" : "", d.day + "일차"); a.href = "#day-" + d.day; chips.appendChild(a);
+
+    var sec = el("section", "day"); sec.id = "day-" + d.day;
+    var h = el("h2", "", d.day + "일차"); if (d.day === latest) h.appendChild(el("small", "", "가장 최근"));
+    sec.appendChild(h);
+    if (d.oneLine) sec.appendChild(el("p", "line", d.oneLine));
+    var list = el("div", "terms");
+    d.terms.forEach(function (t, i) {
+      var c = el("article", "term");
+      c.appendChild(el("div", "no", d.day + "일차 · " + (i + 1)));
+      var h3 = el("h3", "", t.name); if (t.en) h3.appendChild(el("span", "", t.en)); c.appendChild(h3);
+      var dl = el("dl", ""); dl.style.margin = "0";
+      dl.appendChild(row("mean", "뜻", t.meaning));
+      if (t.analogy) dl.appendChild(row("", "비유", t.analogy));
+      if (t.example) dl.appendChild(row("", "예", t.example));
+      c.appendChild(dl);
+      if (t.tip) {
+        var tip = el("div", "tip"); tip.appendChild(el("b", "", t.tip.title || "팁"));
+        if (t.tip.text) tip.appendChild(el("p", "", t.tip.text));
+        if (t.tip.copy) {
+          tip.appendChild(el("pre", "", t.tip.copy));
+          var btn = el("button", "copy", "이 문장 복사하기"); btn.type = "button";
+          btn.addEventListener("click", function () { copy(t.tip.copy, btn); });
+          tip.appendChild(btn);
+        }
+        c.appendChild(tip);
+      }
+      list.appendChild(c);
+      cards.push({ el: c, day: sec, hay: [t.name, t.en, t.meaning, t.analogy, t.example, t.tip && t.tip.text].join(" ").toLowerCase() });
+    });
+    sec.appendChild(list); box.appendChild(sec);
+  });
+
+  // 앞으로 올라올 용어 (이미 올라간 날은 뺀다)
+  var soon = (D.upcoming || []).filter(function (u) { return u.day > latest; });
+  if (soon.length) {
+    var ul = document.getElementById("soon-list");
+    soon.forEach(function (u) { var li = el("li"); li.appendChild(el("b", "", u.day + "일차")); li.appendChild(el("span", "", u.terms.join(", "))); ul.appendChild(li); });
+    document.getElementById("soon").hidden = false;
+  }
+
+  // 찾기
+  var q = document.getElementById("q"), none = document.getElementById("none");
+  q.addEventListener("input", function () {
+    var s = q.value.trim().toLowerCase(), shown = 0;
+    cards.forEach(function (c) { var ok = !s || c.hay.indexOf(s) >= 0; c.el.hidden = !ok; if (ok) shown++; });
+    document.querySelectorAll(".day").forEach(function (sec) { sec.hidden = !!s && !sec.querySelector(".term:not([hidden])"); });
+    none.hidden = shown > 0;
+  });
+
+  function copy(text, btn) {
+    function done(ok) { var o = btn.textContent; btn.textContent = ok ? "복사했어요! AI 대화창에 붙여 넣으세요" : "복사가 막혔어요. 글을 길게 눌러 복사하세요"; setTimeout(function () { btn.textContent = o; }, 2600); }
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallback(text)); }); }
+    else done(fallback(text));
+  }
+  function fallback(text) {
+    var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); return ok;
+  }
+})();
+</script>
+</html>

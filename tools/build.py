@@ -166,7 +166,7 @@ def main():
     outputs = [ROOT / "get.sh", ROOT / "get.ps1", ROOT / "README.md", mac, win, DOCS / "index.html"]
 
     # 4) 실습 페이지 · 내 것으로 바꾸기 안내 (템플릿이 있을 때만)
-    for name in ("practice", "guide"):
+    for name in ("practice", "guide", "words"):
         page_tpl = TPL / f"{name}.html"
         if not page_tpl.exists():
             continue
@@ -175,6 +175,9 @@ def main():
         text = page_tpl.read_text(encoding="utf-8")
         if "__GH_REPO__" in text:                       # 자리표시자가 없는 페이지도 그대로 싣는다
             text = fill(text, {"__GH_REPO__": GH_REPO})
+        if "__WORDS_JSON__" in text:                    # 하루 3개 AI 용어: words.json 을 페이지 안에 싣는다
+            data = json.loads((TPL / "words.json").read_text(encoding="utf-8"))
+            text = text.replace("__WORDS_JSON__", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
         page.write_text(text, encoding="utf-8")
         outputs.append(page)
 
