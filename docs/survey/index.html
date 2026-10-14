@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>후속 강의 설문</title>
-<meta name="description" content="쇼츠 AI 강의를 들으신 분들께 후속 강의에 대한 의견을 여쭙니다. 2분이면 끝나요.">
+<meta name="description" content="쇼츠 AI 강의를 들으신 분들께 후속 강의에 대한 의견을 여쭙니다. 30초면 끝나요.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   /* 용어 페이지와 같은 집: 미색 바탕 + 먹색 글씨 + 녹색 포인트 하나. 40~60대가 휴대폰으로 누르기 쉽게 큰 글씨·큰 선택 칸.
@@ -110,11 +110,11 @@
   <div class="wrap">
     <div class="tag">관광벤처연구회 · 쇼츠 AI 강의 후속</div>
     <h1>다음 강의,<br><em>여러분 의견으로</em> 만들게요</h1>
-    <p>2분이면 끝나요. 고르신 답을 보고 후속 강의 내용과 방식을 정하겠습니다.</p>
+    <p>30초면 끝나요. 고르신 답을 보고 후속 강의 내용과 방식을 정하겠습니다.</p>
   </div>
 </header>
 
-<div class="progress" aria-hidden="true"><div class="wrap"><div class="track"><div class="fill" id="pfill"></div></div><small id="ptext">0 / 7</small></div></div>
+<div class="progress" aria-hidden="true"><div class="wrap"><div class="track"><div class="fill" id="pfill"></div></div><small id="ptext">0 / 9</small></div></div>
 
 <main class="wrap">
   <p class="note" id="again-note" hidden>이미 참여해 주셨어요. 다시 보내시면 앞의 답이 새 답으로 바뀌어요.</p>
@@ -157,10 +157,22 @@
       <input class="etc" type="text" id="q6etc" maxlength="100" placeholder="기타: 배우고 싶은 강의를 적어 주세요" hidden>
     </fieldset>
 
-    <fieldset data-step="q7">
-      <legend>7. 하고 싶은 말</legend>
+    <fieldset data-q="q7" data-type="one" data-required>
+      <legend>7. 지금 AI를 어느 정도 쓰고 계신가요?</legend>
+      <p class="hint">가장 가까운 것 하나 · <b>필수</b></p>
+      <div class="opts" data-opts="써 보고 싶지만 아직 잘 못 써요|무료로 질문·대화 정도 해 봐요|유료로 쓰면서 일이나 생활에 활용해요|에이전트·바이브코딩으로 직접 만들어 써요 (말로 시켜 프로그램·자동화 만들기)"></div>
+    </fieldset>
+
+    <fieldset data-q="q8" data-type="many">
+      <legend>8. 유료로 구독 중인 AI가 있나요?</legend>
+      <p class="hint">여러 개 골라도 돼요</p>
+      <div class="opts" data-opts="ChatGPT 유료|Claude 유료|Gemini 유료|그 밖의 AI 유료|무료만 써요"></div>
+    </fieldset>
+
+    <fieldset data-step="q9">
+      <legend>9. 하고 싶은 말</legend>
       <p class="hint">자유롭게 · 선택</p>
-      <textarea id="q7" maxlength="500" placeholder="예: 업로드까지 같이 해 보고 싶어요"></textarea>
+      <textarea id="q9" maxlength="500" placeholder="예: 업로드까지 같이 해 보고 싶어요"></textarea>
     </fieldset>
 
     <fieldset data-step="contact">
@@ -233,7 +245,7 @@
       if (fs.dataset.type === "many") { if (picked.length) a[q] = picked; } else if (picked[0]) a[q] = picked[0];
     });
     if (!etc.hidden && etc.value.trim()) a.q6etc = etc.value.trim();
-    var t = document.getElementById("q7").value.trim(); if (t) a.q7 = t;
+    var t = document.getElementById("q9").value.trim(); if (t) a.q9 = t;
     return a;
   }
   function fill(a) {
@@ -241,7 +253,7 @@
       [].concat(a[q]).forEach(function (v) { var i = document.querySelector('input[name="' + q + '"][value="' + String(v).replace(/"/g, '\\"') + '"]'); if (i) i.checked = true; });
     });
     if (a && a.q6etc) etc.value = a.q6etc;
-    if (a && a.q7) document.getElementById("q7").value = a.q7;
+    if (a && a.q9) document.getElementById("q9").value = a.q9;
     syncEtc();
   }
   if (saved.answers) {
@@ -255,9 +267,9 @@
   // 진행 막대: 답한 질문 수 / 7
   var pfill = document.getElementById("pfill"), ptext = document.getElementById("ptext");
   function progress() {
-    var a = answers(), n = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"].filter(function (q) { return a[q]; }).length;
-    if (done) n = 7;
-    pfill.style.width = (n / 7 * 100) + "%"; ptext.textContent = n + " / 7";
+    var a = answers(), n = ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9"].filter(function (q) { return a[q]; }).length;
+    if (done) n = 9;
+    pfill.style.width = (n / 9 * 100) + "%"; ptext.textContent = n + " / 9";
   }
   form.addEventListener("change", progress); form.addEventListener("input", progress); progress();
 
@@ -284,7 +296,7 @@
   else { steps.slice(1).forEach(function (el) { el.classList.add("pending"); }); tail.forEach(function (t) { t.classList.add("pending"); }); }
 
   steps.forEach(function (fs, i) {
-    var many = fs.dataset.type === "many", isText = fs.dataset.step === "q7";
+    var many = fs.dataset.type === "many", isText = fs.dataset.step === "q9";
     if (fs.dataset.type === "one") {
       fs.addEventListener("change", function (e) { if (e.isTrusted) setTimeout(function () { reveal(i + 1); }, 320); });
       return;
@@ -292,7 +304,7 @@
     if (!many && !isText) return;               // 연락처 단계는 버튼 없음
     var btn = document.createElement("button"); btn.type = "button"; btn.className = "next";
     function sync() {
-      var any = many ? !!fs.querySelector("input:checked") : !!document.getElementById("q7").value.trim();
+      var any = many ? !!fs.querySelector("input:checked") : !!document.getElementById("q9").value.trim();
       btn.textContent = any ? "다음" : (fs.hasAttribute("data-required") ? "하나 이상 골라 주세요" : "건너뛰기");
       btn.classList.toggle("go", any); btn.disabled = !any && fs.hasAttribute("data-required");
     }
@@ -313,7 +325,7 @@
     if (firstBad) {
       for (var k = 0; k <= steps.indexOf(firstBad); k++) if (!shown(steps[k])) { steps[k].classList.remove("pending"); steps[k].classList.add("enter"); }
       document.querySelectorAll("fieldset.err").forEach(function (fs) { fs.classList.remove("shake"); void fs.offsetWidth; fs.classList.add("shake"); });
-      return err("필수 질문(2번, 4번)을 골라 주세요.", firstBad);
+      return err("필수 질문(2번, 4번, 7번)을 골라 주세요.", firstBad);
     }
     var name = nameEl.value.trim(), phone = phoneEl.value.trim();
     if ((name || phone) && !agreeEl.checked) return err("이름·전화번호를 남기시려면 개인정보 동의에 체크해 주세요. 원치 않으시면 두 칸을 비워 주세요.", consent);
