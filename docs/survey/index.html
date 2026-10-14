@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>후속 강의 설문</title>
+<meta name="description" content="쇼츠 AI 강의를 들으신 분들께 후속 강의에 대한 의견을 여쭙니다. 2분이면 끝나요.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  /* 용어 페이지와 같은 집: 미색 바탕 + 먹색 글씨 + 녹색 포인트 하나. 40~60대가 휴대폰으로 누르기 쉽게 큰 글씨·큰 선택 칸.
+     단일 밝은 테마(의도적). 결과는 강사용 현황판이 아니라 별도 결과 페이지에서만 본다. */
+  :root {
+    --bg: #F7F5F0; --card: #FFFFFF; --ink: #23272E; --soft: #5E6670; --faint: #8A9098;
+    --line: #E5E1D8; --accent: #3D6B5C; --accent-ink: #2E5446; --tint: #EEF3EF; --tint-line: #D3E0D8; --bad: #A33A2B;
+    --font: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 20px; line-height: 1.7; letter-spacing: -0.01em; word-break: keep-all; overflow-wrap: anywhere; }
+  .wrap { max-width: 40rem; margin: 0 auto; padding-inline: 18px; }
+
+  .hero { padding: 2.6rem 0 1.4rem; }
+  .hero .tag { font-size: .85rem; color: var(--faint); font-weight: 600; }
+  .hero h1 { font-size: 2.1rem; line-height: 1.3; font-weight: 800; letter-spacing: -0.03em; margin: .5rem 0 .7rem; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { margin: 0; color: var(--soft); font-size: 1.05rem; }
+
+  form { display: grid; gap: 1.1rem; padding-bottom: 3rem; }
+  fieldset { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 1.3rem 1.2rem 1.1rem; min-width: 0; }
+  fieldset.err { border-color: var(--bad); }
+  legend { float: left; width: 100%; padding: 0; margin: 0 0 .25rem; font-size: 1.2rem; font-weight: 800; line-height: 1.45; }
+  legend + * { clear: both; }
+  .hint { margin: 0 0 .8rem; font-size: .9rem; color: var(--faint); font-weight: 600; }
+  .hint b { color: var(--accent); }
+  .need { color: var(--bad); font-size: .9rem; font-weight: 700; margin: .5rem 0 0; }
+  .opts { display: grid; gap: .55rem; }
+  .opt { display: flex; align-items: center; gap: .8rem; border: 1.5px solid var(--line); border-radius: 14px; padding: .8rem .95rem; cursor: pointer; background: var(--card); }
+  .opt input { width: 1.4rem; height: 1.4rem; flex: none; margin: 0; accent-color: var(--accent); }
+  .opt:has(input:checked) { border-color: var(--accent); background: var(--tint); font-weight: 700; }
+  .opt:focus-within { box-shadow: 0 0 0 3px var(--tint-line); }
+  input[type=text], input[type=tel], textarea { width: 100%; font: inherit; font-size: 1.05rem; padding: .75rem .95rem; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); }
+  input[type=text]:focus, input[type=tel]:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--tint); }
+  textarea { min-height: 7rem; resize: vertical; }
+  .etc { margin-top: .55rem; }
+  label.lb { display: block; font-weight: 700; font-size: .95rem; margin: .2rem 0 .3rem; }
+  .two { display: grid; gap: .8rem; }
+
+  .consent { margin-top: 1rem; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 14px; padding: 1rem; font-size: .95rem; color: var(--accent-ink); }
+  .consent ul { margin: .3rem 0 .8rem; padding-left: 1.2rem; }
+  .consent .opt { background: var(--card); }
+
+  .submit { width: 100%; font: inherit; font-weight: 800; font-size: 1.15rem; cursor: pointer; border-radius: 14px; padding: 1rem; border: 0; background: var(--accent); color: #fff; }
+  .submit:disabled { opacity: .6; cursor: wait; }
+  .msg { margin: 0; text-align: center; color: var(--bad); font-weight: 700; }
+
+  .done { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 2rem 1.3rem; text-align: center; margin-bottom: 3rem; }
+  .done h2 { font-size: 1.6rem; margin: 0 0 .6rem; }
+  .done p { margin: 0 0 1.2rem; color: var(--soft); }
+  .done a { color: var(--accent-ink); font-weight: 700; }
+  .again { font: inherit; font-weight: 700; background: none; border: 1.5px solid var(--line); border-radius: 12px; padding: .6rem 1rem; color: var(--soft); cursor: pointer; }
+  .note { background: var(--tint); border-radius: 12px; padding: .8rem 1rem; font-size: .95rem; color: var(--accent-ink); margin: 0 0 1.1rem; }
+
+  /* ---- 움직임: 토스처럼 차분하게. 짧고 부드러운 감속 곡선 하나만 쓴다. 동작 줄이기 설정이면 모두 끈다. */
+  :root { --ease: cubic-bezier(.2, .8, .2, 1); }
+  .progress { position: sticky; top: 0; z-index: 10; background: rgba(247,245,240,.94); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .progress .wrap { display: flex; align-items: center; gap: .9rem; padding-block: .6rem; }
+  .progress .track { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .progress .fill { height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width .55s var(--ease); }
+  .progress small { font-size: .85rem; color: var(--soft); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .hero .wrap > * { animation: rise .7s var(--ease) both; }
+  .hero .wrap > :nth-child(2) { animation-delay: .07s; }
+  .hero .wrap > :nth-child(3) { animation-delay: .14s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .opt { transition: background-color .25s var(--ease), border-color .25s var(--ease), transform .15s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .opt:active { transform: scale(.98); }
+  .opt span { transition: font-weight .2s; }
+  fieldset { transition: border-color .3s var(--ease); }
+  fieldset.shake { animation: shake .42s var(--ease); }
+  @keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+  .fold { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .4s var(--ease), opacity .3s var(--ease); }
+  .fold.open { grid-template-rows: 1fr; opacity: 1; }
+  .fold > div { overflow: hidden; min-height: 0; }
+  .submit { display: flex; align-items: center; justify-content: center; gap: .6rem; transition: transform .15s var(--ease), background-color .2s; -webkit-tap-highlight-color: transparent; }
+  .submit:active { transform: scale(.98); }
+  .spin { width: 1.05em; height: 1.05em; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .done { animation: rise .6s var(--ease) both; }
+  .check { display: block; width: 76px; height: 76px; margin: 0 auto 1rem; }
+  .check .ring { fill: var(--tint); stroke: var(--accent); stroke-width: 3; stroke-dasharray: 214; stroke-dashoffset: 214; animation: draw .7s var(--ease) forwards; }
+  .check .tick { fill: none; stroke: var(--accent); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 44; stroke-dashoffset: 44; animation: draw .45s .45s var(--ease) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .msg:not([hidden]) { animation: rise .35s var(--ease) both; }
+  .pending { display: none !important; }
+  .enter { animation: rise .55s var(--ease) both; }
+  .next { display: block; width: 100%; margin-top: .9rem; font: inherit; font-weight: 700; font-size: 1.02rem; cursor: pointer; border-radius: 12px; padding: .75rem 1rem;
+          border: 1.5px solid var(--accent); background: var(--card); color: var(--accent-ink); transition: background-color .2s var(--ease), color .2s var(--ease), opacity .2s, transform .15s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .next.go { background: var(--accent); color: #fff; }
+  .next:active { transform: scale(.98); }
+  .next:disabled { opacity: .45; cursor: not-allowed; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+    .check .ring, .check .tick { stroke-dashoffset: 0; }
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="tag">관광벤처연구회 · 쇼츠 AI 강의 후속</div>
+    <h1>다음 강의,<br><em>여러분 의견으로</em> 만들게요</h1>
+    <p>2분이면 끝나요. 고르신 답을 보고 후속 강의 내용과 방식을 정하겠습니다.</p>
+  </div>
+</header>
+
+<div class="progress" aria-hidden="true"><div class="wrap"><div class="track"><div class="fill" id="pfill"></div></div><small id="ptext">0 / 7</small></div></div>
+
+<main class="wrap">
+  <p class="note" id="again-note" hidden>이미 참여해 주셨어요. 다시 보내시면 앞의 답이 새 답으로 바뀌어요.</p>
+  <form id="f" novalidate>
+
+    <fieldset data-q="q1" data-type="one">
+      <legend>1. 이번 강의에서 어디까지 해 보셨나요?</legend>
+      <p class="hint">하나만 골라 주세요</p>
+      <div class="opts" data-opts="영상 1편까지 완성|중간까지 함|설치에서 막힘|실습은 못 함"></div>
+    </fieldset>
+
+    <fieldset data-q="q2" data-type="one" data-required>
+      <legend>2. 쇼츠 만들기 후속 실습 강의가 필요하신가요?</legend>
+      <p class="hint">하나만 골라 주세요 · <b>필수</b></p>
+      <div class="opts" data-opts="꼭 필요해요|열리면 참여할게요|필요 없어요"></div>
+    </fieldset>
+
+    <fieldset data-q="q3" data-type="many">
+      <legend>3. 후속 실습에서 가장 배우고 싶은 것은?</legend>
+      <p class="hint">여러 개 골라도 돼요</p>
+      <div class="opts" data-opts="설치·기초 다시 차근차근|내 채널 컨셉 잡기|내 사진·내 가게로 영상 만들기|여러 편 자동으로 만들기|유튜브 업로드까지 자동화|인스타 릴스·스레드에도 올리기|쇼츠로 수익 내는 법"></div>
+    </fieldset>
+
+    <fieldset data-q="q4" data-type="many" data-required>
+      <legend>4. 원하는 수업 방식은?</legend>
+      <p class="hint">여러 개 골라도 돼요 · <b>필수</b></p>
+      <div class="opts" data-opts="개인 1:1|소그룹(3~6명)|그룹 강의(10명 이상)|온라인(줌)"></div>
+    </fieldset>
+
+    <fieldset data-q="q5" data-type="many">
+      <legend>5. 편한 시간은?</legend>
+      <p class="hint">여러 개 골라도 돼요</p>
+      <div class="opts" data-opts="평일 낮|평일 저녁|주말"></div>
+    </fieldset>
+
+    <fieldset data-q="q6" data-type="many">
+      <legend>6. 쇼츠 말고 관심 있는 AI 강의는?</legend>
+      <p class="hint">여러 개 골라도 돼요</p>
+      <div class="opts" data-opts="ChatGPT 기초 활용|블로그·글쓰기|상세페이지·디자인|AI 이미지·영상|업무 자동화(엑셀·문서)|마케팅·광고|기타"></div>
+      <input class="etc" type="text" id="q6etc" maxlength="100" placeholder="기타: 배우고 싶은 강의를 적어 주세요" hidden>
+    </fieldset>
+
+    <fieldset data-step="q7">
+      <legend>7. 하고 싶은 말</legend>
+      <p class="hint">자유롭게 · 선택</p>
+      <textarea id="q7" maxlength="500" placeholder="예: 업로드까지 같이 해 보고 싶어요"></textarea>
+    </fieldset>
+
+    <fieldset data-step="contact">
+      <legend>후속 강의 안내를 받으시려면</legend>
+      <p class="hint">이름과 전화번호는 <b>선택</b>이에요. 비워 두셔도 설문은 보내져요.</p>
+      <div class="two">
+        <div><label class="lb" for="name">이름</label><input type="text" id="name" maxlength="30" autocomplete="name" placeholder="예: 김영희"></div>
+        <div><label class="lb" for="phone">전화번호</label><input type="tel" id="phone" maxlength="20" autocomplete="tel" inputmode="tel" placeholder="예: 010-1234-5678"></div>
+      </div>
+      <div class="fold" id="fold"><div>
+      <div class="consent" id="consent">
+        <b>개인정보 수집·이용 동의</b>
+        <ul>
+          <li>모으는 것: 이름, 전화번호</li>
+          <li>쓰는 곳: 후속 강의 안내 연락에만 사용</li>
+          <li>보관 기간: 안내가 끝나면 지우며, 길어도 6개월 안에 지웁니다</li>
+          <li>동의하지 않으셔도 설문은 보낼 수 있어요 (이름·전화번호만 저장되지 않아요)</li>
+        </ul>
+        <label class="opt"><input type="checkbox" id="agree"> <span>위 내용에 동의합니다</span></label>
+      </div>
+      </div></div>
+    </fieldset>
+
+    <p class="msg" id="msg" hidden></p>
+    <button class="submit" id="send" type="submit">설문 보내기</button>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <svg class="check" viewBox="0 0 76 76" aria-hidden="true"><circle class="ring" cx="38" cy="38" r="34"/><path class="tick" d="M24 39 l10 10 l19 -21"/></svg>
+    <h2>감사합니다!</h2>
+    <p>보내 주신 의견으로 다음 강의를 준비할게요.</p>
+    <p><a href="../words/">쉬운 AI 용어 보러 가기</a> · <a href="../practice/">실습 페이지</a></p>
+    <button class="again" type="button" id="again">답 고쳐서 다시 보내기</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  var HUB = "https://issuekiller-hub.deanlee1113.workers.dev";
+  var LS = "ik-survey";
+  function load() { try { return JSON.parse(localStorage.getItem(LS) || "null"); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem(LS, JSON.stringify(v)); } catch (e) {} }
+  var saved = load() || {};
+  var sid = saved.sid || (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+
+  // 보기 만들기
+  document.querySelectorAll("fieldset[data-q]").forEach(function (fs) {
+    var q = fs.dataset.q, many = fs.dataset.type === "many", box = fs.querySelector(".opts");
+    box.dataset.opts.split("|").forEach(function (o) {
+      var lb = document.createElement("label"); lb.className = "opt";
+      var inp = document.createElement("input"); inp.type = many ? "checkbox" : "radio"; inp.name = q; inp.value = o;
+      var sp = document.createElement("span"); sp.textContent = o;
+      lb.appendChild(inp); lb.appendChild(sp); box.appendChild(lb);
+    });
+  });
+  var etc = document.getElementById("q6etc");
+  function syncEtc() { var on = !!document.querySelector('input[name=q6][value="기타"]:checked'); etc.hidden = !on; }
+  document.querySelectorAll('input[name=q6]').forEach(function (i) { i.addEventListener("change", syncEtc); });
+
+  var nameEl = document.getElementById("name"), phoneEl = document.getElementById("phone"), agreeEl = document.getElementById("agree"), consent = document.getElementById("consent");
+  var fold = document.getElementById("fold");
+  function syncConsent() { var on = !!(nameEl.value.trim() || phoneEl.value.trim()); fold.classList.toggle("open", on); if ("inert" in fold) fold.inert = !on; }
+  syncConsent();
+  nameEl.addEventListener("input", syncConsent); phoneEl.addEventListener("input", syncConsent);
+
+  function answers() {
+    var a = {};
+    document.querySelectorAll("fieldset[data-q]").forEach(function (fs) {
+      var q = fs.dataset.q, picked = [].map.call(fs.querySelectorAll("input:checked"), function (i) { return i.value; });
+      if (fs.dataset.type === "many") { if (picked.length) a[q] = picked; } else if (picked[0]) a[q] = picked[0];
+    });
+    if (!etc.hidden && etc.value.trim()) a.q6etc = etc.value.trim();
+    var t = document.getElementById("q7").value.trim(); if (t) a.q7 = t;
+    return a;
+  }
+  function fill(a) {
+    Object.keys(a || {}).forEach(function (q) {
+      [].concat(a[q]).forEach(function (v) { var i = document.querySelector('input[name="' + q + '"][value="' + String(v).replace(/"/g, '\\"') + '"]'); if (i) i.checked = true; });
+    });
+    if (a && a.q6etc) etc.value = a.q6etc;
+    if (a && a.q7) document.getElementById("q7").value = a.q7;
+    syncEtc();
+  }
+  if (saved.answers) {
+    fill(saved.answers);
+    document.getElementById("again-note").hidden = false;
+  }
+
+  var form = document.getElementById("f"), msg = document.getElementById("msg"), send = document.getElementById("send");
+  var done = false;
+
+  // 진행 막대: 답한 질문 수 / 7
+  var pfill = document.getElementById("pfill"), ptext = document.getElementById("ptext");
+  function progress() {
+    var a = answers(), n = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"].filter(function (q) { return a[q]; }).length;
+    if (done) n = 7;
+    pfill.style.width = (n / 7 * 100) + "%"; ptext.textContent = n + " / 7";
+  }
+  form.addEventListener("change", progress); form.addEventListener("input", progress); progress();
+
+  // 한 질문씩: 처음엔 1번만 보이고, 답하면 다음 질문이 아래에 나타나며 그쪽으로 넘어간다
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var steps = [].slice.call(form.querySelectorAll(":scope > fieldset"));
+  var tail = [msg, send];                       // 마지막 단계(연락처)와 함께 나타난다
+  function shown(el) { return !el.classList.contains("pending"); }
+  function goTo(el) {
+    setTimeout(function () {
+      var y = el.getBoundingClientRect().top + window.scrollY - 64;
+      if (y > window.scrollY + 40) window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+    }, reduce ? 0 : 120);
+  }
+  function reveal(i) {
+    var el = steps[i]; if (!el) return;
+    if (!shown(el)) {
+      el.classList.remove("pending"); el.classList.add("enter");
+      if (i === steps.length - 1) tail.forEach(function (t) { t.classList.remove("pending"); });
+    }
+    goTo(el);
+  }
+  if (saved.answers) { /* 다시 온 분: 전부 보여 준다 */ }
+  else { steps.slice(1).forEach(function (el) { el.classList.add("pending"); }); tail.forEach(function (t) { t.classList.add("pending"); }); }
+
+  steps.forEach(function (fs, i) {
+    var many = fs.dataset.type === "many", isText = fs.dataset.step === "q7";
+    if (fs.dataset.type === "one") {
+      fs.addEventListener("change", function (e) { if (e.isTrusted) setTimeout(function () { reveal(i + 1); }, 320); });
+      return;
+    }
+    if (!many && !isText) return;               // 연락처 단계는 버튼 없음
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "next";
+    function sync() {
+      var any = many ? !!fs.querySelector("input:checked") : !!document.getElementById("q7").value.trim();
+      btn.textContent = any ? "다음" : (fs.hasAttribute("data-required") ? "하나 이상 골라 주세요" : "건너뛰기");
+      btn.classList.toggle("go", any); btn.disabled = !any && fs.hasAttribute("data-required");
+    }
+    fs.addEventListener("change", sync); fs.addEventListener("input", sync); sync();
+    btn.addEventListener("click", function () { reveal(i + 1); });
+    fs.appendChild(btn);
+  });
+
+  function err(t, el) { msg.textContent = t; msg.hidden = false; if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); msg.hidden = true;
+    var a = answers(), firstBad = null;
+    document.querySelectorAll("fieldset[data-required]").forEach(function (fs) {
+      var ok = !!a[fs.dataset.q]; fs.classList.toggle("err", !ok);
+      var n = fs.querySelector(".need"); if (!ok && !n) { n = document.createElement("p"); n.className = "need"; n.textContent = "이 질문은 꼭 골라 주세요"; fs.appendChild(n); }
+      if (ok && n) n.remove(); if (!ok && !firstBad) firstBad = fs;
+    });
+    if (firstBad) {
+      for (var k = 0; k <= steps.indexOf(firstBad); k++) if (!shown(steps[k])) { steps[k].classList.remove("pending"); steps[k].classList.add("enter"); }
+      document.querySelectorAll("fieldset.err").forEach(function (fs) { fs.classList.remove("shake"); void fs.offsetWidth; fs.classList.add("shake"); });
+      return err("필수 질문(2번, 4번)을 골라 주세요.", firstBad);
+    }
+    var name = nameEl.value.trim(), phone = phoneEl.value.trim();
+    if ((name || phone) && !agreeEl.checked) return err("이름·전화번호를 남기시려면 개인정보 동의에 체크해 주세요. 원치 않으시면 두 칸을 비워 주세요.", consent);
+    send.disabled = true; send.innerHTML = '<span class="spin" aria-hidden="true"></span>보내는 중';
+    fetch(HUB + "/api/survey", { method: "POST", headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ sid: sid, name: name, phone: phone, agree: agreeEl.checked && !!(name || phone), answers: a }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok) throw 0;
+        save({ sid: sid, answers: a });   // 이름·전화번호는 기기에 남기지 않는다
+        form.hidden = true; document.getElementById("again-note").hidden = true; document.getElementById("done").hidden = false; done = true;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      })
+      .catch(function () { err("보내지 못했어요. 인터넷 연결을 확인하고 한 번 더 눌러 주세요."); })
+      .then(function () { send.disabled = false; send.textContent = "설문 보내기"; progress(); });
+  });
+  document.getElementById("again").addEventListener("click", function () {
+    done = false; progress(); document.getElementById("done").hidden = true; form.hidden = false; document.getElementById("again-note").hidden = false; window.scrollTo({ top: 0 });
+  });
+})();
+</script>
+</html>
