@@ -166,7 +166,7 @@ def main():
     outputs = [ROOT / "get.sh", ROOT / "get.ps1", ROOT / "README.md", mac, win, DOCS / "index.html"]
 
     # 4) 실습 페이지 · 내 것으로 바꾸기 안내 (템플릿이 있을 때만)
-    for name in ("practice", "guide", "words", "survey"):
+    for name in ("practice", "guide", "words", "survey", "class"):
         page_tpl = TPL / f"{name}.html"
         if not page_tpl.exists():
             continue

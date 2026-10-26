@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 소그룹 과외</title>
+<meta name="description" content="11월 AI 소그룹 과외 모집. 4명이 함께, 내 일에 딱 맞는 AI를 만듭니다. 초보반 · 중수반 · 고급반.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  /* 색 조합 12 · 02+ 차분한 자연의 감성: 미스트 배경(넓게) / 모스 그린 글씨(제목·본문) / 라일락(면에만, 글씨 금지).
+     모스 on 미스트 8.14:1, 모스 on 라일락 5.34:1. 잡지형: 카드 상자 대신 가는 선과 번호로 구역을 나눈다.
+     40~60대가 휴대폰으로 읽는 페이지: 본문 19px, 넓은 줄 간격, 큰 선택 칸. 단일 밝은 테마(의도적). */
+  :root {
+    --mist: #E9E7DB; --paper: #F3F1E8; --white: #FBFAF5;
+    --moss: #344638; --ink: #232E26; --soft: #5A665C; --faint: #7C867D;
+    --rule: rgba(52, 70, 56, .22); --rule-soft: rgba(52, 70, 56, .12);
+    --lilac: #C4B7D8; --lilac-soft: #E3DCEC; --bad: #8E3B2E;
+    --serif: "Noto Serif KR", "AppleMyungjo", "Nanum Myeongjo", serif;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { margin: 0; background: var(--mist); color: var(--ink); font-family: var(--sans); font-size: 19px; line-height: 1.8; letter-spacing: -0.005em; word-break: keep-all; overflow-wrap: anywhere; }
+  .wrap { max-width: 44rem; margin: 0 auto; padding-inline: 20px; }
+  a { color: var(--moss); text-underline-offset: .2em; }
+  ::selection { background: var(--lilac); color: var(--ink); }
+
+  /* 머리 */
+  .hero { padding: 3.4rem 0 2.6rem; border-bottom: 1px solid var(--rule); }
+  .eyebrow { display: flex; align-items: center; gap: .7rem; font-size: .85rem; font-weight: 600; letter-spacing: .06em; color: var(--soft); }
+  .eyebrow i { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; background: var(--lilac); }
+  .hero h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(2.15rem, 8.4vw, 3.15rem); line-height: 1.32; letter-spacing: -0.03em; color: var(--moss); margin: 1.1rem 0 1.1rem; }
+  .hero h1 span { background: linear-gradient(transparent 62%, var(--lilac-soft) 62%, var(--lilac-soft) 94%, transparent 94%); }
+  .hero .lead { margin: 0 0 1.6rem; color: var(--soft); font-size: 1.06rem; max-width: 34rem; }
+  .meta { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 0; margin: 0 0 1.8rem; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .meta div { padding: .7rem 1.2rem .7rem 0; margin-right: 1.2rem; border-right: 1px solid var(--rule-soft); }
+  .meta div:last-child { border-right: 0; margin-right: 0; }
+  .meta span { display: block; font-size: .76rem; color: var(--faint); font-weight: 600; letter-spacing: .04em; }
+  .meta b { font-size: 1rem; color: var(--moss); font-weight: 700; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; font: inherit; font-weight: 700; font-size: 1.05rem; text-decoration: none; cursor: pointer; border-radius: 999px; padding: .85rem 1.6rem; border: 1.5px solid var(--moss); background: var(--moss); color: var(--white); transition: transform .15s var(--ease), background-color .2s var(--ease), color .2s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .btn:active { transform: scale(.98); }
+  .btn.line { background: transparent; color: var(--moss); }
+  .btns { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+  /* 구역: 번호 + 가는 선 */
+  main { padding-bottom: 2rem; }
+  section.block { padding: 3rem 0 2.6rem; border-bottom: 1px solid var(--rule); }
+  .num { font-size: .82rem; font-weight: 700; letter-spacing: .08em; color: var(--faint); display: flex; align-items: center; gap: .7rem; margin-bottom: .9rem; }
+  .num::after { content: ""; flex: 0 0 2.4rem; height: 1px; background: var(--rule); }
+  h2 { font-family: var(--serif); font-weight: 600; font-size: 1.7rem; line-height: 1.45; letter-spacing: -0.025em; color: var(--moss); margin: 0 0 1.2rem; }
+  p { margin: .6rem 0; }
+  .muted { color: var(--soft); }
+
+  .story p { font-size: 1.06rem; }
+  .story .quote { font-family: var(--serif); font-size: 1.4rem; line-height: 1.6; font-weight: 600; color: var(--moss); margin: 1.6rem 0; padding-left: 1.1rem; border-left: 3px solid var(--lilac); }
+  .story .sign { margin-top: 1.4rem; font-size: .92rem; color: var(--faint); }
+
+  /* 나에게 맞는 반 */
+  .pick { border-top: 1px solid var(--rule); }
+  .pick button { width: 100%; text-align: left; font: inherit; font-size: 1.04rem; line-height: 1.65; cursor: pointer; background: transparent; color: var(--ink); border: 0; border-bottom: 1px solid var(--rule); padding: 1.05rem .9rem 1.05rem .2rem; display: grid; grid-template-columns: 2.4rem 1fr; gap: .4rem; align-items: start; transition: background-color .3s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .pick button i { font-style: normal; font-family: var(--serif); font-weight: 600; color: var(--faint); font-size: 1.05rem; }
+  .pick button[aria-pressed="true"] { background: var(--lilac-soft); }
+  .pick button[aria-pressed="true"] i { color: var(--moss); }
+  .result { margin-top: 1.1rem; background: var(--paper); border-left: 3px solid var(--lilac); padding: 1rem 1.1rem; animation: rise .45s var(--ease) both; }
+  .result b { color: var(--moss); }
+
+  /* 반 소개: 메뉴판처럼 */
+  .levels { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .lv { padding: 1.8rem 0 1.6rem; border-bottom: 1px solid var(--rule); position: relative; transition: background-color .35s var(--ease); }
+  .lv.hl { background: linear-gradient(90deg, var(--lilac-soft), rgba(227, 220, 236, .15)); margin-inline: -14px; padding-inline: 14px; border-radius: 6px; }
+  .lv.hl::before { right: 14px; }
+  .lv.hl::before { content: "추천"; position: absolute; top: 1.85rem; right: 0; font-size: .78rem; font-weight: 700; color: var(--ink); background: var(--lilac); border-radius: 999px; padding: .05rem .7rem; }
+  .lv .head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .lv h3 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 1.65rem; letter-spacing: -0.02em; color: var(--moss); }
+  .lv h3 span { display: block; font-family: var(--sans); font-size: .95rem; font-weight: 600; color: var(--soft); letter-spacing: 0; margin-top: .1rem; }
+  .price { text-align: right; white-space: nowrap; padding-right: 3.6rem; }
+  .lv:not(.hl) .price { padding-right: 0; }
+  .price b { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--moss); font-variant-numeric: tabular-nums; }
+  .price small { display: block; font-size: .78rem; color: var(--faint); }
+  .lv .for { margin: 1rem 0 .4rem; font-size: 1rem; color: var(--soft); }
+  .lv .for b { color: var(--ink); font-weight: 700; margin-right: .3rem; }
+  .weeks { list-style: none; margin: .6rem 0 0; padding: 0; }
+  .weeks li { display: grid; grid-template-columns: 3rem 1fr; gap: .4rem; padding: .7rem 0; border-top: 1px solid var(--rule-soft); font-size: 1rem; line-height: 1.65; }
+  .weeks li b { font-family: var(--serif); font-weight: 600; color: var(--moss); font-size: .95rem; }
+  .get { margin-top: .9rem; padding: .85rem 1rem; background: var(--paper); font-size: .98rem; }
+  .get b { color: var(--moss); margin-right: .3rem; }
+  .need { font-size: .9rem; color: var(--faint); margin-top: .6rem; }
+  .lv .btn { margin-top: 1.1rem; }
+
+  .solo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.4rem; padding: 1.1rem 1.1rem; background: var(--paper); border-left: 3px solid var(--lilac); }
+  .solo b { display: block; font-family: var(--serif); font-weight: 600; font-size: 1.15rem; color: var(--moss); }
+  .solo span { display: block; font-size: .95rem; color: var(--soft); }
+  /* 공통 안내: 정의 목록 */
+  .info { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); }
+  .info div { padding: .9rem 1rem .9rem 0; border-bottom: 1px solid var(--rule-soft); }
+  .info div:nth-child(odd) { border-right: 1px solid var(--rule-soft); }
+  .info div:nth-child(even) { padding-left: 1.1rem; }
+  .info span { display: block; font-size: .78rem; color: var(--faint); font-weight: 700; letter-spacing: .04em; }
+  .info b { font-size: 1.02rem; color: var(--ink); font-weight: 700; }
+  .info small { display: block; color: var(--soft); font-size: .88rem; line-height: 1.55; margin-top: .15rem; }
+  .flow { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 1.6rem; border-top: 1px solid var(--rule); }
+  .flow div { padding: .9rem 1rem .4rem 0; font-size: .96rem; line-height: 1.6; color: var(--soft); }
+  .flow div + div { padding-left: 1rem; border-left: 1px solid var(--rule-soft); }
+  .flow b { display: block; font-family: var(--serif); font-weight: 600; color: var(--moss); font-size: 1.02rem; margin-bottom: .2rem; }
+
+  /* 자주 묻는 질문 */
+  .faq { border-top: 1px solid var(--rule); }
+  details { border-bottom: 1px solid var(--rule); padding: 1rem 0; }
+  summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 1rem; color: var(--ink); }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: var(--serif); color: var(--moss); font-weight: 600; font-size: 1.3rem; line-height: 1.3; transition: transform .25s var(--ease); }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--soft); margin: .5rem 0 0; }
+
+  /* 신청서 */
+  #apply { border-bottom: 0; }
+  .formbox { background: var(--paper); border-radius: 22px; padding: 1.6rem 1.3rem; }
+  form { display: grid; gap: 1.5rem; }
+  label.lb { display: block; font-weight: 700; font-size: 1.04rem; margin-bottom: .5rem; color: var(--ink); }
+  label.lb small { font-weight: 600; color: var(--faint); margin-left: .35rem; font-size: .85rem; }
+  .opts { display: grid; gap: .5rem; }
+  .opts.row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .opt { display: flex; align-items: center; gap: .75rem; border: 1px solid var(--rule); border-radius: 14px; padding: .8rem .95rem; cursor: pointer; background: var(--white); transition: background-color .25s var(--ease), border-color .25s var(--ease), transform .15s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .opts.row .opt { justify-content: center; padding: .8rem .2rem; font-weight: 700; }
+  .opts.row .opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt:active { transform: scale(.98); }
+  .opt input { width: 1.35rem; height: 1.35rem; flex: none; margin: 0; accent-color: var(--moss); }
+  .opt:has(input:checked) { border-color: var(--moss); background: var(--lilac-soft); font-weight: 700; }
+  .opts.row .opt:has(input:checked) { background: var(--moss); color: var(--white); }
+  .opt:focus-within { box-shadow: 0 0 0 3px var(--lilac-soft); }
+  input[type=text], input[type=tel], textarea { width: 100%; font: inherit; font-size: 1.05rem; padding: .8rem .95rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--white); color: var(--ink); }
+  input::placeholder, textarea::placeholder { color: var(--faint); }
+  input:focus, textarea:focus { outline: none; border-color: var(--moss); box-shadow: 0 0 0 3px var(--lilac-soft); }
+  textarea { min-height: 6rem; resize: vertical; }
+  .field.err .opts, .field.err input[type=text], .field.err input[type=tel], .field.err .consent { animation: shake .42s var(--ease); }
+  .field.err label.lb { color: var(--bad); }
+  .consent { border-left: 3px solid var(--lilac); background: var(--white); padding: 1rem 1.05rem; font-size: .95rem; color: var(--soft); border-radius: 0 12px 12px 0; }
+  .consent > b { color: var(--ink); }
+  .consent ul { margin: .35rem 0 .9rem; padding-left: 1.2rem; }
+  .msg { margin: 0; text-align: center; color: var(--bad); font-weight: 700; animation: rise .35s var(--ease) both; }
+  .send { width: 100%; font-size: 1.12rem; padding: 1rem; }
+  .spin { width: 1.05em; height: 1.05em; border: 2.5px solid rgba(251,250,245,.35); border-top-color: var(--white); border-radius: 50%; animation: spin .8s linear infinite; }
+  .done { text-align: center; padding: 1.6rem .5rem; animation: rise .6s var(--ease) both; }
+  .done h3 { font-family: var(--serif); font-weight: 600; font-size: 1.6rem; color: var(--moss); margin: 0 0 .5rem; }
+  .check { display: block; width: 76px; height: 76px; margin: 0 auto 1rem; }
+  .check .ring { fill: var(--lilac-soft); stroke: var(--moss); stroke-width: 2.5; stroke-dasharray: 214; stroke-dashoffset: 214; animation: draw .7s var(--ease) forwards; }
+  .check .tick { fill: none; stroke: var(--moss); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 44; stroke-dashoffset: 44; animation: draw .45s .45s var(--ease) forwards; }
+
+  footer { color: var(--faint); font-size: .88rem; padding: 1.4rem 0 3.4rem; border-top: 1px solid var(--rule); }
+  footer a { color: var(--soft); }
+
+  /* 움직임: 짧고 부드럽게 */
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .hero .wrap > * { animation: rise .8s var(--ease) both; }
+  .hero .wrap > :nth-child(2) { animation-delay: .07s; } .hero .wrap > :nth-child(3) { animation-delay: .14s; }
+  .hero .wrap > :nth-child(4) { animation-delay: .21s; } .hero .wrap > :nth-child(5) { animation-delay: .28s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (max-width: 600px) {
+    .meta { grid-template-columns: 1fr 1fr; }
+    .meta div { margin-right: 0; padding-left: 0; }
+    .meta div:nth-child(2n) { border-right: 0; padding-left: 1rem; }
+    .meta div:nth-child(-n+2) { border-bottom: 1px solid var(--rule-soft); }
+    .info { grid-template-columns: 1fr; }
+    .info div:nth-child(odd) { border-right: 0; }
+    .info div:nth-child(even) { padding-left: 0; }
+    .flow { grid-template-columns: 1fr; }
+    .flow div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule-soft); }
+    .lv .head { flex-direction: column; align-items: flex-start; gap: .3rem; }
+    .price { text-align: left; padding-right: 0; }
+    .lv.hl::before { top: 1.9rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+    .check .ring, .check .tick { stroke-dashoffset: 0; }
+  }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><i></i>11월 AI 소그룹 과외 · 모집 중</div>
+    <h1>내 일에 딱 맞는 AI,<br><span>네 명이 함께</span> 만듭니다</h1>
+    <p class="lead">AI는 누구나 쓸 수 있는 도구지만, 내 일에 맞게 다듬어야 진짜 내 도구가 됩니다. 한 반 네 명, 한 사람 한 사람의 일에 맞춰 함께 세팅해 드려요.</p>
+    <div class="meta">
+      <div><span>인원</span><b>한 반 4명</b></div>
+      <div><span>기간</span><b>4주 · 주 1회</b></div>
+      <div><span>시간</span><b>저녁 7~9시</b></div>
+      <div><span>개강</span><b>11월 둘째 주</b></div>
+    </div>
+    <div class="btns"><a class="btn" href="#apply">신청하기</a><a class="btn line" href="#find">나에게 맞는 반 찾기</a></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block story">
+    <div class="num">01 — 이 과외를 시작한 이유</div>
+    <h2>AI는 도구입니다. 그런데 도구는 손에 맞아야 합니다.</h2>
+    <p>AI는 누구에게나 똑같이 주어진 도구예요. 그런데 같은 도구라도 쓰는 사람의 일과 습관에 맞게 다듬어야 제대로 쓸 수 있어요.</p>
+    <p class="quote">AI는 사람마다 완벽하게 개인화되어야 합니다.</p>
+    <p>강의 영상만 보고도 스스로 맞춰 쓰는 분들은 사실 강의가 필요 없어요. 그런데 직접 강의 현장을 다녀 보니, 그 첫걸음을 어려워하는 분이 정말 많았습니다.</p>
+    <p>그래서 4명만 모았습니다. 여러분 각자의 일 자료를 가지고, 나에게 맞는 AI가 될 때까지 옆에서 같이 세팅하는 과외입니다.</p>
+    <p class="sign">— (주)커넥트제로 대표 이승엽</p>
+  </section>
+
+  <section class="block" id="find">
+    <div class="num">02 — 나에게 맞는 반 찾기</div>
+    <h2>나와 가장 가까운 문장을 하나 골라 보세요</h2>
+    <div class="pick" role="group" aria-label="나와 가장 가까운 문장">
+      <button type="button" data-lv="초보반" aria-pressed="false"><i>1</i><span>AI가 아직 어렵고, 무엇을 어떻게 물어봐야 할지 막막해요</span></button>
+      <button type="button" data-lv="중수반" aria-pressed="false"><i>2</i><span>AI를 쓰고는 있는데, 내 일에 제대로 붙여서 시간을 줄이고 싶어요</span></button>
+      <button type="button" data-lv="고급반" aria-pressed="false"><i>3</i><span>내가 원하는 프로그램이나 서비스를 직접 만들어 세상에 내놓고 싶어요</span></button>
+    </div>
+    <div class="result" id="result" hidden></div>
+  </section>
+
+  <section class="block" id="levels">
+    <div class="num">03 — 반 소개</div>
+    <h2>세 반 모두 4주, 8시간 과정이에요</h2>
+    <div class="levels">
+
+      <article class="lv" id="lv-초보반">
+        <div class="head"><h3>초보반<span>AI랑 친해지기</span></h3><div class="price"><b>15만 원</b><small>1인 · 4주 8시간</small></div></div>
+        <p class="for"><b>이런 분께</b> AI를 이제 막 시작했거나, 질문하고 답 받기가 아직 어색한 분</p>
+        <ul class="weeks">
+          <li><b>1주</b><span>AI가 무엇인지 쉽게 이해하기 (모델, 환각, 토큰 같은 기초 개념) · 유료 AI 앱 세팅</span></li>
+          <li><b>2주</b><span>프롬프트 잘 입력하는 법: 역할, 목적, 형식, 예시 · 마음에 안 들 때 고쳐 묻는 법</span></li>
+          <li><b>3주</b><span>내 일과 생활에 써 보기: 글쓰기, 요약, 사진 보여 주고 묻기, 이미지 만들기</span></li>
+          <li><b>4주</b><span>나에 대해 미리 알려 두기(맞춤 지침·메모리) · 나만의 프롬프트북 완성</span></li>
+        </ul>
+        <p class="get"><b>끝나면 갖게 되는 것</b> 나를 잘 아는 AI 설정, 바로 꺼내 쓰는 나만의 프롬프트 모음</p>
+        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독</p>
+        <a class="btn line" href="#apply" data-go="초보반">초보반 신청하기</a>
+      </article>
+
+      <article class="lv" id="lv-중수반">
+        <div class="head"><h3>중수반<span>에이전트로 내 일 줄이기</span></h3><div class="price"><b>18만 원</b><small>1인 · 4주 8시간</small></div></div>
+        <p class="for"><b>이런 분께</b> AI를 쓰고는 있는데, 업무에 제대로 붙여서 시간을 줄이고 싶은 분</p>
+        <ul class="weeks">
+          <li><b>1주</b><span>에이전트가 무엇인지 · 에이전트 앱 세팅(Claude Code · ChatGPT Codex) · 내 작업 폴더 다루기</span></li>
+          <li><b>2주</b><span>문서·엑셀·자료 업무를 에이전트에게: 여러 파일을 한 번에 정리하고 만들기</span></li>
+          <li><b>3주</b><span>내 업무 매뉴얼을 AI에게: 스킬과 규칙 만들기, 매번 같은 품질로</span></li>
+          <li><b>4주</b><span>반복 업무 하나를 정해진 시간에 저절로 돌게 만들기 · 발표와 피드백</span></li>
+        </ul>
+        <p class="get"><b>끝나면 갖게 되는 것</b> 내 업무용 스킬 1개, 저절로 도는 반복 작업 1개</p>
+        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독, AI 채팅을 평소에 써 본 경험</p>
+        <a class="btn line" href="#apply" data-go="중수반">중수반 신청하기</a>
+      </article>
+
+      <article class="lv" id="lv-고급반">
+        <div class="head"><h3>고급반<span>바이브코딩으로 서비스 만들기</span></h3><div class="price"><b>30만 원</b><small>1인 · 4주 8시간</small></div></div>
+        <p class="for"><b>이런 분께</b> 말로 시켜서 내 프로그램과 서비스를 직접 만들고, 실제로 인터넷에 공개해 보고 싶은 분</p>
+        <ul class="weeks">
+          <li><b>1주</b><span>만들 서비스 정하기 · AI와 함께 설계도(무엇을, 누가, 어떻게) 쓰기</span></li>
+          <li><b>2주</b><span>바이브코딩으로 화면 만들기: 안내 페이지, 신청서, 예약 화면</span></li>
+          <li><b>3주</b><span>데이터 저장과 자동화 연결: 신청 받기, 알림, 다른 서비스와 연결하기</span></li>
+          <li><b>4주</b><span>실제 배포: 인터넷 주소로 공개하고 점검하기 · 발표와 피드백</span></li>
+        </ul>
+        <p class="get"><b>끝나면 갖게 되는 것</b> 인터넷에 올라간 내 서비스 1개 (이 모집 페이지처럼)</p>
+        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독, 에이전트 앱을 써 본 경험</p>
+        <a class="btn line" href="#apply" data-go="고급반">고급반 신청하기</a>
+      </article>
+
+    </div>
+    <div class="solo">
+      <div><b>1:1 개인 과외도 가능해요</b><span>내 일정과 내 일에 맞춰 따로 진행해요. 내용과 금액은 상담 후 정해요.</span></div>
+      <a class="btn line" href="#apply" data-go="개인 과외 상담">따로 연락받기</a>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="num">04 — 공통 안내</div>
+    <h2>이렇게 진행해요</h2>
+    <div class="info">
+      <div><span>인원</span><b>한 반 4명 · 3명부터 개강</b></div>
+      <div><span>기간</span><b>4주 · 주 1회 2시간 (총 8시간)</b></div>
+      <div><span>시간</span><b>평일 저녁 7~9시</b><br><small class="muted">요일은 신청하신 분들이 가장 많이 고른 날로 정해요</small></div>
+      <div><span>개강</span><b>11월 둘째 주 (11/9 ~ 11/13 중)</b></div>
+      <div><span>장소</span><b>(주)커넥트제로 사무실 (부산)</b><br><small class="muted">자세한 위치는 확정 후 개별 안내</small></div>
+      <div><span>쓰는 AI</span><b>Claude 추천 · ChatGPT 가능</b></div>
+      <div><span>준비물</span><b>노트북 필수 · 유료 AI 구독</b><br><small class="muted">구독료(월 3만 원 안팎)는 수강료와 별도</small></div>
+      <div><span>결제 · 환불</span><b>개강 전 계좌이체</b><br><small class="muted">개강 전까지 전액 환불, 개강 후 환불 없음</small></div>
+    </div>
+    <div class="flow">
+      <div><b>30분 · 보여 주기</b>오늘 배울 기능을 강사 화면으로 시연</div>
+      <div><b>60분 · 내 자료로</b>각자 자기 일 자료로 실습, 강사가 4명을 돌아가며 봐 드려요</div>
+      <div><b>30분 · 정리</b>막힌 것 함께 풀기, 이번 주 해 볼 것</div>
+    </div>
+    <p class="muted" style="margin-top:1rem">일정: 신청 ~ 11/1(일) · 반과 요일 확정 및 결제 안내 11/2 ~ 11/6 · 개강 11월 둘째 주</p>
+  </section>
+
+  <section class="block">
+    <div class="num">05 — 자주 묻는 질문</div>
+    <h2>궁금하신 점</h2>
+    <div class="faq">
+    <details><summary>어느 반을 골라야 할지 모르겠어요</summary><p>신청서에서 "잘 모르겠어요"를 고르시면 연락드려서 함께 정해 드려요. 위의 "나에게 맞는 반 찾기"도 참고해 보세요.</p></details>
+    <details><summary>유료 구독은 꼭 해야 하나요?</summary><p>네. 무료 요금제는 사용량이 적고 쓸 수 있는 기능이 달라서, 수업에서 같은 결과를 내기 어려워요. 아직이시면 개강 전까지만 구독하시면 돼요. 새로 하신다면 Claude를 추천해요.</p></details>
+    <details><summary>노트북이 없으면요?</summary><p>이번 과외는 노트북이 꼭 필요해요. 휴대폰이나 태블릿으로는 실습을 따라오기 어려워요.</p></details>
+    <details><summary>4명이 다 안 모이면요?</summary><p>3명이 모이면 개강해요. 3명이 안 되는 반은 개강하지 않고, 결제 전이니 비용도 들지 않아요.</p></details>
+    <details><summary>빠지는 날이 생기면요?</summary><p>녹화본은 없어요. 다음 시간 시작 전에 10분 정도 짧게 보충해 드려요.</p></details>
+    <details><summary>4명 그룹이 아니라 혼자 배우고 싶어요</summary><p>1:1 개인 과외도 가능해요. 신청서에서 "1:1 개인 과외 · 따로 연락받기"를 고르시면, 일정과 내용, 금액을 따로 상담해 드려요.</p></details>
+    <details><summary>쇼츠 강의를 안 들었어도 되나요?</summary><p>네, 상관없어요. 이 과외는 쇼츠가 아니라 AI를 내 일에 제대로 쓰는 법을 배우는 과정이에요.</p></details>
+    </div>
+  </section>
+
+  <section class="block" id="apply">
+    <div class="num">06 — 신청하기</div>
+    <h2>1분이면 끝나요</h2>
+    <div class="formbox">
+    <form id="f" novalidate>
+      <div class="field" data-f="level">
+        <label class="lb">신청할 반</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="level" value="초보반"> <span>초보반 · AI랑 친해지기 · 15만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="중수반"> <span>중수반 · 에이전트로 내 일 줄이기 · 18만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="고급반"> <span>고급반 · 바이브코딩으로 서비스 만들기 · 30만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="잘 모르겠어요"> <span>잘 모르겠어요 (연락드려서 같이 정해요)</span></label>
+          <label class="opt"><input type="radio" name="level" value="개인 과외 상담"> <span>1:1 개인 과외 · 따로 연락받기 (일정·금액 상담)</span></label>
+        </div>
+      </div>
+      <div class="field" data-f="name"><label class="lb" for="name">이름</label><input type="text" id="name" maxlength="30" autocomplete="name" placeholder="예: 김영희"></div>
+      <div class="field" data-f="phone"><label class="lb" for="phone">연락처</label><input type="tel" id="phone" maxlength="20" autocomplete="tel" inputmode="tel" placeholder="예: 010-1234-5678"></div>
+      <div class="field" data-f="days">
+        <label class="lb">가능한 요일 <small>저녁 7~9시 · 여러 개 골라 주세요</small></label>
+        <div class="opts row">
+          <label class="opt"><input type="checkbox" name="days" value="월">월</label>
+          <label class="opt"><input type="checkbox" name="days" value="화">화</label>
+          <label class="opt"><input type="checkbox" name="days" value="수">수</label>
+          <label class="opt"><input type="checkbox" name="days" value="목">목</label>
+          <label class="opt"><input type="checkbox" name="days" value="금">금</label>
+        </div>
+      </div>
+      <div class="field" data-f="ai">
+        <label class="lb">쓰는 AI</label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="ai" value="Claude"> <span>Claude 유료</span></label>
+          <label class="opt"><input type="radio" name="ai" value="ChatGPT"> <span>ChatGPT 유료</span></label>
+          <label class="opt"><input type="radio" name="ai" value="아직 구독 전"> <span>아직 구독 전 (개강 전까지 구독할게요)</span></label>
+        </div>
+      </div>
+      <div class="field" data-f="laptop">
+        <label class="lb">노트북</label>
+        <div class="opts"><label class="opt"><input type="checkbox" id="laptop"> <span>수업에 가져올 노트북이 있어요</span></label></div>
+      </div>
+      <div class="field"><label class="lb" for="note">배우고 싶은 것 <small>선택</small></label><textarea id="note" maxlength="500" placeholder="예: 가게 손님 문의 답장을 AI로 빨리 하고 싶어요"></textarea></div>
+      <div class="field" data-f="agree">
+        <div class="consent">
+          <b>개인정보 수집·이용 동의 (필수)</b>
+          <ul>
+            <li>모으는 것: 이름, 연락처, 가능한 요일</li>
+            <li>쓰는 곳: 과외 반 편성과 개강 안내 연락</li>
+            <li>보관 기간: 과정이 끝나면 지우며, 길어도 6개월 안에 지웁니다</li>
+            <li>동의하지 않으시면 신청이 어려워요</li>
+          </ul>
+          <label class="opt"><input type="checkbox" id="agree"> <span>위 내용에 동의합니다</span></label>
+        </div>
+      </div>
+      <p class="msg" id="msg" hidden></p>
+      <button class="btn send" id="send" type="submit">신청하기</button>
+    </form>
+    <div class="done" id="done" hidden>
+      <svg class="check" viewBox="0 0 76 76" aria-hidden="true"><circle class="ring" cx="38" cy="38" r="34"/><path class="tick" d="M24 39 l10 10 l19 -21"/></svg>
+      <h3>신청해 주셔서 감사합니다!</h3>
+      <p class="muted">11월 1일까지 신청을 받고, 11월 2일부터 반과 요일이 정해지는 대로 연락드릴게요.</p>
+      <button class="btn line" type="button" id="again">신청 내용 고치기</button>
+    </div>
+    </div>
+  </section>
+
+</main>
+
+<footer><div class="wrap">
+  (주)커넥트제로 · AI 소그룹 과외 · 궁금한 점은 단톡방에 남겨 주세요.<br>
+  <a href="../words/">쉬운 AI 용어</a> · <a href="../survey/">후속 강의 설문</a>
+</div></footer>
+
+<script>
+(function () {
+  var HUB = "https://issuekiller-hub.deanlee1113.workers.dev";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var sid = (function () { try { var x = localStorage.getItem("ik-class-sid"); if (!x) { x = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem("ik-class-sid", x); } return x; } catch (e) { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); } })();
+
+  // 스크롤하면 카드가 살짝 떠오르며 나타난다
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll("section.block, .lv").forEach(function (el) { el.classList.add("reveal"); io.observe(el); });
+  }
+
+  function chooseLevel(lv, scrollTo) {
+    var r = document.querySelector('input[name=level][value="' + lv + '"]'); if (r) r.checked = true; syncSolo();
+    document.querySelectorAll(".lv").forEach(function (c) { c.classList.toggle("hl", c.id === "lv-" + lv); });
+    if (scrollTo) { var el = document.getElementById(scrollTo); if (el) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); }
+  }
+
+  // 나에게 맞는 반 찾기
+  var WHY = { "초보반": "AI와 친해지는 것부터 차근차근 시작해요. 기초 개념과 프롬프트 잘 쓰는 법을 배워요.", "중수반": "에이전트로 내 업무를 줄이는 과정이에요. 문서·엑셀·반복 업무를 AI에게 맡기는 법을 배워요.", "고급반": "바이브코딩으로 내 서비스를 만들고, 실제 인터넷 주소로 공개까지 해 봐요." };
+  var result = document.getElementById("result");
+  document.querySelectorAll(".pick button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".pick button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      var lv = b.dataset.lv;
+      result.hidden = false; result.innerHTML = "";
+      var p = document.createElement("p"); p.style.margin = "0";
+      var s = document.createElement("b"); s.textContent = lv + "을 추천해요. "; p.appendChild(s); p.appendChild(document.createTextNode(WHY[lv]));
+      var a = document.createElement("a"); a.href = "#lv-" + lv; a.textContent = lv + " 자세히 보기"; a.style.display = "inline-block"; a.style.marginTop = ".5rem"; a.style.fontWeight = "700";
+      a.addEventListener("click", function (e) { e.preventDefault(); chooseLevel(lv, "lv-" + lv); });
+      result.appendChild(p); result.appendChild(a);
+      result.style.animation = "none"; void result.offsetWidth; result.style.animation = "";
+      chooseLevel(lv);
+    });
+  });
+  document.querySelectorAll("[data-go]").forEach(function (a) {
+    a.addEventListener("click", function (e) { e.preventDefault(); chooseLevel(a.dataset.go, "apply"); });
+  });
+
+  // 1:1 상담을 고르면 요일·AI·노트북 칸 제목에 (선택) 표시
+  function syncSolo() {
+    var solo = (document.querySelector("input[name=level]:checked") || {}).value === "개인 과외 상담";
+    ["days", "ai", "laptop"].forEach(function (f) {
+      var lb = document.querySelector('[data-f="' + f + '"] label.lb'); if (!lb) return;
+      var tag = lb.querySelector(".opt-tag");
+      if (solo && !tag) { tag = document.createElement("small"); tag.className = "opt-tag"; tag.textContent = "1:1 상담은 선택"; lb.appendChild(tag); }
+      if (!solo && tag) tag.remove();
+    });
+  }
+  document.querySelectorAll("input[name=level]").forEach(function (r) { r.addEventListener("change", syncSolo); });
+
+  // 신청
+  var form = document.getElementById("f"), msg = document.getElementById("msg"), send = document.getElementById("send");
+  function val(name) { var c = form.querySelector("input[name=" + name + "]:checked"); return c ? c.value : ""; }
+  function bad(f, on) { var el = form.querySelector('[data-f="' + f + '"]'); if (!el) return; el.classList.remove("err"); if (on) { void el.offsetWidth; el.classList.add("err"); } }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); msg.hidden = true;
+    var data = {
+      sid: sid, level: val("level"), name: document.getElementById("name").value.trim(), phone: document.getElementById("phone").value.trim(),
+      days: [].map.call(form.querySelectorAll("input[name=days]:checked"), function (i) { return i.value; }),
+      ai: val("ai"), laptop: document.getElementById("laptop").checked, note: document.getElementById("note").value.trim(), agree: document.getElementById("agree").checked
+    };
+    var solo = data.level === "개인 과외 상담";   // 1:1 상담은 이름·연락처만 있으면 된다
+    var checks = [["level", !data.level, "신청할 반을 골라 주세요."], ["name", !data.name, "이름을 적어 주세요."], ["phone", data.phone.replace(/[^0-9]/g, "").length < 9, "연락처를 적어 주세요."],
+      ["days", !solo && !data.days.length, "가능한 요일을 하나 이상 골라 주세요."], ["ai", !solo && !data.ai, "쓰는 AI를 골라 주세요."], ["laptop", !solo && !data.laptop, "이번 과외는 노트북이 꼭 필요해요."], ["agree", !data.agree, "개인정보 수집·이용에 동의해 주세요."]];
+    var first = null;
+    checks.forEach(function (c) { bad(c[0], c[1]); if (c[1] && !first) first = c; });
+    if (first) {
+      msg.textContent = first[2]; msg.hidden = false;
+      var el = form.querySelector('[data-f="' + first[0] + '"]'); if (el) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+      return;
+    }
+    send.disabled = true; send.innerHTML = '<span class="spin" aria-hidden="true"></span>보내는 중';
+    fetch(HUB + "/api/apply", { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.ok) throw 0;
+        try { localStorage.setItem("ik-class-done", "1"); } catch (e) {}
+        form.hidden = true; document.getElementById("done").hidden = false;
+        document.getElementById("apply").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      })
+      .catch(function () { msg.textContent = "보내지 못했어요. 인터넷 연결을 확인하고 한 번 더 눌러 주세요."; msg.hidden = false; })
+      .then(function () { send.disabled = false; send.textContent = "신청하기"; });
+  });
+  document.getElementById("again").addEventListener("click", function () { document.getElementById("done").hidden = true; form.hidden = false; });
+})();
+</script>
+</html>
