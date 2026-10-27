@@ -181,13 +181,44 @@
     .reveal { opacity: 1; transform: none; }
     .check .ring, .check .tick { stroke-dashoffset: 0; }
   }
+
+  /* ---- 글라스모피즘: 흐릿한 색 빛(라일락·세이지) 위에 뿌연 유리 카드. 글씨는 진한 모스·먹색 그대로라 대비 유지.
+          흐림 효과를 못 쓰는 기기에서는 불투명 카드로 보인다. */
+  :root { --glass: rgba(251, 250, 245, .62); --glass-strong: rgba(251, 250, 245, .82); --glass-line: rgba(255, 255, 255, .75); --glass-shadow: 0 12px 36px rgba(52, 70, 56, .10), 0 1px 2px rgba(52, 70, 56, .06); }
+  body { background: var(--mist); }
+  .glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--mist); }
+  .glow i { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .75; animation: drift 28s ease-in-out infinite alternate; }
+  .glow i:nth-child(1) { width: 62vmax; height: 62vmax; left: -18vmax; top: -16vmax; background: radial-gradient(circle, #C9BEDD 0%, rgba(201,190,221,0) 70%); }
+  .glow i:nth-child(2) { width: 58vmax; height: 58vmax; right: -20vmax; top: 18vh; background: radial-gradient(circle, #B9CDBC 0%, rgba(185,205,188,0) 70%); animation-duration: 34s; animation-delay: -8s; }
+  .glow i:nth-child(3) { width: 50vmax; height: 50vmax; left: 10vw; bottom: -22vmax; background: radial-gradient(circle, #E2D6C2 0%, rgba(226,214,194,0) 70%); animation-duration: 40s; animation-delay: -16s; }
+  @keyframes drift { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(4vmax, 3vmax, 0) scale(1.08); } }
+
+  .hero { border-bottom: 0; padding-bottom: 1.6rem; }
+  .meta { background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); border: 1px solid var(--glass-line); border-radius: 18px; padding: 0 1.1rem; box-shadow: var(--glass-shadow); }
+  .btn.line { background: rgba(251, 250, 245, .5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-color: rgba(52, 70, 56, .55); }
+
+  main { display: grid; gap: 1.2rem; }
+  section.block { background: var(--glass); -webkit-backdrop-filter: blur(20px) saturate(1.35); backdrop-filter: blur(20px) saturate(1.35); border: 1px solid var(--glass-line); border-radius: 26px; box-shadow: var(--glass-shadow); padding: 2rem 1.4rem 1.8rem; border-bottom: 1px solid var(--glass-line); }
+  #apply { border-bottom: 1px solid var(--glass-line); }
+  .formbox { background: var(--glass-strong); border: 1px solid var(--glass-line); }
+  .result, .get, .solo { background: rgba(251, 250, 245, .7); border-radius: 0 12px 12px 0; }
+  .lv.hl { background: linear-gradient(90deg, rgba(227, 220, 236, .9), rgba(227, 220, 236, .25)); }
+  .opt, input[type=text], input[type=tel], textarea { background: rgba(255, 255, 255, .78); }
+  .consent { background: rgba(255, 255, 255, .78); }
+  footer { border-top: 0; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    section.block, .meta { background: rgba(247, 246, 239, .96); }
+  }
+  @media (prefers-reduced-motion: reduce) { .glow i { animation: none; } }
 </style>
+
+<div class="glow" aria-hidden="true"><i></i><i></i><i></i></div>
 
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow"><i></i>11월 AI 소그룹 과외 · 모집 중</div>
     <h1>내 일에 딱 맞는 AI,<br><span>네 명이 함께</span> 만듭니다</h1>
-    <p class="lead">AI는 누구나 쓸 수 있는 도구지만, 내 일에 맞게 다듬어야 진짜 내 도구가 됩니다. 한 반 네 명, 한 사람 한 사람의 일에 맞춰 함께 세팅해 드려요.</p>
+    <p class="lead">한 반 네 명, 각자의 일에 맞춰 AI를 함께 세팅해 드려요.</p>
     <div class="meta">
       <div><span>인원</span><b>한 반 4명</b></div>
       <div><span>기간</span><b>4주 · 주 1회</b></div>
@@ -202,75 +233,70 @@
 
   <section class="block story">
     <div class="num">01 — 이 과외를 시작한 이유</div>
-    <h2>AI는 도구입니다. 그런데 도구는 손에 맞아야 합니다.</h2>
-    <p>AI는 누구에게나 똑같이 주어진 도구예요. 그런데 같은 도구라도 쓰는 사람의 일과 습관에 맞게 다듬어야 제대로 쓸 수 있어요.</p>
+    <h2>AI는 도구입니다.<br>도구는 손에 맞아야 합니다.</h2>
     <p class="quote">AI는 사람마다 완벽하게 개인화되어야 합니다.</p>
-    <p>강의 영상만 보고도 스스로 맞춰 쓰는 분들은 사실 강의가 필요 없어요. 그런데 직접 강의 현장을 다녀 보니, 그 첫걸음을 어려워하는 분이 정말 많았습니다.</p>
-    <p>그래서 4명만 모았습니다. 여러분 각자의 일 자료를 가지고, 나에게 맞는 AI가 될 때까지 옆에서 같이 세팅하는 과외입니다.</p>
+    <p>혼자서도 잘 맞춰 쓰는 분은 강의가 필요 없어요. 하지만 강의 현장에서 그 첫걸음을 어려워하는 분을 많이 만났습니다. 그래서 네 명만 모아, 옆에서 같이 세팅합니다.</p>
     <p class="sign">— (주)커넥트제로 대표 이승엽</p>
   </section>
 
   <section class="block" id="find">
     <div class="num">02 — 나에게 맞는 반 찾기</div>
-    <h2>나와 가장 가까운 문장을 하나 골라 보세요</h2>
+    <h2>나와 가까운 것 하나를 골라 보세요</h2>
     <div class="pick" role="group" aria-label="나와 가장 가까운 문장">
-      <button type="button" data-lv="초보반" aria-pressed="false"><i>1</i><span>AI가 아직 어렵고, 무엇을 어떻게 물어봐야 할지 막막해요</span></button>
-      <button type="button" data-lv="중수반" aria-pressed="false"><i>2</i><span>AI를 쓰고는 있는데, 내 일에 제대로 붙여서 시간을 줄이고 싶어요</span></button>
-      <button type="button" data-lv="고급반" aria-pressed="false"><i>3</i><span>내가 원하는 프로그램이나 서비스를 직접 만들어 세상에 내놓고 싶어요</span></button>
+      <button type="button" data-lv="초보반" aria-pressed="false"><i>1</i><span>AI가 아직 어렵고 막막해요</span></button>
+      <button type="button" data-lv="중수반" aria-pressed="false"><i>2</i><span>AI를 쓰는데, 내 일에 제대로 붙이고 싶어요</span></button>
+      <button type="button" data-lv="고급반" aria-pressed="false"><i>3</i><span>내 서비스를 직접 만들어 보고 싶어요</span></button>
     </div>
     <div class="result" id="result" hidden></div>
   </section>
 
   <section class="block" id="levels">
     <div class="num">03 — 반 소개</div>
-    <h2>세 반 모두 4주, 8시간 과정이에요</h2>
+    <h2>세 반 모두 4주 과정이에요</h2>
     <div class="levels">
 
       <article class="lv" id="lv-초보반">
-        <div class="head"><h3>초보반<span>AI랑 친해지기</span></h3><div class="price"><b>15만 원</b><small>1인 · 4주 8시간</small></div></div>
-        <p class="for"><b>이런 분께</b> AI를 이제 막 시작했거나, 질문하고 답 받기가 아직 어색한 분</p>
+        <div class="head"><h3>초보반<span>AI랑 친해지기</span></h3><div class="price"><b>15만 원</b><small>1인 · 4주</small></div></div>
+        <p class="for"><b>이런 분께</b>AI를 이제 막 시작한 분</p>
         <ul class="weeks">
-          <li><b>1주</b><span>AI가 무엇인지 쉽게 이해하기 (모델, 환각, 토큰 같은 기초 개념) · 유료 AI 앱 세팅</span></li>
-          <li><b>2주</b><span>프롬프트 잘 입력하는 법: 역할, 목적, 형식, 예시 · 마음에 안 들 때 고쳐 묻는 법</span></li>
-          <li><b>3주</b><span>내 일과 생활에 써 보기: 글쓰기, 요약, 사진 보여 주고 묻기, 이미지 만들기</span></li>
-          <li><b>4주</b><span>나에 대해 미리 알려 두기(맞춤 지침·메모리) · 나만의 프롬프트북 완성</span></li>
+          <li><b>1주</b><span>AI 기초 개념, 앱 세팅</span></li>
+          <li><b>2주</b><span>프롬프트 잘 쓰는 법</span></li>
+          <li><b>3주</b><span>내 일과 생활에 써 보기</span></li>
+          <li><b>4주</b><span>나에게 맞춘 설정, 프롬프트북</span></li>
         </ul>
-        <p class="get"><b>끝나면 갖게 되는 것</b> 나를 잘 아는 AI 설정, 바로 꺼내 쓰는 나만의 프롬프트 모음</p>
-        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독</p>
+        <p class="get"><b>결과물</b>나를 아는 AI, 나만의 프롬프트 모음</p>
         <a class="btn line" href="#apply" data-go="초보반">초보반 신청하기</a>
       </article>
 
       <article class="lv" id="lv-중수반">
-        <div class="head"><h3>중수반<span>에이전트로 내 일 줄이기</span></h3><div class="price"><b>18만 원</b><small>1인 · 4주 8시간</small></div></div>
-        <p class="for"><b>이런 분께</b> AI를 쓰고는 있는데, 업무에 제대로 붙여서 시간을 줄이고 싶은 분</p>
+        <div class="head"><h3>중수반<span>에이전트로 내 일 줄이기</span></h3><div class="price"><b>18만 원</b><small>1인 · 4주</small></div></div>
+        <p class="for"><b>이런 분께</b>AI를 쓰지만 업무에 제대로 붙이고 싶은 분</p>
         <ul class="weeks">
-          <li><b>1주</b><span>에이전트가 무엇인지 · 에이전트 앱 세팅(Claude Code · ChatGPT Codex) · 내 작업 폴더 다루기</span></li>
-          <li><b>2주</b><span>문서·엑셀·자료 업무를 에이전트에게: 여러 파일을 한 번에 정리하고 만들기</span></li>
-          <li><b>3주</b><span>내 업무 매뉴얼을 AI에게: 스킬과 규칙 만들기, 매번 같은 품질로</span></li>
-          <li><b>4주</b><span>반복 업무 하나를 정해진 시간에 저절로 돌게 만들기 · 발표와 피드백</span></li>
+          <li><b>1주</b><span>에이전트 개념, 앱 세팅</span></li>
+          <li><b>2주</b><span>문서·엑셀 업무 맡기기</span></li>
+          <li><b>3주</b><span>내 업무 규칙(스킬) 만들기</span></li>
+          <li><b>4주</b><span>반복 업무 자동으로 돌리기</span></li>
         </ul>
-        <p class="get"><b>끝나면 갖게 되는 것</b> 내 업무용 스킬 1개, 저절로 도는 반복 작업 1개</p>
-        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독, AI 채팅을 평소에 써 본 경험</p>
+        <p class="get"><b>결과물</b>업무용 스킬 1개, 자동 작업 1개</p>
         <a class="btn line" href="#apply" data-go="중수반">중수반 신청하기</a>
       </article>
 
       <article class="lv" id="lv-고급반">
-        <div class="head"><h3>고급반<span>바이브코딩으로 서비스 만들기</span></h3><div class="price"><b>30만 원</b><small>1인 · 4주 8시간</small></div></div>
-        <p class="for"><b>이런 분께</b> 말로 시켜서 내 프로그램과 서비스를 직접 만들고, 실제로 인터넷에 공개해 보고 싶은 분</p>
+        <div class="head"><h3>고급반<span>바이브코딩으로 서비스 만들기</span></h3><div class="price"><b>30만 원</b><small>1인 · 4주</small></div></div>
+        <p class="for"><b>이런 분께</b>내 서비스를 직접 만들고 공개하고 싶은 분</p>
         <ul class="weeks">
-          <li><b>1주</b><span>만들 서비스 정하기 · AI와 함께 설계도(무엇을, 누가, 어떻게) 쓰기</span></li>
-          <li><b>2주</b><span>바이브코딩으로 화면 만들기: 안내 페이지, 신청서, 예약 화면</span></li>
-          <li><b>3주</b><span>데이터 저장과 자동화 연결: 신청 받기, 알림, 다른 서비스와 연결하기</span></li>
-          <li><b>4주</b><span>실제 배포: 인터넷 주소로 공개하고 점검하기 · 발표와 피드백</span></li>
+          <li><b>1주</b><span>만들 서비스 설계</span></li>
+          <li><b>2주</b><span>화면 만들기</span></li>
+          <li><b>3주</b><span>저장·자동화 연결</span></li>
+          <li><b>4주</b><span>인터넷에 배포하기</span></li>
         </ul>
-        <p class="get"><b>끝나면 갖게 되는 것</b> 인터넷에 올라간 내 서비스 1개 (이 모집 페이지처럼)</p>
-        <p class="need">준비: 노트북, Claude 또는 ChatGPT 유료 구독, 에이전트 앱을 써 본 경험</p>
+        <p class="get"><b>결과물</b>인터넷에 올라간 내 서비스 1개</p>
         <a class="btn line" href="#apply" data-go="고급반">고급반 신청하기</a>
       </article>
 
     </div>
     <div class="solo">
-      <div><b>1:1 개인 과외도 가능해요</b><span>내 일정과 내 일에 맞춰 따로 진행해요. 내용과 금액은 상담 후 정해요.</span></div>
+      <div><b>1:1 개인 과외도 가능해요</b><span>일정과 금액은 따로 상담해요.</span></div>
       <a class="btn line" href="#apply" data-go="개인 과외 상담">따로 연락받기</a>
     </div>
   </section>
@@ -279,34 +305,28 @@
     <div class="num">04 — 공통 안내</div>
     <h2>이렇게 진행해요</h2>
     <div class="info">
-      <div><span>인원</span><b>한 반 4명 · 3명부터 개강</b></div>
-      <div><span>기간</span><b>4주 · 주 1회 2시간 (총 8시간)</b></div>
-      <div><span>시간</span><b>평일 저녁 7~9시</b><br><small class="muted">요일은 신청하신 분들이 가장 많이 고른 날로 정해요</small></div>
-      <div><span>개강</span><b>11월 둘째 주 (11/9 ~ 11/13 중)</b></div>
-      <div><span>장소</span><b>(주)커넥트제로 사무실 (부산)</b><br><small class="muted">자세한 위치는 확정 후 개별 안내</small></div>
-      <div><span>쓰는 AI</span><b>Claude 추천 · ChatGPT 가능</b></div>
-      <div><span>준비물</span><b>노트북 필수 · 유료 AI 구독</b><br><small class="muted">구독료(월 3만 원 안팎)는 수강료와 별도</small></div>
-      <div><span>결제 · 환불</span><b>개강 전 계좌이체</b><br><small class="muted">개강 전까지 전액 환불, 개강 후 환불 없음</small></div>
+      <div><span>인원</span><b>한 반 4명 (3명부터 개강)</b></div>
+      <div><span>시간</span><b>주 1회 · 평일 저녁 7~9시</b><small>요일은 신청자가 많이 고른 날로</small></div>
+      <div><span>개강</span><b>11월 둘째 주</b><small>신청 마감 11월 1일(일)</small></div>
+      <div><span>장소</span><b>(주)커넥트제로 사무실</b><small>위치는 개별 안내</small></div>
+      <div><span>준비물</span><b>노트북, 유료 AI 구독</b><small>Claude 추천 · ChatGPT 가능</small></div>
+      <div><span>환불</span><b>개강 전까지 전액</b><small>개강 후에는 환불 없음</small></div>
     </div>
     <div class="flow">
-      <div><b>30분 · 보여 주기</b>오늘 배울 기능을 강사 화면으로 시연</div>
-      <div><b>60분 · 내 자료로</b>각자 자기 일 자료로 실습, 강사가 4명을 돌아가며 봐 드려요</div>
-      <div><b>30분 · 정리</b>막힌 것 함께 풀기, 이번 주 해 볼 것</div>
+      <div><b>30분</b>강사 시연</div>
+      <div><b>60분</b>내 자료로 실습</div>
+      <div><b>30분</b>질문과 정리</div>
     </div>
-    <p class="muted" style="margin-top:1rem">일정: 신청 ~ 11/1(일) · 반과 요일 확정 및 결제 안내 11/2 ~ 11/6 · 개강 11월 둘째 주</p>
   </section>
 
   <section class="block">
     <div class="num">05 — 자주 묻는 질문</div>
     <h2>궁금하신 점</h2>
     <div class="faq">
-    <details><summary>어느 반을 골라야 할지 모르겠어요</summary><p>신청서에서 "잘 모르겠어요"를 고르시면 연락드려서 함께 정해 드려요. 위의 "나에게 맞는 반 찾기"도 참고해 보세요.</p></details>
-    <details><summary>유료 구독은 꼭 해야 하나요?</summary><p>네. 무료 요금제는 사용량이 적고 쓸 수 있는 기능이 달라서, 수업에서 같은 결과를 내기 어려워요. 아직이시면 개강 전까지만 구독하시면 돼요. 새로 하신다면 Claude를 추천해요.</p></details>
-    <details><summary>노트북이 없으면요?</summary><p>이번 과외는 노트북이 꼭 필요해요. 휴대폰이나 태블릿으로는 실습을 따라오기 어려워요.</p></details>
-    <details><summary>4명이 다 안 모이면요?</summary><p>3명이 모이면 개강해요. 3명이 안 되는 반은 개강하지 않고, 결제 전이니 비용도 들지 않아요.</p></details>
-    <details><summary>빠지는 날이 생기면요?</summary><p>녹화본은 없어요. 다음 시간 시작 전에 10분 정도 짧게 보충해 드려요.</p></details>
-    <details><summary>4명 그룹이 아니라 혼자 배우고 싶어요</summary><p>1:1 개인 과외도 가능해요. 신청서에서 "1:1 개인 과외 · 따로 연락받기"를 고르시면, 일정과 내용, 금액을 따로 상담해 드려요.</p></details>
-    <details><summary>쇼츠 강의를 안 들었어도 되나요?</summary><p>네, 상관없어요. 이 과외는 쇼츠가 아니라 AI를 내 일에 제대로 쓰는 법을 배우는 과정이에요.</p></details>
+    <details><summary>어느 반인지 모르겠어요</summary><p>신청서에서 "잘 모르겠어요"를 고르시면 같이 정해 드려요.</p></details>
+    <details><summary>유료 구독이 꼭 필요한가요?</summary><p>네. 개강 전까지만 구독하시면 돼요.</p></details>
+    <details><summary>혼자 배우고 싶어요</summary><p>신청서에서 "1:1 개인 과외"를 고르시면 따로 연락드려요.</p></details>
+    <details><summary>빠지는 날이 생기면요?</summary><p>다음 시간 시작 전에 10분 보충해 드려요.</p></details>
     </div>
   </section>
 
@@ -318,17 +338,17 @@
       <div class="field" data-f="level">
         <label class="lb">신청할 반</label>
         <div class="opts">
-          <label class="opt"><input type="radio" name="level" value="초보반"> <span>초보반 · AI랑 친해지기 · 15만 원</span></label>
-          <label class="opt"><input type="radio" name="level" value="중수반"> <span>중수반 · 에이전트로 내 일 줄이기 · 18만 원</span></label>
-          <label class="opt"><input type="radio" name="level" value="고급반"> <span>고급반 · 바이브코딩으로 서비스 만들기 · 30만 원</span></label>
-          <label class="opt"><input type="radio" name="level" value="잘 모르겠어요"> <span>잘 모르겠어요 (연락드려서 같이 정해요)</span></label>
-          <label class="opt"><input type="radio" name="level" value="개인 과외 상담"> <span>1:1 개인 과외 · 따로 연락받기 (일정·금액 상담)</span></label>
+          <label class="opt"><input type="radio" name="level" value="초보반"> <span>초보반 · 15만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="중수반"> <span>중수반 · 18만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="고급반"> <span>고급반 · 30만 원</span></label>
+          <label class="opt"><input type="radio" name="level" value="잘 모르겠어요"> <span>잘 모르겠어요</span></label>
+          <label class="opt"><input type="radio" name="level" value="개인 과외 상담"> <span>1:1 개인 과외 상담</span></label>
         </div>
       </div>
       <div class="field" data-f="name"><label class="lb" for="name">이름</label><input type="text" id="name" maxlength="30" autocomplete="name" placeholder="예: 김영희"></div>
       <div class="field" data-f="phone"><label class="lb" for="phone">연락처</label><input type="tel" id="phone" maxlength="20" autocomplete="tel" inputmode="tel" placeholder="예: 010-1234-5678"></div>
       <div class="field" data-f="days">
-        <label class="lb">가능한 요일 <small>저녁 7~9시 · 여러 개 골라 주세요</small></label>
+        <label class="lb">가능한 요일 <small>여러 개 가능</small></label>
         <div class="opts row">
           <label class="opt"><input type="checkbox" name="days" value="월">월</label>
           <label class="opt"><input type="checkbox" name="days" value="화">화</label>
@@ -342,23 +362,18 @@
         <div class="opts">
           <label class="opt"><input type="radio" name="ai" value="Claude"> <span>Claude 유료</span></label>
           <label class="opt"><input type="radio" name="ai" value="ChatGPT"> <span>ChatGPT 유료</span></label>
-          <label class="opt"><input type="radio" name="ai" value="아직 구독 전"> <span>아직 구독 전 (개강 전까지 구독할게요)</span></label>
+          <label class="opt"><input type="radio" name="ai" value="아직 구독 전"> <span>아직 구독 전</span></label>
         </div>
       </div>
       <div class="field" data-f="laptop">
         <label class="lb">노트북</label>
-        <div class="opts"><label class="opt"><input type="checkbox" id="laptop"> <span>수업에 가져올 노트북이 있어요</span></label></div>
+        <div class="opts"><label class="opt"><input type="checkbox" id="laptop"> <span>노트북 있어요</span></label></div>
       </div>
-      <div class="field"><label class="lb" for="note">배우고 싶은 것 <small>선택</small></label><textarea id="note" maxlength="500" placeholder="예: 가게 손님 문의 답장을 AI로 빨리 하고 싶어요"></textarea></div>
+      <div class="field"><label class="lb" for="note">배우고 싶은 것 <small>선택</small></label><textarea id="note" maxlength="500" placeholder="예: 손님 문의 답장을 빨리 하고 싶어요"></textarea></div>
       <div class="field" data-f="agree">
         <div class="consent">
           <b>개인정보 수집·이용 동의 (필수)</b>
-          <ul>
-            <li>모으는 것: 이름, 연락처, 가능한 요일</li>
-            <li>쓰는 곳: 과외 반 편성과 개강 안내 연락</li>
-            <li>보관 기간: 과정이 끝나면 지우며, 길어도 6개월 안에 지웁니다</li>
-            <li>동의하지 않으시면 신청이 어려워요</li>
-          </ul>
+          <p style="margin:.3rem 0 .8rem">이름·연락처·요일을 반 편성과 연락에만 쓰고, 과정이 끝나면 지웁니다.</p>
           <label class="opt"><input type="checkbox" id="agree"> <span>위 내용에 동의합니다</span></label>
         </div>
       </div>
@@ -368,7 +383,7 @@
     <div class="done" id="done" hidden>
       <svg class="check" viewBox="0 0 76 76" aria-hidden="true"><circle class="ring" cx="38" cy="38" r="34"/><path class="tick" d="M24 39 l10 10 l19 -21"/></svg>
       <h3>신청해 주셔서 감사합니다!</h3>
-      <p class="muted">11월 1일까지 신청을 받고, 11월 2일부터 반과 요일이 정해지는 대로 연락드릴게요.</p>
+      <p class="muted">11월 2일부터 반과 요일이 정해지는 대로 연락드릴게요.</p>
       <button class="btn line" type="button" id="again">신청 내용 고치기</button>
     </div>
     </div>
@@ -400,7 +415,7 @@
   }
 
   // 나에게 맞는 반 찾기
-  var WHY = { "초보반": "AI와 친해지는 것부터 차근차근 시작해요. 기초 개념과 프롬프트 잘 쓰는 법을 배워요.", "중수반": "에이전트로 내 업무를 줄이는 과정이에요. 문서·엑셀·반복 업무를 AI에게 맡기는 법을 배워요.", "고급반": "바이브코딩으로 내 서비스를 만들고, 실제 인터넷 주소로 공개까지 해 봐요." };
+  var WHY = { "초보반": "기초부터 차근차근 시작해요.", "중수반": "에이전트로 업무를 줄여요.", "고급반": "내 서비스를 만들고 공개해요." };
   var result = document.getElementById("result");
   document.querySelectorAll(".pick button").forEach(function (b) {
     b.addEventListener("click", function () {
