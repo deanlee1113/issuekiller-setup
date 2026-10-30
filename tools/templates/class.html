@@ -482,7 +482,9 @@
 (function () {
   var HUB = "https://issuekiller-hub.deanlee1113.workers.dev";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var sid = (function () { try { var x = localStorage.getItem("ik-class-sid"); if (!x) { x = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem("ik-class-sid", x); } return x; } catch (e) { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); } })();
+  // 신청을 보낼 때마다 새 번호를 쓴다. 한 휴대폰으로 여러 명이 신청해도 서로 덮어쓰지 않고 따로 쌓인다.
+  function newSid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+  var sentOnce = false;   // 이 화면에서 이미 한 번 보냈으면, 다시 보낸 신청은 "수정"으로 표시된다
 
   // 스크롤하면 글자가 흐림에서 또렷하게 떠오른다
   if ("IntersectionObserver" in window && !reduce) {
@@ -537,7 +539,7 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault(); msg.hidden = true;
     var data = {
-      sid: sid, level: val("level"), name: document.getElementById("name").value.trim(), phone: document.getElementById("phone").value.trim(),
+      sid: newSid(), again: sentOnce, level: val("level"), name: document.getElementById("name").value.trim(), phone: document.getElementById("phone").value.trim(),
       days: [].map.call(form.querySelectorAll("input[name=days]:checked"), function (i) { return i.value; }),
       ai: val("ai"), laptop: document.getElementById("laptop").checked, note: document.getElementById("note").value.trim(), agree: document.getElementById("agree").checked
     };
@@ -556,6 +558,7 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d || !d.ok) throw 0;
+        sentOnce = true;
         try { localStorage.setItem("ik-class-done", "1"); } catch (e) {}
         form.hidden = true; document.getElementById("done").hidden = false;
         document.getElementById("apply").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
